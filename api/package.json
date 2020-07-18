@@ -1,0 +1,43 @@
+{
+  "name": "chronolog-api",
+  "version": "0.1.0",
+  "description": "Sqlite 3 powered API for Chronolog time sheet application",
+  "main": "lib/index.js",
+  "author": "Thomas Knierim <chronolog@thomasknierim.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "node_modules/typescript/bin/tsc -p .",
+    "watch": "node_modules/typescript/bin/tsc -w -p .",
+    "start": "nodemon --delay 2 lib/src/index.js",
+    "clean": "rm -rf lib",
+    "clean-logs": "rm ~/.npm/_logs/*.log",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.5",
+    "@types/express": "^4.16.1",
+    "@types/jest": "^23.3.13",
+    "@types/node": "^10.12.19",
+    "@types/sqlite3": "^3.1.3",
+    "jest": "^23.6.0",
+    "jest-express": "^1.9.4",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "nodemon": "^2.0.1",
+    "sqlite3": "^4.1.1"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "2500"
+  }
+}
