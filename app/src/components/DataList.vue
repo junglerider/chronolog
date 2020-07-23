@@ -78,7 +78,7 @@
         {{ 'No data to display' | i18n }}
       </template>
     </v-data-table>
-    <div>
+    <div style="margin-top: 20px">
       <v-pagination v-model="page" :length="pageCount" total-visible="10"></v-pagination>
     </div>
     <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
@@ -160,7 +160,6 @@ export default {
     },
 
     async getData() {
-      console.log('SEARCH FILTER=', this.searchFilter)
       const filter = this.buildFilter()
       this.loading = true
       let data = []

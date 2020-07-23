@@ -71,7 +71,15 @@
           <v-textarea :label="'Notes' | i18n" auto-grow rows="1" v-model="person.comment"></v-textarea>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="person.id !== 'new'">
+        <v-col class="col-12 col-sm-6 col-md-6 form-col">
+          <phone-list :entityId="String(person.id)" ref="phoneList"/>
+        </v-col>
+        <v-col class="col-12 col-sm-6 col-md-6 form-col">
+          <employee-list entityType="person" :entityId="String(person.id)" ref="employeeList"/>
+        </v-col>
+      </v-row>
+      <v-row style="padding-top: 15px">
         <v-col class="col-12 col-md-12 form-col" align="end">
           <v-btn primary color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
@@ -85,18 +93,24 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import DateInput from '../components/DateInput'
+import PhoneList from '../components/PhoneList'
+import EmployeeList from '../components/EmployeeList'
 import api, { nullIt } from '../api'
 import countries from '../i18n/countries.json'
 
 export default {
   components: {
-    DateInput
+    DateInput,
+    PhoneList,
+    EmployeeList,
   },
 
   data() {
     return {
       person: { id: 'new' },
+      previousPerson: { id: 'new' },
       titles: ['Mr.', 'Mrs.', 'Ms.', 'Herr', 'Frau', 'Khun', 'Dr.', 'Prof.', 'Sir'],
       types: [
         { value: 'CUS', text: this.$i18n('Customer') },
@@ -137,25 +151,45 @@ export default {
     },
 
     async onSave() {
+      let isDataWritten = false
       if (!this.$refs.form.validate()) {
         return
       }
       this.isSaving = true
-      const id = this.person.id
-      try {
-        this.person.updated_at = (new Date()).toISOString()
-        if (id === 'new') {
-          const response = await api.post(`person`, nullIt(this.person))
-          if (response.status === 201) {
-            this.person.id = response.data.id
+      if (!_.isEqual(this.person, this.previousPerson)) {
+        try {
+          const id = this.person.id
+          this.person.updated_at = (new Date()).toISOString()
+          if (id === 'new') {
+            const response = await api.post(`person`, nullIt(this.person))
+            if (response.status === 201) {
+              this.person.id = response.data.id
+            }
+          } else {
+            await api.put(`person/${id}`, nullIt(this.person))
           }
-        } else {
-          await api.put(`person/${id}`, nullIt(this.person))
+          isDataWritten = true
+          this.previousPerson = _.clone(this.person)
+        } catch (e) {
+          console.error(e)
+          this.showMessage('Saving did not succeed.', 'error')
+          this.isSaving = false
+          return
         }
+      }
+      try {
+        isDataWritten = isDataWritten || await this.$refs.phoneList.onSave()
+        isDataWritten = isDataWritten || await this.$refs.employeeList.onSave()
+      } catch(e) {
+          console.error(e)
+          this.showMessage('Saving did not succeed.', 'error')
+          this.isSaving = false
+          return
+      }
+      if (isDataWritten) {
         this.showMessage('OK - Saved!')
-      } catch (e) {
-        console.error(e)
-        this.showMessage('Saving did not succeed.', 'error')
+      } else {
+        this.showMessage('No changes were made.', 'info')
       }
       this.isSaving = false
     },
@@ -168,6 +202,7 @@ export default {
     try {
       const response = await api.get(`person/${this.$route.params.id}`)
       this.person = response.data
+      this.previousPerson = _.clone(this.person)
     } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')

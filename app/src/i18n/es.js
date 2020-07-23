@@ -7,7 +7,7 @@ export default new Map([
   ['Italian', 'Italiano'],
   // sidebar ----------------------------------------------
   ['Dashboard', 'Tablero'],
-  ['Monthly summary and statistics', 'ÜResumen mensual y estadísticas'],
+  ['Monthly summary and statistics', 'Resumen mensual y estadísticas'],
   ['Change Password', 'Cambia la contraseña'],
   ['Change your password', 'Cambia tu contraseña'],
   ['Logout', 'Cerrar sesión'],
@@ -46,6 +46,7 @@ export default new Map([
   ['Deletion did not succeed.', 'No se pudieron eliminar los datos.'],
   ['OK - Saved!', 'OK - guardado!'],
   ['Saving did not succeed.', 'No se pudieron guardar los datos.'],
+  ['No changes were made.', 'Los datos no fueron cambiados.'],
   //  components  and buttons -----------------------------
   ['View/Edit', 'Ver/editar'],
   ['Edit', 'Editar'],
@@ -58,6 +59,7 @@ export default new Map([
   ['Date must be in the past or present', 'La fecha debe ser pasada o presente'],
   ['Date must be in the future', 'La fecha debe ser en el futuro'],
   ['Invalid date', 'Fecha invalida'],
+  ['No results', 'No hay resultados'],
   // contacts + organisations -----------------------------
   ['Contact Details', 'Detalles de contacto'],
   ['Add Person', 'Añadir un contacto'],
@@ -91,8 +93,14 @@ export default new Map([
   ['Government', 'Autoridad'],
   ['Non-Government', 'No gubernamental'],
   ['Phone/Email', 'Teléfono/email'],
+  ['Phone', 'Teléfono'],
+  ['Mobile', 'Móvil'],
+  ['Email', 'Email'],
+  ['Fax', 'Fax'],
+  ['Office', 'Oficina'],
+  ['Home', 'Casa'],
+  ['Website', 'Sitio web'],
   ['Members/Employees', 'Miembros/empleados'],
-  ['View details', 'Ver detalles'],
   // time sheets + todo list ------------------------------
   ['Total hours:', 'Horas totales:'],
 ])

@@ -28,7 +28,7 @@
     </template>
     <v-date-picker
       v-bind:value="value"
-      v-on:change="$emit('input', $event)"
+      v-on:change="$emit('change', $event)"
       @input="menu = false"
       :locale="$getLanguage()"
       first-day-of-week="1"

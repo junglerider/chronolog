@@ -46,7 +46,7 @@ export default new Map([
   ['Deletion did not succeed.', 'Daten konnten nicht gelöscht werden.'],
   ['OK - Saved!', 'OK - Gespeichert!'],
   ['Saving did not succeed.', 'Daten konnten nicht abgespeichert werden.'],
-  ['Cancel', 'Abbrechen'],
+  ['No changes were made.', 'Daten wurden nicht verändert.'],
   //  components  and buttons -----------------------------
   ['View/Edit', 'Ansehen/Bearbeiten'],
   ['Edit', 'Bearbeiten'],
@@ -59,6 +59,7 @@ export default new Map([
   ['Date must be in the past or present', 'Datum muss in der Vergangenheit oder Gegenwart liegen'],
   ['Date must be in the future', 'Datum muss in der Zukunft liegen'],
   ['Invalid date', 'Ungültiges Datum'],
+  ['No results', 'Keine Ergebnisse'],
   // contacts + organisations -----------------------------
   ['Contact Details', 'Persönliche Daten'],
   ['Add Person', 'Kontakt hinzufügen'],
@@ -92,8 +93,14 @@ export default new Map([
   ['Government', 'Behörde'],
   ['Non-Government', 'Nichtstaatlich'],
   ['Phone/Email', 'Telefon/Email'],
+  ['Phone', 'Telefon'],
+  ['Mobile', 'Handy'],
+  ['Email', 'Email'],
+  ['Fax', 'Fax'],
+  ['Office', 'Büro'],
+  ['Home', 'Privat'],
+  ['Website', 'Webseite'],
   ['Members/Employees', 'Mitglieder/Beschäftigte'],
-  ['View details', 'Details anzeigen'],
   // time sheets + todo list ------------------------------
   ['Total hours:', 'Gesamtstunden:'],
 ])
