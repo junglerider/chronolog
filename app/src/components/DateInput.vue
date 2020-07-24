@@ -42,6 +42,10 @@
 <script>
   export default {
     name: 'DateInput',
+    model: {
+      prop: 'value',
+      event: 'change'
+    },
     props: {
       value: String,
       label: String,
