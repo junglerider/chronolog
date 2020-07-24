@@ -62,7 +62,6 @@ export default {
     searchTerm(term) {
       if (!term) {
         this.items = []
-        // this.value = undefined
         return
       }
       if (term.length < Number(this.minSearchLength)) {

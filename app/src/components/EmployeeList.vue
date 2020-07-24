@@ -1,7 +1,9 @@
 <template>
   <div>
     <div style="display: flex">
-      <div class="page-title" style="margin-bottom: 16px">{{ 'Organisations' | i18n }}</div>
+      <div class="page-title" style="margin-bottom: 16px">
+        {{ (entityType === 'person' ? 'Organisations' : 'Employees') | i18n }}
+      </div>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on" @click="add()" style="margin-left: auto">
@@ -17,11 +19,11 @@
           <v-col class="col-12 col-sm-12 col-md-6 form-col">
             <auto-complete
               :label="'Name' | i18n"
-              :item="{ id: employee.organisation_id, name: employee.name }"
-              :lookup="orgLookup"
+              :item="{ id: (entityType === 'person' ? employee.organisation_id : employee.person_id), name: employee.name }"
+              :lookup="entityType === 'person'? orgLookup : personLookup"
               min-search-length="2"
               :rules="requiredRule"
-              @change="(item) => orgChange(item, employee)"
+              @change="(item) => onChange(item, employee)"
               clearable
             />
           </v-col>
@@ -85,11 +87,6 @@ export default {
       }
     },
 
-    orgChange(item, employee) {
-      employee.organisation_id = item ? item.id : null
-      employee.name = item ? item.name : null
-    },
-
     async orgLookup(searchTerm) {
       try {
         const response = await api.get(`organisation?filter[name][like]=${encodeURIComponent(searchTerm + '%')}&order=name`)
@@ -98,6 +95,26 @@ export default {
         console.error(e)
       }
       return []
+    },
+
+    async personLookup(searchTerm) {
+      try {
+        const term = encodeURIComponent(searchTerm.split(' ')[0] + '%')
+        const response = await api.get(`person?filter[first_name][like]=${term}&filter[last_name][like]=${term}&combine=OR`)
+        return response.data
+      } catch (e) {
+        console.error(e)
+      }
+      return []
+    },
+
+    onChange(item, employee) {
+      if (this.entityType === 'person') {
+        employee.organisation_id = item ? item.id : null
+      } else {
+        employee.person_id = item ? item.id : null
+      }
+      employee.name = item ? item.name : null
     },
 
     async onSave() {

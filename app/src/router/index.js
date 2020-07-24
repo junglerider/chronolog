@@ -38,7 +38,7 @@ Vue.use(VueRouter)
   {
     path: '/organisations/:id(new|\\d+)',
     name: 'OrganisationDetails',
-    component: UnderConstruction
+    component: () => import('../views/OrganisationDetails.vue')
   },
 ]
 
