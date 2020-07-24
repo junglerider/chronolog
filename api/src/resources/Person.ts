@@ -37,7 +37,7 @@ export class Person {
     this.logger.trace ('Person.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = 'SELECT p.id, p.type, p.title, p.first_name, p.last_name, e.city, e.country FROM person p JOIN entity e ON e.id = p.id ' + whereClause
+      const sql = 'SELECT p.id, p.type, p.title, p.first_name, p.last_name, p.first_name || " " || p.last_name AS name, e.city, e.country FROM person p JOIN entity e ON e.id = p.id ' + whereClause
       const rows = await this.db.all (sql, params)
       rows ? res.status (200).json (rows) : res.status (404).json ()
       next ()

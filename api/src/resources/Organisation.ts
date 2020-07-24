@@ -149,7 +149,7 @@ export class Organisation {
   public async getPersons (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Organisation.getPersons(${[req.params.id]})`)
     try {
-      const sql = 'SELECT p.id AS person_id, e.id AS employee_id, p.first_name, p.last_name, e.position FROM employee e JOIN person p ON e.person_id = p.id WHERE e.organisation_id = ?'
+      const sql = 'SELECT p.id AS person_id, e.id AS employee_id, p.first_name || " " || p.last_name AS name, e.position FROM employee e JOIN person p ON e.person_id = p.id WHERE e.organisation_id = ?'
       const rows = await this.db.all (sql, [req.params.id])
       rows ? res.status (200).json (rows) : res.status (404).json ()
       next ()
