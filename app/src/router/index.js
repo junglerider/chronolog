@@ -13,7 +13,7 @@ Vue.use(VueRouter)
   {
     path: '/calendar',
     name: 'Calendar',
-    component: UnderConstruction
+    component: () => import('../views/Calendar.vue')
   },
   {
     path: '/todo',

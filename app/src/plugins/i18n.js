@@ -30,11 +30,19 @@ export default {
       return date + time
     }
 
+    const $i18nDecToHrs = hrs => {
+      const hours = Math.floor(Math.abs(hrs))
+      const mins = Math.round((Math.abs(hrs) - hours) * 60)
+      return hours + ':' + (mins > 9 ? '' : '0') + mins
+    }
+
+
     Vue.filter('i18n', i18n)
     Vue.filter('i18nDate', i18nDate)
 
     Vue.prototype.$i18n = i18n
     Vue.prototype.$i18nDate = i18nDate
+    Vue.prototype.$i18nDecToHrs = $i18nDecToHrs
 
     Vue.prototype.$getLanguage = () => currentLocale
 

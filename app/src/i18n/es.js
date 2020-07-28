@@ -103,4 +103,5 @@ export default new Map([
   ['Members/Employees', 'Miembros/empleados'],
   // time sheets + todo list ------------------------------
   ['Total hours:', 'Horas totales:'],
+  ['hours', 'horas'],
 ])

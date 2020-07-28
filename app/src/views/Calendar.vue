@@ -1,0 +1,100 @@
+<template>
+  <v-row class="fill-height">
+    <v-col>
+      <v-sheet height="64">
+        <v-toolbar flat color="white">
+          <div class="page-title">{{ 'Monthly Overview' | i18n }} / {{ 'Total hours:' | i18n }} {{ totalHours }}</div>
+          <v-spacer></v-spacer>
+          <v-toolbar-title>
+            {{ $refs.calendar ? $refs.calendar.title : 'This month' }}
+          </v-toolbar-title>
+          <v-btn fab text small color="grey darken-2" class="ml-2" @click="prev">
+            <v-icon small>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn fab text small color="grey darken-2" class="mr-2" @click="next">
+            <v-icon small>mdi-chevron-right</v-icon>
+          </v-btn>
+          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+            {{ 'Today' | i18n }}
+          </v-btn>
+        </v-toolbar>
+      </v-sheet>
+      <v-sheet height="600">
+        <v-calendar
+          ref="calendar"
+          type="month"
+          color="primary"
+          weekdays="1,2,3,4,5,6,0"
+          v-model="focus"
+          :show-month-on-first="false"
+          :show-week="true"
+          :shortWeekdays="false"
+          :locale="$getLanguage()"
+          :events="events"
+          :event-height="30"
+          event-color="#2586d7"
+          @change="onChange"
+        ></v-calendar>
+      </v-sheet>
+    </v-col>
+  </v-row>
+</template>
+
+<style>
+  .v-calendar-weekly__day-label .v-btn {
+    font-size: 1em !important;
+    font-weight: 400;
+  }
+  .v-calendar-weekly__head-weekday {
+    font-size: 1em !important;
+  }
+  .v-calendar .v-event {
+    font-size: 1em !important;
+  }
+</style>
+
+<script>
+import api from '../api'
+
+  export default {
+    data: () => ({
+      focus: '',
+      userId: 1,
+      totalHours: 0,
+      events: [],
+    }),
+    mounted () {
+      this.$refs.calendar.checkChange()
+    },
+    methods: {
+      setToday () {
+        this.focus = ''
+      },
+      prev () {
+        this.$refs.calendar.prev()
+      },
+      next () {
+        this.$refs.calendar.next()
+      },
+      async onChange(val) {
+        const url = `timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+        try {
+          const response = await api.get(url)
+          this.events = []
+          let totalHours = 0
+          for (let timelog of response.data) {
+            totalHours += timelog.duration
+            this.events.push({
+              timed: false,
+              start: timelog.date,
+              name: this.$i18nDecToHrs(timelog.duration),
+            })
+          }
+          this.totalHours = totalHours
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    },
+  }
+</script>
