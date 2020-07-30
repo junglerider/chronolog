@@ -38,8 +38,8 @@
             {{ 'Delete' | i18n }}
           </v-card-title>
           <v-card-text>
-            <span v-if="selected.length > 1">{{ 'Are you sure you want to delete these rows?' | i18n }}</span>
-            <span v-else>{{ 'Are you sure you want to delete this row?' | i18n }}</span>
+            <span v-if="selected.length > 1">{{ 'Are you sure you want to delete {1} records?' | i18n(selected.length) }}</span>
+            <span v-else>{{ 'Are you sure you want to delete this record?' | i18n }}</span>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>

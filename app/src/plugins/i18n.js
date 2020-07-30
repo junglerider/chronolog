@@ -7,11 +7,15 @@ import('../i18n/en').then(catalog => {
 export default {
   install(Vue) {
 
-    const i18n = translationKey => {
-      if (typeof translationKey !== 'string') {
-        return translationKey
+    const i18n = function(sourceStr) {
+      if (typeof sourceStr !== 'string') {
+        return sourceStr
       }
-      return i18nCatalog.has(translationKey) ? i18nCatalog.get(translationKey) : translationKey
+      let translatedStr = i18nCatalog.has(sourceStr) ? i18nCatalog.get(sourceStr) : sourceStr
+      for (let i = 1; i < arguments.length; i++) {
+        translatedStr = translatedStr.replace(`{${i}}`, String(arguments[i]))
+      }
+      return translatedStr
     }
 
     const i18nDate = value => {
@@ -30,18 +34,41 @@ export default {
       return date + time
     }
 
+    const i18nIsoDate = (date = undefined, withHours = false) => {
+      if (!date) {
+        date = new Date()
+      } else if (typeof date === 'string') {
+        date = new Date(date)
+      } else if (!date || typeof date.getMonth !== 'function') {
+        return date
+      }
+      try {
+        const isoStr = date.toISOString()
+        let result = isoStr.substr(0, 10)
+        if (withHours) {
+          result += ' ' + isoStr.substr(11, 8)
+        }
+        return result
+      } catch(e) {
+        return date
+      }
+    }
+
+    const i18nIsoDateTime = date => i18nIsoDate(date, true)
+
     const $i18nDecToHrs = hrs => {
       const hours = Math.floor(Math.abs(hrs))
       const mins = Math.round((Math.abs(hrs) - hours) * 60)
       return hours + ':' + (mins > 9 ? '' : '0') + mins
     }
 
-
     Vue.filter('i18n', i18n)
     Vue.filter('i18nDate', i18nDate)
 
     Vue.prototype.$i18n = i18n
     Vue.prototype.$i18nDate = i18nDate
+    Vue.prototype.$i18nIsoDate = i18nIsoDate
+    Vue.prototype.$i18nIsoDateTime = i18nIsoDateTime
     Vue.prototype.$i18nDecToHrs = $i18nDecToHrs
 
     Vue.prototype.$getLanguage = () => currentLocale
