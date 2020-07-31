@@ -6,9 +6,9 @@ Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/timesheet',
+    path: '/timesheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
     name: 'Timesheet',
-    component: UnderConstruction
+    component: () => import('../views/TimeSheet.vue')
   },
   {
     path: '/calendar',

@@ -3,7 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <div class="page-title">{{ 'Monthly Overview' | i18n }} / {{ 'Total hours:' | i18n }} {{ totalHours }}</div>
+          <div class="page-title">{{ 'Monthly Overview' | i18n }} / {{ 'Total hours' | i18n }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
           <v-toolbar-title>
             {{ $refs.calendar ? $refs.calendar.title : 'This month' }}
@@ -34,6 +34,8 @@
           :event-height="30"
           event-color="#2586d7"
           @change="onChange"
+          @click:date="onClick"
+          @click:day="onClick"
         ></v-calendar>
       </v-sheet>
     </v-col>
@@ -94,7 +96,10 @@ import api from '../api'
         } catch (e) {
           console.error(e)
         }
+      },
+      onClick(val) {
+        this.$router.push(`timesheet/${val.date}`)
       }
-    },
+    }
   }
 </script>
