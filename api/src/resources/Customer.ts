@@ -10,7 +10,7 @@ export class Customer extends SingleTable {
       id: 'id',
       organisation_id: 'organisation_id',
       name: 'name',
-      is_active: 'is_active'
+      is_retired: 'is_retired'
     }
     super ('customer', schema, db, logger)
   }

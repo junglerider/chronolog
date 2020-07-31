@@ -92,7 +92,7 @@ CREATE TABLE `customer` (
     `id` INTEGER PRIMARY KEY,
     `name` TEXT NOT NULL,
     `organisation_id` INTEGER NOT NULL UNIQUE,
-    `is_active` INTEGER NOT NULL DEFAULT 1,
+    `is_retired` INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );

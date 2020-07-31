@@ -26,7 +26,7 @@ export class Task extends SingleTable {
     this.logger.trace ('task.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT id, parent_id, name FROM task ` +  whereClause
+      const sql = `SELECT t.id, t.parent_id, t.name, c.name AS customer_name FROM task t JOIN customer c ON (c.id = t.customer_id) ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()

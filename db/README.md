@@ -1,7 +1,7 @@
 # Chronolog Database
 
-Requires sqlite3 to create a new DB from schema.sql. To create a database without sqlite3, simply copy the empty DB file:
+Requires sqlite3 to create a new DB from schema.sql. To create a new empty database, run:
 
 ```
-cp empty.db chronolog.db
+sqlite3 chronolog.db < schema.sql
 ```

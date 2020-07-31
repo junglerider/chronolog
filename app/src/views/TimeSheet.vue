@@ -77,18 +77,32 @@
           <v-col class="col-12 col-sm-3 form-col">
             <v-autocomplete
               v-if="!item.task_id || taskIds.indexOf(item.task_id) > -1"
-              :label="'Task' | i18n"
+              :label="item.task_id ? '' : 'Task' | i18n"
+              v-model="item.task_id"
               :items="tasks"
               item-value="id"
               item-text="name"
               :rules="requiredRule"
-              v-model="item.task_id"
-            ></v-autocomplete>
+              :messages="item.customer_name"
+              @change="(taskId) => onTaskSelect(taskId, item)"
+            >
+              <template v-slot:item="data">
+                <template v-if="typeof data.item !== 'object'">
+                  <v-list-item-content v-text="data.item"></v-list-item-content>
+                </template>
+                <template v-else>
+                  <v-list-item-content>
+                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                    <v-list-item-subtitle v-html="data.item.customer_name"></v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+              </template>
+            </v-autocomplete>
             <v-text-field
               v-else
-              :label="'Task' | i18n"
               readonly
               v-model="item.task_name"
+              :messages="item.customer_name"
             ></v-text-field>
           </v-col>
           <v-col class="col-12 col-sm-7 form-col">
@@ -198,6 +212,15 @@ export default {
       }
       this.getData()
       this.deleteDialog = false
+    },
+
+    onTaskSelect(taskId, logItem) {
+      for (let task of this.tasks) {
+        if (task.id === taskId) {
+          logItem.customer_name = task.customer_name
+          return
+        }
+      }
     },
 
     isNew(log) {
