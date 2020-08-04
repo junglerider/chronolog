@@ -20,9 +20,9 @@
     "@types/jest": "^23.3.13",
     "@types/node": "^10.12.19",
     "@types/sqlite3": "^3.1.3",
-    "jest": "^23.6.0",
+    "jest": "^26.2.2",
     "jest-express": "^1.9.4",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^26.1.4",
     "typescript": "^3.2.4"
   },
   "dependencies": {
@@ -30,7 +30,7 @@
     "bunyan": "^1.8.12",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "nodemon": "^2.0.1",
+    "nodemon": "^2.0.4",
     "sqlite3": "^4.1.1"
   },
   "nodemonConfig": {

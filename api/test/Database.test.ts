@@ -132,7 +132,7 @@ describe ('Database', () => {
     expect (db.run.mock.calls[0][1]).toBe (params)
     expect (status).toEqual (runResult)
     expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain (sql)
+    expect (logger.debug.mock.calls[0][0]).toContain ('INSERT (id, field) INTO table VALUES (1, value)')
   })
 
   it ('should run a command or update/insert query against database and reject the promise on DB error', async () => {
@@ -172,7 +172,7 @@ describe ('Database', () => {
     expect (db.get.mock.calls[0][1]).toBe (params)
     expect (row).toEqual (result)
     expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain (sql)
+    expect (logger.debug.mock.calls[0][0]).toContain ('SELECT * FROM table WHERE field = 1')
   })
 
   it ('should run single row query against database and reject the promise on DB error', async () => {
@@ -213,7 +213,7 @@ describe ('Database', () => {
     expect (db.all.mock.calls[0][1]).toBe (params)
     expect (row).toEqual (result)
     expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain (sql)
+    expect (logger.debug.mock.calls[0][0]).toContain ('SELECT * FROM user WHERE name = Bill')
   })
 
   it ('should run single row query against database and reject the promise on DB error', async () => {
