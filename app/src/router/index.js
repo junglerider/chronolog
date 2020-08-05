@@ -17,8 +17,13 @@ Vue.use(VueRouter)
   },
   {
     path: '/todo',
-    name: 'Todo',
-    component: UnderConstruction
+    name: 'TodoList',
+    component: () => import('../views/TodoList.vue')
+  },
+  {
+    path: '/todo/:id(new|\\d+)',
+    name: 'TodoDetails',
+    component: () => import('../views/TaskDetails.vue')
   },
   {
     path: '/contacts',
@@ -39,6 +44,11 @@ Vue.use(VueRouter)
     path: '/organisations/:id(new|\\d+)',
     name: 'OrganisationDetails',
     component: () => import('../views/OrganisationDetails.vue')
+  },
+  {
+    path: '/*',
+    name: 'anything',
+    component: UnderConstruction
   },
 ]
 

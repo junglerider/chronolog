@@ -109,6 +109,7 @@ export default {
     apiBaseUrl: String,
     uiBaseUrl: String,
     searchFilter: String,
+    onGetData: Function,
   },
 
   data() {
@@ -160,12 +161,16 @@ export default {
     },
 
     async getData() {
-      const filter = this.buildFilter()
       this.loading = true
       let data = []
       try {
+        const filter = this.buildFilter()
         this.count = await api.getCount(this.apiBaseUrl, filter)
-        data = await api.getList(this.apiBaseUrl, this.options, filter)
+        if (this.onGetData) {
+          data = await this.onGetData(this.options, filter)
+        } else {
+          data = await api.getList(this.apiBaseUrl, this.options, filter)
+        }
       } catch(e) {
         console.error(e)
       }

@@ -121,7 +121,7 @@ export class SqlGenerator {
    * @param query Express request query object
    * @return the resulting 'ORDER BY' clause or empty string
    */
-  private generateOrderClause (query: RequestQuery): string {
+  public generateOrderClause (query: RequestQuery): string {
     if (!query.order) {
       return ''
     }

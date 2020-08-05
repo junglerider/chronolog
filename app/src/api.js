@@ -6,7 +6,7 @@ const api = axios.create({
 
 api.getCount = async (entity, filter = '') => {
   let url = entity + '/count'
-  if(filter && filter.length) {
+  if (filter && filter.length) {
     url = `${url}?${filter}`
   }
   const response = await api.get(url)
