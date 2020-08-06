@@ -102,7 +102,7 @@ CREATE table `task` (
     `id` INTEGER PRIMARY KEY,
     `customer_id` INTEGER DEFAULT NULL,
     `user_id` INTEGER DEFAULT NULL,
-    `parent_id` TEXT DEFAULT NULL,
+    `parent_id` INTEGER DEFAULT NULL,
     `name` TEXT NOT NULL,
     `description` TEXT DEFAULT NULL,
     `is_active` INTEGER NOT NULL DEFAULT 1,

@@ -117,4 +117,11 @@ export default new Map([
   ['Hours', 'Horas'],
   ['Must be a number', 'Tiene que ser un número'],
   ['Must be larger than zero', 'Debe ser mayor que cero'],
+  ['Created', 'Creado'],
+  ['Created at', 'Creado en'],
+  ['Task Details', 'Detalles de la tarea'],
+  ['Active', 'Activado'],
+  ['Project', 'Proyecto'],
+  ['Some tasks have hours booked. Tasks with hours booked cannot be deleted.', 'Algunas tareas tienen horarios de trabajo asignados. Estas tareas no se pueden eliminar.'],
+  ['The customer has been changed.', 'El cliente asignado ha sido cambiado.'],
 ])

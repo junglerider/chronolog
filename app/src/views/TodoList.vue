@@ -1,11 +1,17 @@
 <template>
-  <data-list
-    :title="'Todo List' | i18n"
-    :headers="headers"
-    :apiBaseUrl="`todo/${userId}`"
-    uiBaseUrl="todo"
-    :onGetData="getData"
-  ></data-list>
+  <div>
+    <v-alert v-model="deletionError" text outlined dismissible type="error">
+      {{ 'Some tasks have hours booked. Tasks with hours booked cannot be deleted.' | i18n }}
+    </v-alert>
+    <data-list
+      :title="'Todo List' | i18n"
+      :headers="headers"
+      :apiBaseUrl="`todo/${userId}`"
+      uiBaseUrl="todo"
+      :onGetData="getData"
+      :onDeleteData="onDelete"
+    ></data-list>
+  </div>
 </template>
 
 <script>
@@ -16,14 +22,17 @@
     components: {
       DataList
     },
+
     data() {
       return {
         userId: 1,
+        deletionError: false,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },
           { text: this.$i18n('Name'), value: 'name', sortable: true },
-          { text: this.$i18n('Customer'), value: 'customer_name', sortable: false },
           { text: this.$i18n('Description'), value: 'description', sortable: false },
+          { text: this.$i18n('Customer'), value: 'customer_name', sortable: false },
+          { text: this.$i18n('Active'), value: 'is_active', sortable: false },
           { text: this.$i18n('Created'), value: 'created_at', sortable: true },
           { text: this.$i18n('Total hours'), value: 'hours', align: 'end', sortable: false },
         ],
@@ -31,21 +40,33 @@
     },
 
     methods: {
+
       async getData(options) {
-        console.log('Options:', options)
         const sortDirection = options.sortDesc[0] ? 'desc' : 'asc'
         const sortClause = options.sortBy[0] ? `?order=${options.sortBy[0]}:${sortDirection}` : ''
-        const response = await api.get(`todo/${this.userId}${sortClause}`)
-        console.log('Data:', response)
+        const response = await api.get(`/todo/${this.userId}${sortClause}`)
         return response.data.map(record => {
           return {
             ...record,
             description: record.description && record.description.length > 15 ?
-              record.description.length.substr(0, 15) + '...' :
+              record.description.substr(0, 15) + '...' :
               record.description,
-            created_at: this.$i18nDate(record.created_at),
-            hours: this.$i18nDecToHrs(record.duration)
+            created_at: this.$i18nDate(record.created_at).substr(0, 10),
+            hours: this.$i18nDecToHrs(record.duration),
+            is_active: this.$i18n(record.is_active ? 'yes' : '')
           }
+        })
+      },
+
+      onDelete(selected) {
+        for (let task of selected) {
+          if (task.duration) {
+            this.deletionError = true
+            throw ('Cannot delete tasks with hours booked')
+          }
+        }
+        return selected.map(task => {
+          return api.delete(`/task/${task.id}`)
         })
       }
     }

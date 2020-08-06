@@ -299,7 +299,7 @@ export default {
   async mounted() {
     this.getData()
     try {
-      const response = await api.get(`/task?filter[is_active][eq]=0&filter[is_closed][eq]=0&filter[is_leaf][eq]=1`)
+      const response = await api.get(`/task?filter[is_active][eq]=1&filter[is_closed][eq]=0&filter[is_leaf][eq]=1`)
       this.tasks = response.data
       this.taskIds = this.tasks.map(item => item.id)
     } catch(e) {

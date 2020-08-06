@@ -26,6 +26,18 @@ export class SingleTable {
     // override
   }
 
+  private getTableName() {
+    return this.table.split(' ')[0]
+  }
+
+  private getFieldList(fields) {
+    return fields.map (field => field.substr (field.indexOf ('.') + 1)).join ( ', ')
+  }
+
+  private getUpdateList(fields) {
+    return fields.map (field => field.substr (field.indexOf ('.') + 1) + ' = ?').join (', ')
+  }
+
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.table}.list()`)
     try {
@@ -62,7 +74,7 @@ export class SingleTable {
       if (names.length === 0) {
         throw new Error (`400:${this.table}.create() was called with no data to insert`)
       }
-      let sql = `INSERT INTO ${this.table} (${ names.join (', ') }) VALUES (${ names.map (n => '?').join (', ') })`
+      let sql = `INSERT INTO ${this.getTableName()} (${this.getFieldList(names)}) VALUES (${ names.map (n => '?').join (', ') })`
       let result: any = await this.db.run (sql, values)
       const id = result.lastID
       if (!id) {
@@ -96,7 +108,7 @@ export class SingleTable {
     try {
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
-        const sql = `UPDATE ${this.table} SET ` + names.map (name => `${name} = ?`).join (', ') + ' WHERE id = ' + req.params.id
+        const sql = `UPDATE ${this.getTableName()} SET ` + this.getUpdateList(names) + ' WHERE id = ' + req.params.id
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404
       }
@@ -111,7 +123,7 @@ export class SingleTable {
   public async delete (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.table}.delete(${[req.params.id]})`)
     try {
-      const result: any = await this.db.run (`DELETE FROM ${this.table} WHERE id = ?`, [req.params.id])
+      const result: any = await this.db.run (`DELETE FROM ${this.getTableName()} WHERE id = ?`, [req.params.id])
       result && result.changes > 0 ? res.status (204).json () : res.status (404).json ()
       next ()
     }

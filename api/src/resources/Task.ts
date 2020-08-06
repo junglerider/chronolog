@@ -8,7 +8,7 @@ export class Task extends SingleTable {
   constructor (db: Database, logger: Logger) {
     const schema = {
       id: 't.id',
-      customer_id: 't,customer_id',
+      customer_id: 't.customer_id',
       user_id: 't.user_id',
       parent_id: 't.parent_id',
       name: 't.name',
@@ -26,7 +26,7 @@ export class Task extends SingleTable {
     this.logger.trace ('task.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT t.id, t.parent_id, t.name, c.name AS customer_name FROM task t JOIN customer c ON (c.id = t.customer_id) ${whereClause}`
+      const sql = `SELECT t.id, t.parent_id, t.name, t.customer_id, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()
@@ -35,11 +35,24 @@ export class Task extends SingleTable {
     }
   }
 
+  public async read (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace (`task.read(${[req.params.id]})`)
+    const sql = 'SELECT t.*, c.name AS customer_name, p.name AS parent_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) LEFT JOIN task p ON (t.parent_id = p.id) WHERE t.id = ?'
+    try {
+      let row = await this.db.get (sql, [req.params.id])
+      row ? res.status (200).json (row) : res.status (404).json ()
+      next ()
+    }
+    catch (err) {
+      next (err)
+    }
+  }
+
   public async todoList (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('task.todoList()')
     try {
       const orderClause = this.sqlGenerator.generateOrderClause (req.query)
-      const sql = `SELECT t.id, t.name, t.description, t.created_at, t.is_active,  c.name AS customer_name, SUM(l.duration) AS duration FROM task t JOIN customer c ON (c.id = t.customer_id) JOIN time_log l ON (l.task_id = t.id) WHERE t.user_id = ? AND t.is_leaf = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
+      const sql = `SELECT t.id, t.name, t.description, t.created_at, t.is_active, c.name AS customer_name, SUM(l.duration) AS duration FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) LEFT JOIN time_log l ON (l.task_id = t.id) WHERE t.user_id = ? AND t.is_leaf = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
       const rows = await this.db.all (sql, [req.params.userId])
       rows ? res.json (rows) : res.status (404).json ()
       next ()

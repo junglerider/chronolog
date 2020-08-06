@@ -110,6 +110,7 @@ export default {
     uiBaseUrl: String,
     searchFilter: String,
     onGetData: Function,
+    onDeleteData: Function,
   },
 
   data() {
@@ -181,9 +182,11 @@ export default {
     async onDelete() {
       this.deleteDialog = false
       try {
-        const deletionPromises = this.selected.map(model => {
-          return api.delete(`${this.apiBaseUrl}/${model.id}`)
-        })
+        const deletionPromises = this.onDeleteData ?
+          this.onDeleteData(this.selected) :
+          this.selected.map(model => {
+            return api.delete(`${this.apiBaseUrl}/${model.id}`)
+          })
         await Promise.all(deletionPromises)
         this.selected = []
         this.showMessage('OK - Deleted!')
