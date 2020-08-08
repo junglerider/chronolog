@@ -39,7 +39,7 @@ export default {
         date = new Date()
       } else if (typeof date === 'string') {
         date = new Date(date)
-      } else if (!date || typeof date.getMonth !== 'function') {
+      } else if (typeof date !== 'object' || typeof date.getMonth !== 'function') {
         return date
       }
       try {

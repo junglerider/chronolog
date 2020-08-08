@@ -98,7 +98,7 @@ import api from '../api'
         }
       },
       onClick(val) {
-        this.$router.push(`timesheet/${val.date}`)
+        this.$router.push(`time-sheet/${val.date}`)
       }
     }
   }

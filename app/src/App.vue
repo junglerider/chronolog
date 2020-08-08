@@ -1,5 +1,9 @@
 <template>
-  <v-app id="chronolog">
+  <div v-if="isBlankPage()">
+    <!-- reload contents when language changes -->
+    <router-view :key="$getLanguage()"/>
+  </div>
+  <v-app id="chronolog" v-else>
     <v-navigation-drawer
       v-model="drawer"
       app
@@ -17,9 +21,9 @@
         <nav-link link="/logout" :tooltip="'Forget password and display login form' | i18n ">
           {{ 'Logout' | i18n }}
         </nav-link>
-        <nav-link>{{ 'Timesheets' | i18n }}</nav-link>
-        <nav-link link="/timesheet" :tooltip="'Enter working time and hours on a daily basis' | i18n ">
-          {{ 'Edit Timesheet' | i18n }}
+        <nav-link>{{ 'Time Sheets' | i18n }}</nav-link>
+        <nav-link link="/time-sheet" :tooltip="'Enter working time and hours on a daily basis' | i18n ">
+          {{ 'Edit Time Sheet' | i18n }}
         </nav-link>
         <nav-link link="/calendar" :tooltip="'See working time entries for a whole month' | i18n">
           {{ 'Monthly Overview' | i18n }}
@@ -36,7 +40,7 @@
         </nav-link>
         <nav-link>{{ 'Reporting' | i18n }}</nav-link>
         <nav-link link="/reporting" :tooltip="'Select report to view/print from a list of reports' | i18n ">
-          {{ 'Reporting' | i18n }}
+          {{ 'Reports' | i18n }}
         </nav-link>
         <nav-link>{{ 'Admin' | i18n }}</nav-link>
         <nav-link link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
@@ -159,7 +163,12 @@ export default {
         await this.$setLanguage(language)
         this.$forceUpdate()
       }
-  }}
+  }},
+  methods: {
+    isBlankPage() {
+      return this.$route.path.startsWith('/reports')
+    }
+  }
 }
 
 </script>

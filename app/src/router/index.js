@@ -1,55 +1,48 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import UnderConstruction from '../views/UnderConstruction'
+import reports from '../reports'
+import _ from 'lodash'
 
 Vue.use(VueRouter)
-
-  const routes = [
-  {
-    path: '/timesheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
-    name: 'Timesheet',
+  const reportRoutes = reports.map(route => {
+    return {
+      path: `/reports/${route.value}`,
+      component: () => import(`../reports/${_.upperFirst(_.camelCase(route.value))}`)
+    }
+  })
+  const routes = [{
+    path: '/time-sheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
     component: () => import('../views/TimeSheet.vue')
-  },
-  {
+  }, {
     path: '/calendar',
-    name: 'Calendar',
     component: () => import('../views/Calendar.vue')
-  },
-  {
+  }, {
     path: '/todo',
-    name: 'TodoList',
     component: () => import('../views/TodoList.vue')
-  },
-  {
+  }, {
     path: '/todo/:id(new|\\d+)',
-    name: 'TodoDetails',
     component: () => import('../views/TaskDetails.vue')
-  },
-  {
+  }, {
     path: '/contacts',
-    name: 'Contacts',
     component: () => import('../views/ContactList.vue')
-  },
-  {
+  }, {
     path: '/contacts/:id(new|\\d+)',
-    name: 'ContactDetails',
     component: () => import('../views/ContactDetails.vue')
-  },
-  {
+  }, {
     path: '/organisations',
-    name: 'Organisations',
     component: () => import('../views/OrganisationList.vue')
-  },
-  {
+  }, {
     path: '/organisations/:id(new|\\d+)',
-    name: 'OrganisationDetails',
     component: () => import('../views/OrganisationDetails.vue')
+  }, {
+    path: '/reporting',
+    component: () => import('../views/Reporting.vue')
   },
-  {
+  ...reportRoutes, {
     path: '/*',
-    name: 'anything',
     component: UnderConstruction
-  },
+  }
 ]
 
 const router = new VueRouter({

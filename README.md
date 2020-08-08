@@ -1,7 +1,7 @@
 # chronolog
 
-Timesheet application with Typescript/Node.js backend and Vue/Javascript frontend.
+Time sheet application with TypeScript/Node.js backend and Vue/JavaScript frontend.
 
-![screenshot](screenshot.png "Chronmolog Application")
+![screenshot](screenshot.png "Chronolog Application")
 
-Disclaimer: The application is currently in Alpha stage and not ready for production.
+Disclaimer: The application is currently in alpha stage and not ready for production.

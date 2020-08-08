@@ -2,7 +2,7 @@
   <div>
     <v-toolbar flat color="white">
       <div class="page-title">
-        {{ 'Daily Timesheet for' | i18n }}
+        {{ 'Daily time sheet for' | i18n }}
         {{ new Date(date).toLocaleString('en', {weekday: 'short'}) | i18n }}
         {{ date | i18nDate }}
       </div>
@@ -172,7 +172,7 @@ export default {
     navigate(days) {
       const newDate = (new Date(this.date))
       newDate.setDate(newDate.getDate() + days)
-      this.$router.push(`/timesheet/${this.$i18nIsoDate(newDate)}`)
+      this.$router.push(`/time-sheet/${this.$i18nIsoDate(newDate)}`)
     },
 
     async getData() {

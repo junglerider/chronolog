@@ -58,7 +58,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-12 form-col" align="right">
+        <v-col class="col-12 col-md-12 form-col" align="right">
           <v-btn color="primary" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
         </v-col>
