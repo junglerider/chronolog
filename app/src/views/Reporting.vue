@@ -54,7 +54,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col">
+        <v-col class="col-12 col-md-12 form-col pt-3">
           <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
         </v-col>
       </v-row>
@@ -103,7 +103,7 @@ export default {
 
   methods: {
     onGenerate() {
-      window.open(`/reports/${this.report.name}`, '_blank')
+      window.open(`/reports/${this.report.name}?user=${this.report.userId}&customer=${this.report.customerId}&start=${this.report.start}&end=${this.report.end}`, '_blank')
     },
 
     lastDayOfMonth(date) {

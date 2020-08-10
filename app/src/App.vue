@@ -3,7 +3,7 @@
     <!-- reload contents when language changes -->
     <router-view :key="$getLanguage()"/>
   </div>
-  <v-app id="chronolog" v-else>
+  <v-app v-else id="chronolog">
     <v-navigation-drawer
       v-model="drawer"
       app

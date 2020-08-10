@@ -22,7 +22,7 @@ export class TimeLog extends SingleTable {
     this.logger.trace ('time_log.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT tl.*, t.name AS task_name, c.name AS customer_name FROM time_log tl JOIN task t ON (tl.task_id = t.id) JOIN customer c ON (t.customer_id = c.id) ${whereClause}`
+      const sql = `SELECT tl.*, t.name AS task_name, c.name AS customer_name FROM time_log tl LEFT JOIN task t ON (tl.task_id = t.id) LEFT JOIN customer c ON (t.customer_id = c.id) ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()

@@ -1,0 +1,40 @@
+.report-container {
+  margin: 10px;
+  font-family: Ubuntu, Roboto, sans-serif;
+  font-size: 0.9em;
+}
+.report-title {
+  font-size: 1.3em;
+  font-weight: 600;
+  line-height: 1.5em;
+}
+.report-subtitle {
+  margin-top: 0.3em;
+  font-size: 1em;
+  font-weight: 500;
+}
+.report-subtitle > span {
+  padding-right: 0.6em;
+}
+.report-body {
+  margin-top: 1.5em;
+  width: 100%;
+  border-collapse: collapse;
+}
+.report-body th {
+  text-align: start;
+  vertical-align: top;
+}
+.report-body td, .report-body th {
+  vertical-align: top;
+  padding: 4px 10px 4px 4px;
+}
+.report-right {
+  text-align: end !important;
+}
+.report-nowrap {
+  white-space: nowrap !important;
+}
+.report-body tr:nth-child(even) {
+   background-color: #eee;
+}
