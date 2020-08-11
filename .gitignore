@@ -12,6 +12,7 @@ app/coverage
 # production
 api/lib
 db/chronolog.db
+app/dist
 
 # misc
 .DS_Store

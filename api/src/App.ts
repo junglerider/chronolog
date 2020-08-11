@@ -2,13 +2,14 @@ import * as express from 'express'
 import { Application, Request, Response, NextFunction } from 'express'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
+import * as history from 'connect-history-api-fallback'
 
 import * as config from './config.json'
 import * as Logger from 'bunyan'
 
 export const logger = Logger.createLogger({
   name: config.app_name || 'chronolog',
-  level: config.log_level as Logger.LogLevel || 'info'
+  level: process.env.NODE_ENV == 'production' ? 'info' : (config.log_level as Logger.LogLevel || 'info')
 });
 
 import { Database } from './Database'
@@ -105,8 +106,15 @@ class App {
     // enable CORS requests
     this.app.use (cors ())
 
+    // serve static files of SPA web application
+    const webApp = express.static('app')
+    this.app.use(webApp)
+    this.app.use(history())
+    // 2nd call for redirection
+    this.app.use(webApp)
+
     // health status
-    this.app.get ('/', this.health)
+    this.app.get ('/health', this.health)
 
     // REST resources
     this.app.get ('/organisation', organisation.list.bind (organisation))
