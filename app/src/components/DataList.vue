@@ -110,6 +110,7 @@ export default {
     uiBaseUrl: String,
     searchFilter: String,
     onGetData: Function,
+    afterGetData: Function,
     onDeleteData: Function,
   },
 
@@ -171,6 +172,9 @@ export default {
           data = await this.onGetData(this.options, filter)
         } else {
           data = await api.getList(this.apiBaseUrl, this.options, filter)
+          if (this.afterGetData) {
+            data = this.afterGetData(data)
+          }
         }
       } catch(e) {
         console.error(e)
@@ -183,7 +187,7 @@ export default {
       this.deleteDialog = false
       try {
         const deletionPromises = this.onDeleteData ?
-          this.onDeleteData(this.selected) :
+          await this.onDeleteData(this.selected) :
           this.selected.map(model => {
             return api.delete(`${this.apiBaseUrl}/${model.id}`)
           })

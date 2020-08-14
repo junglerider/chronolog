@@ -38,6 +38,12 @@ Vue.use(VueRouter)
   }, {
     path: '/reporting',
     component: () => import('../views/Reporting.vue')
+  }, {
+    path: '/customers',
+    component: () => import('../views/CustomerList.vue')
+  }, {
+    path: '/customers/:id(new|\\d+)',
+    component: () => import('../views/CustomerDetails.vue')
   },
   ...reportRoutes, {
     path: '/*',

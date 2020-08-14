@@ -22,6 +22,7 @@ export default new Map([
   ['Contacts', 'Contatti'],
   ['Look up people and edit contact data', 'Cerca le persone e modifica i dati di contatto'],
   ['Organisations', 'Organizzazioni'],
+  ['Organisation', 'Organizzazione'],
   ['Look up organisations and edit contact data', 'Cerca le organizzazioni e modifica i dati delle organizzazioni'],
   ['Reporting', 'Dati e resconti'],
   ['Reports', 'Resconti'],
@@ -31,6 +32,7 @@ export default new Map([
   ['Projects & Tasks', 'Progetti e compiti'],
   ['View project tree and maintain tasks', 'Visualizza la gerarchia del progetto e modifica i compiti'],
   ['Employees', 'Dipendenti'],
+  ['Customers', 'Clienti'],
   ['Users', 'Utenti'],
   ['User', 'Utento'],
   ['View/edit employee details and access privileges', 'Visualizza/modifica i dettagli dei dipendenti ed i privilegi di accessso'],
@@ -64,6 +66,8 @@ export default new Map([
   ['Invalid date', 'Data non valida'],
   ['No results', 'Nessun risultato'],
   ['Required', 'Input richiesto'],
+  ['yes', 'sì'],
+  ['no', 'no'],
   // contacts + organisations -----------------------------
   ['Contact Details', 'Dettagli del contatto'],
   ['Add Person', 'Inserisci contatto'],
@@ -130,6 +134,11 @@ export default new Map([
   ['Period', 'Periodo'],
   ['Start date', 'Data d\'inizio'],
   ['End date', 'Data di fine'],
+  // customers and users ----------------------------------
+  ['Is Retired', 'Inattivo'],
+  ['Customer Details', 'Dettagli cliente'],
+  ['Number of tasks', 'Numero di compiti'],
+  ['Some customers have tasks assigned. Customers with tasks cannot be deleted.', 'Sono stati inseriti compiti per alcuni clienti. Questi clienti non possono essere eliminati.'],
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Scheda attività cronologica'],
   ['Time sheet by task', 'Scheda attività in base ai compiti'],

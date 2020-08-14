@@ -59,7 +59,7 @@
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-12 form-col" align="right">
-          <v-btn color="primary" @click="onSave">{{ 'Save' | i18n }}</v-btn>
+          <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
         </v-col>
       </v-row>
@@ -131,7 +131,8 @@ export default {
       if (!this.$refs.form.validate()) {
         return
       }
-      if (_.isEqual(this.organisation, this.previousOrganisation)) {
+      if (!_.isEqual(this.task, this.previousTask)) {
+        this.isSaving = true
         try {
           if (this.task.id == 'new') {
             this.task.created_at = (new Date()).toISOString()
@@ -149,6 +150,7 @@ export default {
           console.error(e)
           this.showMessage('Saving did not succeed.', 'error')
         }
+        this.isSaving = false
       } else {
         this.showMessage('No changes were made.', 'info')
       }
@@ -167,11 +169,11 @@ export default {
           user_id: this.userId
         }
       } else {
-        response = await api.get(`task/${this.$route.params.id}`)
+        response = await api.get(`/task/${this.$route.params.id}`)
         this.task = response.data
         this.previousTask = _.clone(this.task)
       }
-      response = await api.get(`/task?filter[user_id][eq]=${this.userId}&filter[is_closed][eq]=0&filter[is_leaf][eq]=0`)
+      response = await api.get(`/task?filter[user_id][eq]=${this.userId}&filter[is_closed][eq]=0&filter[is_leaf][eq]=0&order=id:desc`)
       this.parentTasks = response.data
     } catch(e) {
         console.error(e)

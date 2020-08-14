@@ -22,6 +22,7 @@ export default new Map([
   ['Contacts', 'Kontakte'],
   ['Look up people and edit contact data', 'Kontakte suchen und ändern'],
   ['Organisations', 'Organisationen'],
+  ['Organisation', 'Organisation'],
   ['Look up organisations and edit contact data', 'Organisationen suchen und Kontaktdaten ändern'],
   ['Reporting', 'Berichte'],
   ['Reports', 'Berichte'],
@@ -31,6 +32,7 @@ export default new Map([
   ['Projects & Tasks', 'Projekte & Aufgaben'],
   ['View project tree and maintain tasks', 'Projekthierarchie anzeigen und Aufgaben bearbeiten'],
   ['Employees', 'Mitarbeiter'],
+  ['Customers', 'Kunden'],
   ['Users', 'Benutzer'],
   ['User', 'Benutzer'],
   ['View/edit employee details and access privileges', 'Mitarbeiter Details und Rechte anzeigen/bearbeiten'],
@@ -64,6 +66,8 @@ export default new Map([
   ['Invalid date', 'Ungültiges Datum'],
   ['No results', 'Keine Ergebnisse'],
   ['Required', 'Eingabe erforderlich'],
+  ['yes', 'ja'],
+  ['no', 'nein'],
   // contacts + organisations -----------------------------
   ['Contact Details', 'Persönliche Daten'],
   ['Add Person', 'Kontakt hinzufügen'],
@@ -130,6 +134,11 @@ export default new Map([
   ['Period', 'Periode'],
   ['Start date', 'Anfangsdatum'],
   ['End date', 'Enddatum'],
+  // customers and users ----------------------------------
+  ['Is Retired', 'Inaktiv'],
+  ['Customer Details', 'Kundendetails'],
+  ['Number of tasks', 'Anzahl der Aufgaben'],
+  ['Some customers have tasks assigned. Customers with tasks cannot be deleted.', 'Für einige Kunden sind Aufgaben eingetragen worden. Diese Kunden können nicht gelöscht werden.'],
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Chronologische Stundenberichte'],
   ['Time sheet by task', 'Stundenberichte nach Aufgaben'],
