@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `entity` (
+CREATE TABLE `entity` (
     `id` INTEGER PRIMARY KEY,
     `street_address` TEXT DEFAULT NULL,
     `city`  TEXT DEFAULT NULL,
@@ -34,24 +34,6 @@ CREATE TABLE `person` (
 CREATE INDEX `person_first_name_index` ON `person` (`first_name`);
 CREATE INDEX `person_last_name_index` ON `person` (`last_name`);
 
-/*CREATE TABLE `organisation_map` (
-    `id` INTEGER NOT NULL,
-    `old_id` INTEGER NOT NULL,
-    FOREIGN KEY (`id`) REFERENCES `organisation` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE INDEX `organisation_map_id_index` ON `organisation_map` (`id`);
-CREATE INDEX `organisation_map_old_id_index` ON `organisation_map` (`old_id`);
-
-CREATE TABLE `person_map` (
-    `id` INTEGER NOT NULL,
-    `old_id` INTEGER NOT NULL,
-    FOREIGN KEY (`id`) REFERENCES `person` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE INDEX `person_map_id_index` ON `person_map` (`id`);
-CREATE INDEX `person_map_old_id_index` ON `person_map` (`old_id`);
-*/
 CREATE TABLE `contact` (
     `id` INTEGER PRIMARY KEY,
     `entity_id` INTEGER NOT NULL,
@@ -83,15 +65,22 @@ CREATE TABLE `user` (
     `password` TEXT DEFAULT NULL,
     `visits` INTEGER NOT NULL DEFAULT 0,
     `last_visit` TEXT DEFAULT NULL,
+    `notes` TEXT DEFAULT NULL,
+    `created_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
+CREATE INDEX `user_login_index` ON `user` (`login`);
 
 CREATE TABLE `customer` (
     `id` INTEGER PRIMARY KEY,
     `name` TEXT NOT NULL,
     `organisation_id` INTEGER NOT NULL UNIQUE,
     `is_retired` INTEGER NOT NULL DEFAULT 0,
+    `notes` TEXT DEFAULT NULL,
+    `created_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -118,15 +107,6 @@ CREATE table `task` (
 );
 CREATE INDEX `task_name_index` ON `task` (`name`);
 
-/*CREATE TABLE `task_map` (
-    `id` INTEGER NOT NULL,
-    `old_id` INTEGER NOT NULL,
-    FOREIGN KEY (`id`) REFERENCES `task` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-);
-CREATE INDEX `task_map_id_index` ON `task_map` (`id`);
-CREATE INDEX `task_map_old_id_index` ON `task_map` (`old_id`);
-*/
 CREATE TABLE `time_log` (
     `id` INTEGER PRIMARY KEY,
     `task_id` INTEGER NOT NULL,

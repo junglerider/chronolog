@@ -102,7 +102,7 @@ export class SqlGenerator {
    * @param query Express request query object
    * @return [ whereClause, parameterArray ]
    */
-  private generateWhereClause (query: RequestQuery): Array<string|Array<string>> {
+  public generateWhereClause (query: RequestQuery): Array<string|Array<string>> {
     if (!query.filter)
       return ['', []]
     if (typeof query.filter !== 'object') {
@@ -156,7 +156,7 @@ export class SqlGenerator {
    * @param query Express request query object
    * @return the resulting 'LIMIT' clause or empty string
    */
-  private generateLimitAndOffset (query: RequestQuery): string {
+  public generateLimitAndOffset (query: RequestQuery): string {
     let clause = ''
     let limit = 0
     if (query.limit) {
@@ -247,9 +247,12 @@ export class SqlGenerator {
             } else {
               if (operator === 'IN' || operator === 'NOT IN') {
                 value = value.split(',')
+                value = '(' + value.map(v => "'" + v.replace(/\'/g,"''") + "'").join(',') + ')'
+                terms.push (`${this.schema[columnName]} ${operator} ${value}`)
+              } else {
+                terms.push (`${this.schema[columnName]} ${operator} ?`)
+                params.push (value)
               }
-              terms.push (`${this.schema[columnName]} ${operator} ?`)
-              params.push (value)
             }
           }
         })

@@ -18,6 +18,7 @@
             v-model="customer.organisation_id"
             item-value="id"
             item-text="name"
+            :rules="requiredRule"
           ></v-autocomplete>
         </v-col>
       </v-row>
@@ -97,6 +98,7 @@ export default {
   },
 
   methods: {
+
     async onSave() {
       if (!this.$refs.form.validate()) {
         return
@@ -125,6 +127,12 @@ export default {
         this.showMessage('No changes were made.', 'info')
       }
     },
+
+    showMessage(text, color='success') {
+      this.messageText = this.$i18n(text)
+      this.messageColor = color
+      this.message = true
+    },
   },
 
   async mounted() {
@@ -132,9 +140,9 @@ export default {
       try {
         let response = await api.get(`/customer/${this.$route.params.id}`)
         this.customer = response.data
-        this.previousCustomer = _.clone(this.customer)
         response = await api.get(`/customer/task-count?filter[id][eq]=${this.$route.params.id}`)
         this.customer.task_count = response.data[0].task_count
+        this.previousCustomer = _.clone(this.customer)
       } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')

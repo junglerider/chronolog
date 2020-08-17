@@ -162,6 +162,7 @@ class App {
     this.app.get ('/customer/:id(\\d+)', customer.read.bind (customer))
     this.app.put ('/customer/:id(\\d+)', customer.update.bind (customer))
     this.app.delete ('/customer/:id(\\d+)', customer.delete.bind (customer))
+    this.app.get ('/customer/task-count', customer.taskCount.bind (customer))
 
     this.app.get ('/task', task.list.bind (task))
     this.app.get ('/task/count', task.count.bind (task))

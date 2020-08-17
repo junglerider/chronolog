@@ -46,13 +46,13 @@
         <nav-link link="/customers" :tooltip="'View/edit customer details' | i18n ">
           {{ 'Customers' | i18n }}
         </nav-link>
-        <nav-link link="/employees" :tooltip="'View/edit employee details and access privileges' | i18n ">
-          {{ 'Employees' | i18n }}
+        <nav-link link="/users" :tooltip="'View/edit user details and access privileges' | i18n ">
+          {{ 'Users' | i18n }}
         </nav-link>
         <nav-link link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
           {{ 'Projects & Tasks' | i18n }}
         </nav-link>
-        <nav-link link="/timelogs" :tooltip="'Amend time log entries of employees' | i18n ">
+        <nav-link link="/time-logs" :tooltip="'Amend time log entries of employees' | i18n ">
           {{ 'Correct Time Logs' | i18n }}
         </nav-link>
 
