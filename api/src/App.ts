@@ -172,6 +172,7 @@ class App {
     this.app.delete ('/task/:id(\\d+)', task.delete.bind (task))
     this.app.get ('/todo/:userId(\\d+)', task.todoList.bind (task))
     this.app.get ('/todo/:userId(\\d+)/count', task.todoCount.bind (task))
+    this.app.get ('/todo/:userId(\\d+)/projects', task.projectList.bind (task))
 
     this.app.get ('/timelog', timelog.list.bind (timelog))
     this.app.get ('/timelog/count', timelog.count.bind (timelog))

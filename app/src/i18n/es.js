@@ -135,7 +135,8 @@ export default new Map([
   ['Period', 'Periodo'],
   ['Start date', 'Fecha de inicio'],
   ['End date', 'Fecha final'],
-  // customers and users ----------------------------------
+  ['Assigned to me', 'Asignado a mí'],
+    // customers and users ----------------------------------
   ['Is Retired', 'Retirado'],
   ['Customer Details', 'Detalles del cliente'],
   ['Number of tasks', 'Número de tareas'],

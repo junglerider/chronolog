@@ -18,13 +18,14 @@
       <v-row>
         <v-col class="col-12 col-md-6 form-col">
             <v-autocomplete
+              v-if="isActiveProject(task.parent_id)"
               :label="'Project' | i18n"
               v-model="task.parent_id"
-              :items="parentTasks"
+              :items="projects"
               item-value="id"
               item-text="name"
               :rules="requiredRule"
-              @change="onParentSelect"
+              @change="onProjectSelect"
               :return-object="true"
             >
               <template v-slot:item="data">
@@ -39,6 +40,12 @@
                 </template>
               </template>
             </v-autocomplete>
+            <v-text-field
+              v-else
+              :label="'Project' | i18n"
+              v-model="task.parent_name"
+              readonly tabindex="-1"
+            ></v-text-field>
         </v-col>
         <v-col class="col-12 col-md-6 form-col">
           <v-text-field :label="'Customer' | i18n" v-model="task.customer_name" readonly tabindex="-1"></v-text-field>
@@ -82,7 +89,7 @@ export default {
       userId: 1,
       task: { id: 'new' },
       previousTask: { id: 'new' },
-      parentTasks: [],
+      projects: [],
       message: false,
       messageColor: 'success',
       messageText: '',
@@ -112,13 +119,22 @@ export default {
 
   methods: {
 
-    onParentSelect(parentTask) {
+    onProjectSelect(parentTask) {
       if (this.task.id !== 'new' && parentTask.customer_id != this.task.customer_id) {
         this.showMessage('The customer has been changed.', 'info')
       }
       this.task.customer_id = parentTask.customer_id
       this.task.customer_name = parentTask.customer_name
       this.task.parent_id = parentTask.id
+    },
+
+    isActiveProject(id) {
+      for (let task of this.projects) {
+        if (task.id == id) {
+          return true
+        }
+      }
+      return false
     },
 
     showMessage(text, color='success') {
@@ -173,8 +189,8 @@ export default {
         this.task = response.data
         this.previousTask = _.clone(this.task)
       }
-      response = await api.get(`/task?filter[user_id][eq]=${this.userId}&filter[is_closed][eq]=0&filter[is_leaf][eq]=0&order=id:desc`)
-      this.parentTasks = response.data
+      response = await api.get(`/todo/${this.userId}/projects`)
+      this.projects = response.data
     } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')

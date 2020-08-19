@@ -30,7 +30,7 @@
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },
           { text: this.$i18n('Name'), value: 'name', sortable: true },
-          { text: this.$i18n('Description'), value: 'description', sortable: false },
+          { text: this.$i18n('Assigned to me'), value: 'assigned', sortable: false },
           { text: this.$i18n('Customer'), value: 'customer_name', sortable: false },
           { text: this.$i18n('Active'), value: 'is_active', sortable: false },
           { text: this.$i18n('Created'), value: 'created_at', sortable: true },
@@ -48,9 +48,7 @@
         return response.data.map(record => {
           return {
             ...record,
-            description: record.description && record.description.length > 15 ?
-              record.description.substr(0, 15) + '...' :
-              record.description,
+            assigned: this.$i18n(record.user_id  ?  'yes' : ''),
             created_at: this.$i18nDate(record.created_at).substr(0, 10),
             hours: this.$i18nDecToHrs(record.duration),
             is_active: this.$i18n(record.is_active ? 'yes' : '')

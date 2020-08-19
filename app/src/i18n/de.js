@@ -135,6 +135,7 @@ export default new Map([
   ['Period', 'Periode'],
   ['Start date', 'Anfangsdatum'],
   ['End date', 'Enddatum'],
+  ['Assigned to me', 'Mir zugewiesen'],
   // customers and users ----------------------------------
   ['Is Retired', 'Inaktiv'],
   ['Customer Details', 'Kundendetails'],

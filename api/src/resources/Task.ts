@@ -52,7 +52,20 @@ export class Task extends SingleTable {
     this.logger.trace ('task.todoList()')
     try {
       const orderClause = this.sqlGenerator.generateOrderClause (req.query)
-      const sql = `SELECT t.id, t.name, t.description, t.created_at, t.is_active, c.name AS customer_name, SUM(l.duration) AS duration FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) LEFT JOIN time_log l ON (l.task_id = t.id) WHERE t.user_id = ? AND t.is_leaf = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
+      const sql = `SELECT t.id, t.name, t.user_id, t.created_at, t.is_active, c.name AS customer_name, SUM(l.duration) AS duration FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) LEFT JOIN time_log l ON (l.task_id = t.id) WHERE (t.user_id IS NULL OR t.user_id = ?) AND t.is_leaf = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
+      const rows = await this.db.all (sql, [req.params.userId])
+      rows ? res.json (rows) : res.status (404).json ()
+      next ()
+    } catch (err) {
+      next (err)
+    }
+  }
+
+  public async projectList (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace ('task.todoList()')
+    try {
+      const orderClause = this.sqlGenerator.generateOrderClause (req.query)
+      const sql = `SELECT t.id, t.name, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) WHERE (t.user_id IS NULL OR t.user_id = ?) AND t.is_leaf = 0 AND t.is_active = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
       const rows = await this.db.all (sql, [req.params.userId])
       rows ? res.json (rows) : res.status (404).json ()
       next ()
@@ -64,7 +77,7 @@ export class Task extends SingleTable {
   public async todoCount (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('task.todoCount()')
     try {
-      const sql = `SELECT COUNT(*) AS count FROM task t WHERE t.user_id = ? AND t.is_leaf = 1 AND t.is_closed = 0;`
+      const sql = `SELECT COUNT(*) AS count FROM task t WHERE (t.user_id IS NULL OR t.user_id = ?) AND t.is_leaf = 1 AND t.is_closed = 0;`
       const row = await this.db.get (sql, [req.params.userId])
       row ? res.status (200).json (row) : res.status (404)
       next ()
