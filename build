@@ -1,0 +1,75 @@
+#!/bin/bash
+# Executes production build steps of chronolog application
+
+cd "$(dirname "$0")"
+
+usage() {
+    echo "Usage: build.sh [-h|--help] [db|app|api|all|docker]"
+    echo "       db     - creates a new chronolog.db file (overwrites the old one)"
+    echo "       app    - creates the Vue frontend"
+    echo "       api    - creates the Node.js backend"
+    echo "       all    - creates both frontend and backend"
+    echo "       docker - creates db, frontend, backend and Docker image"
+}
+
+build_db() {
+    echo "creating new database: chronolog.db"
+    rm -f ./db/chronolog.db || true
+    sqlite3 ./db/chronolog.db < ./db/schema.sql
+    sqlite3 ./db/chronolog.db < ./db/fixtures.sql
+    ls -lh ./db/chronolog.db
+}
+
+build_app() {
+    echo "creating Vue web application"
+    npm run build --prefix ./app
+}
+
+build_api() {
+    echo "creating Node.js API"
+    npm run clean --prefix ./api
+    npm run build --prefix ./api
+}
+
+build_all() {
+    build_api
+    build_app
+}
+
+build_docker() {
+    build_db
+    build_all
+    docker build -t chronolog .
+}
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 1
+fi
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -h | --help )   usage
+                        exit
+                        ;;
+        db )            build_db
+                        exit
+                        ;;
+        app )           build_app
+                        exit
+                        ;;
+        api )           build_api
+                        exit
+                        ;;
+        all )           build_all
+                        exit
+                        ;;
+        docker )        build_docker
+                        exit
+                        ;;
+        * )             usage
+                        exit 1
+    esac
+    shift
+done
+
