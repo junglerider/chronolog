@@ -7,15 +7,15 @@ export class TimeLog extends SingleTable {
 
   constructor (db: Database, logger: Logger) {
     const schema = {
-      id: 'id',
-      task_id: 'task_id',
-      user_id: 'user_id',
-      description: 'description',
-      duration: 'duration',
-      date: 'date',
-      updated_at: 'updated_at'
+      id: 'tl.id',
+      task_id: 'tl.task_id',
+      user_id: 'tl.user_id',
+      description: 'tl.description',
+      duration: 'tl.duration',
+      date: 'tl.date',
+      updated_at: 'tl.updated_at'
     }
-    super ('time_log', schema, db, logger)
+    super ('time_log AS tl', schema, db, logger)
   }
 
   public async list (req: Request, res: Response, next: NextFunction) {
@@ -35,7 +35,7 @@ export class TimeLog extends SingleTable {
     this.logger.trace ('time_log.daily()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT date, SUM(duration) AS duration FROM time_log ${whereClause} GROUP BY date`
+      const sql = `SELECT tl.date, SUM(tl.duration) AS duration FROM time_log AS tl ${whereClause} GROUP BY tl.date`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()

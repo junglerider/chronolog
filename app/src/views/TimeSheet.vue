@@ -177,7 +177,7 @@ export default {
 
     async getData() {
       try {
-        const response = await api.get(`timelog?filter[date][eq]=${this.date}`)
+        const response = await api.get(`timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.userId}`)
         this.log = response.data
         this.previousLog = _.cloneDeep(this.log)
         this.onChangeHours()
