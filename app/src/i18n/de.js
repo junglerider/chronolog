@@ -53,7 +53,7 @@ export default new Map([
   ['OK - Saved!', 'OK - Gespeichert!'],
   ['Saving did not succeed.', 'Daten konnten nicht abgespeichert werden.'],
   ['No changes were made.', 'Daten wurden nicht verändert.'],
-  //  components  and buttons -----------------------------
+  //  components and buttons ------------------------------
   ['View/Edit', 'Ansehen/Bearbeiten'],
   ['Edit', 'Bearbeiten'],
   ['Save', 'Speichern'],
@@ -69,6 +69,19 @@ export default new Map([
   ['Required', 'Eingabe erforderlich'],
   ['yes', 'ja'],
   ['no', 'nein'],
+  //  dashboard -------------------------------------------
+  ['Welcome back', 'Willkommen zurück'],
+  ['Status', 'Status'],
+  ['present', 'anwesend'],
+  ['absent', 'abwesend'],
+  ['Arrival today', 'Ankunft heute'],
+  ['Working time today', 'Arbeitszeit heute'],
+  ['Working time this week', 'Arbeitszeit diese Woche'],
+  ['Hours today', 'Stunden heute'],
+  ['Hours this week', 'Stunden diese Woche'],
+  ['Hours this month', 'Stunden diesen Monat'],
+  ['Check in', 'Einchecken'],
+  ['Check out', 'Auschecken'],
   // contacts + organisations -----------------------------
   ['Contact Details', 'Persönliche Daten'],
   ['Add Person', 'Kontakt hinzufügen'],

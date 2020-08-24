@@ -64,6 +64,7 @@
 
 <script>
 import DateInput from '../components/DateInput'
+import DateCalc from '../services/DateCalc.js'
 import reports from '../reports'
 import api from '../api'
 
@@ -92,9 +93,9 @@ export default {
       customers: [],
       report: {
         name: 'time-sheet',
-        period: 'today',
-        start: this.$i18nIsoDate(),
-        end: this.$i18nIsoDate(),
+        period: 'lastMonth',
+        start: null,
+        end: null,
         userId: 1,
         customerId: 0,
       }
@@ -106,34 +107,6 @@ export default {
       window.open(`/reports/${this.report.name}?user=${this.report.userId}&customer=${this.report.customerId}&start=${this.report.start}&end=${this.report.end}`, '_blank')
     },
 
-    lastDayOfMonth(date) {
-      date.setMonth(date.getMonth() + 1)
-      date.setDate(0)
-      return date
-    },
-
-    firstDayOfMonth(date) {
-      date.setDate(1)
-      return(date)
-    },
-
-    firstDayOfWeek(date) {
-      let day = date.getDay() - 1
-      if (day < 0) day = 0
-      if (day != 0)
-        date.setTime(date.getTime() - (day * MSPDAY))
-      return date
-    },
-
-    lastDayOfWeek(date) {
-      let day = date.getDay() - 1
-      if (day < 0) day = 0
-      day = 6 - day
-      if (day != 0)
-        date.setTime(date.getTime() + (day * MSPDAY))
-      return date
-    },
-
     onSelectPeriod(period) {
       let startDate = new Date()
       let endDate = new Date()
@@ -142,34 +115,34 @@ export default {
         case 'today':
            break
         case 'thisWeek':
-          startDate = this.firstDayOfWeek(startDate)
-          endDate = this.lastDayOfWeek(endDate)
+          startDate = DateCalc.firstDayOfWeek(startDate)
+          endDate = DateCalc.lastDayOfWeek(endDate)
           break
         case 'lastWeek':
           startDate.setTime(startDate.getTime() - (7 * MSPDAY))
           endDate.setTime(endDate.getTime() - (7 * MSPDAY))
-          startDate = this.firstDayOfWeek(startDate)
-          endDate = this.lastDayOfWeek(endDate)
+          startDate = DateCalc.firstDayOfWeek(startDate)
+          endDate = DateCalc.lastDayOfWeek(endDate)
           break
         case 'thisMonth':
-          startDate = this.firstDayOfMonth(startDate)
-          endDate = this.lastDayOfMonth(endDate)
+          startDate = DateCalc.firstDayOfMonth(startDate)
+          endDate = DateCalc.lastDayOfMonth(endDate)
           break
         case 'lastMonth':
           startDate.setMonth(startDate.getMonth() - 1)
           endDate.setMonth(endDate.getMonth() - 1)
-          startDate = this.firstDayOfMonth(startDate)
-          endDate = this.lastDayOfMonth(endDate)
+          startDate = DateCalc.firstDayOfMonth(startDate)
+          endDate = DateCalc.lastDayOfMonth(endDate)
           break
         case 'lastThreeMonths':
           startDate.setMonth(startDate.getMonth() - 3)
-          startDate = this.firstDayOfMonth(startDate)
-          endDate = this.lastDayOfMonth(endDate)
+          startDate = DateCalc.firstDayOfMonth(startDate)
+          endDate = DateCalc.lastDayOfMonth(endDate)
           break
         case 'lastSixMonths':
           startDate.setMonth(startDate.getMonth() - 6)
-          startDate = this.firstDayOfMonth(startDate)
-          endDate = this.lastDayOfMonth(endDate)
+          startDate = DateCalc.firstDayOfMonth(startDate)
+          endDate = DateCalc.lastDayOfMonth(endDate)
           break
         case 'thisYear':
           startDate.setDate(1)
@@ -193,6 +166,7 @@ export default {
   },
 
   async mounted() {
+    this.onSelectPeriod('lastMonth')
     let response
     try {
       response = await api.get('/user?filter[is_active][eq]=1')

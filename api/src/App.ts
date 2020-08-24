@@ -177,6 +177,7 @@ class App {
     this.app.get ('/timelog', timelog.list.bind (timelog))
     this.app.get ('/timelog/count', timelog.count.bind (timelog))
     this.app.get ('/timelog/daily', timelog.daily.bind (timelog))
+    this.app.get ('/timelog/sum', timelog.sum.bind (timelog))
     this.app.post ('/timelog', timelog.create.bind (timelog))
     this.app.get ('/timelog/:id(\\d+)', timelog.read.bind (timelog))
     this.app.put ('/timelog/:id(\\d+)', timelog.update.bind (timelog))

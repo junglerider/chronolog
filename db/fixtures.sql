@@ -73,7 +73,7 @@ INSERT INTO entity (`id`, `street_address`, `city`, `state_province`, `postcode`
 INSERT INTO person (`id`, `type`, `title`, `first_name`, `last_name`, `nick_name`) VALUES
 ( 1, null, 'Mr.', 'Jochen', 'Althoff', null),
 ( 2, null, 'Ms.', 'Margareth', 'Wiley', 'Maggie'),
-( 3, 'EMP', 'Mr.', 'Enzo R.', 'Regio', null),
+( 3, 'EMP', 'Mr.', 'Lorenzo', 'Regio', null),
 ( 7, null, 'Mr.', 'Karl-Gustav', 'Müller', null),
 ( 8, 'EMP', 'Mr.', 'James', 'Kenning', null),
 ( 9, null, 'Mr.', 'Pierre-Arnand', 'Brodeur', null),

@@ -44,6 +44,22 @@ export class TimeLog extends SingleTable {
     }
   }
 
+  public async sum (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace ('time_log.daily()')
+    try {
+      const [whereClause, params] = this.sqlGenerator.generate (req.query)
+      const sql = `SELECT SUM(tl.duration) AS duration FROM time_log AS tl ${whereClause}`
+      const row: any = await this.db.get (sql, params)
+      if (row && row.duration === null) {
+        row.duration = 0
+      }
+      row ? res.status (200).json (row) : res.status (404)
+      next ()
+    } catch (err) {
+      next (err)
+    }
+  }
+
   public validateCreate(req: Request) {
     if (!req.body.date) {
       throw new Error ('400:Create new time log: date is required')

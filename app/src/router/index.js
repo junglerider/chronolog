@@ -12,6 +12,9 @@ Vue.use(VueRouter)
     }
   })
   const routes = [{
+    path: '/',
+    component: () => import('../views/Dashboard.vue')
+  }, {
     path: '/time-sheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
     component: () => import('../views/TimeSheet.vue')
   }, {

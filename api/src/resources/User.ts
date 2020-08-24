@@ -32,6 +32,19 @@ export class User extends SingleTable {
     }
   }
 
+  public async read (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace (`user.read(${[req.params.id]}))`)
+    const sql = `SELECT u.*, p.first_name, p.last_name, p.nick_name from user u JOIN person p on p.id = u.person_id WHERE u.id = ?`
+    try {
+      let row = await this.db.get (sql, [req.params.id])
+      row ? res.status (200).json (row) : res.status (404).json ()
+      next ()
+    }
+    catch (err) {
+      next (err)
+    }
+  }
+
   public validateCreate(req: Request) {
     if (!req.body.login) {
       throw new Error ('400:Create new user: login name is required')
