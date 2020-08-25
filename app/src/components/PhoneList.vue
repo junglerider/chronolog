@@ -36,7 +36,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../api'
+import api, { nullIt } from '../services/api'
 
 export default {
   name: 'PhoneList',
@@ -70,7 +70,7 @@ export default {
         return
       }
       try {
-        const response = await api.get(`contact?filter[entity_id][eq]=${this.entityId}`)
+        const response = await api.get(`/contact?filter[entity_id][eq]=${this.entityId}`)
         if (response.data && Array.isArray(response.data)) {
           this.phoneList = response.data
           this.previousPhoneList = _.cloneDeep(this.phoneList)
@@ -84,18 +84,18 @@ export default {
       let recordsWritten = 0
       for (let phoneItem of this.phoneList) {
         if (typeof phoneItem.id === 'string' && phoneItem.id.startsWith('new')) {
-          const response = await api.post('contact', nullIt(phoneItem))
+          const response = await api.post('/contact', nullIt(phoneItem))
           if (response.status === 201) {
             phoneItem.id = response.data.id
             recordsWritten++
           }
         } else if (!this.isInList(this.previousPhoneList, phoneItem)) {
-          await api.put(`contact/${phoneItem.id}`, nullIt(phoneItem))
+          await api.put(`/contact/${phoneItem.id}`, nullIt(phoneItem))
           recordsWritten++
         }
       }
       for (let id of this.deleteList) {
-        await api.delete(`contact/${id}`)
+        await api.delete(`/contact/${id}`)
         recordsWritten++
       }
 

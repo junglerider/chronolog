@@ -134,7 +134,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../api'
+import api, { nullIt } from '../services/api'
 
 export default {
 
@@ -177,7 +177,7 @@ export default {
 
     async getData() {
       try {
-        const response = await api.get(`timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.userId}`)
+        const response = await api.get(`/timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.userId}`)
         this.log = response.data
         this.previousLog = _.cloneDeep(this.log)
         this.onChangeHours()

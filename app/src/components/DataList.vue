@@ -14,7 +14,7 @@
         single-line
         hide-details
       ></v-text-field>
-      <v-btn color="primary" @click="$router.push(`${uiBaseUrl}/new`)">
+      <v-btn color="primary" @click="$router.push(`/${uiBaseUrl}/new`)">
         <v-icon left>mdi-plus-circle-outline</v-icon>
         {{ 'Add' | i18n }}
       </v-btn>
@@ -98,7 +98,7 @@
 </style>
 
 <script>
-import api from '../api'
+import api from '../services/api'
 
 export default {
   name: 'DataList',
@@ -203,7 +203,7 @@ export default {
 
     rowClick(row) {
       if (row && row.id) {
-        this.$router.push(`/${this.uiBaseUrl}/${row.id}`)
+        this.$router.push(`${this.uiBaseUrl}/${row.id}`)
       }
     }
 

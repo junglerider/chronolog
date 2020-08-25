@@ -2,8 +2,8 @@
   <data-list
     :title="'Contacts' | i18n"
     :headers="headers"
-    apiBaseUrl="person"
-    uiBaseUrl="contacts"
+    apiBaseUrl="/person"
+    uiBaseUrl="/contacts"
     :searchFilter="'&filter[first_name][like]={search}%&filter[last_name][like]={search}%&combine=OR'"
   ></data-list>
 </template>

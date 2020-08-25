@@ -2,8 +2,8 @@
   <data-list
     :title="'Organisations' | i18n"
     :headers="headers"
-    apiBaseUrl="organisation"
-    uiBaseUrl="organisations"
+    apiBaseUrl="/organisation"
+    uiBaseUrl="/organisations"
     :searchFilter="'&filter[name][like]={search}%'"
   ></data-list>
 </template>

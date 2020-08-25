@@ -84,7 +84,7 @@
 <script>
 import AnalogueClock from '../components/AnalogueClock'
 import DateCalc from '../services/DateCalc'
-import api from '../api'
+import api from '../services/api'
 
 export default {
   components: {

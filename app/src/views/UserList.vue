@@ -6,8 +6,8 @@
     <data-list
       :title="'Users' | i18n"
       :headers="headers"
-      apiBaseUrl="user"
-      uiBaseUrl="users"
+      apiBaseUrl="/user"
+      uiBaseUrl="/users"
       :searchFilter="'&filter[login][like]={search}%'"
       :afterGetData="afterGetData"
       :onDeleteData="onDelete"
@@ -17,7 +17,7 @@
 
 <script>
   import DataList from '../components/DataList'
-  import api from '../api'
+  import api from '../services/api'
 
   export default {
     components: {

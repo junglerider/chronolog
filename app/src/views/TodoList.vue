@@ -6,8 +6,8 @@
     <data-list
       :title="'Todo List' | i18n"
       :headers="headers"
-      :apiBaseUrl="`todo/${userId}`"
-      uiBaseUrl="todo"
+      :apiBaseUrl="`/todo/${userId}`"
+      uiBaseUrl="/todo"
       :onGetData="getData"
       :onDeleteData="onDelete"
     ></data-list>
@@ -16,7 +16,7 @@
 
 <script>
   import DataList from '../components/DataList'
-  import api from '../api'
+  import api from '../services/api'
 
   export default {
     components: {

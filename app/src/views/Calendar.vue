@@ -56,7 +56,7 @@
 </style>
 
 <script>
-import api from '../api'
+import api from '../services/api'
 
   export default {
     data: () => ({
@@ -79,7 +79,7 @@ import api from '../api'
         this.$refs.calendar.next()
       },
       async onChange(val) {
-        const url = `timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+        const url = `/timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
           const response = await api.get(url)
           this.events = []
@@ -98,7 +98,7 @@ import api from '../api'
         }
       },
       onClick(val) {
-        this.$router.push(`time-sheet/${val.date}`)
+        this.$router.push(`/time-sheet/${val.date}`)
       }
     }
   }

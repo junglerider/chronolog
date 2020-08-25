@@ -46,7 +46,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../api'
+import api, { nullIt } from '../services/api'
 import AutoComplete from './AutoComplete'
 
 export default {
@@ -77,7 +77,7 @@ export default {
       }
       try {
         const listType = this.entityType === 'person' ? 'organisations' : 'persons'
-        const response = await api.get(`${this.entityType}/${this.entityId}/${listType}`)
+        const response = await api.get(`/${this.entityType}/${this.entityId}/${listType}`)
         if (response.data && Array.isArray(response.data)) {
           this.employeeList = response.data
           this.previousEmployeeList = _.cloneDeep(this.employeeList)
@@ -89,7 +89,7 @@ export default {
 
     async orgLookup(searchTerm) {
       try {
-        const response = await api.get(`organisation?filter[name][like]=${encodeURIComponent(searchTerm + '%')}&order=name`)
+        const response = await api.get(`/organisation?filter[name][like]=${encodeURIComponent(searchTerm + '%')}&order=name`)
         return response.data
       } catch (e) {
         console.error(e)
@@ -100,7 +100,7 @@ export default {
     async personLookup(searchTerm) {
       try {
         const term = encodeURIComponent(searchTerm.split(' ')[0] + '%')
-        const response = await api.get(`person?filter[first_name][like]=${term}&filter[last_name][like]=${term}&combine=OR`)
+        const response = await api.get(`/person?filter[first_name][like]=${term}&filter[last_name][like]=${term}&combine=OR`)
         return response.data
       } catch (e) {
         console.error(e)
@@ -121,18 +121,18 @@ export default {
       let recordsWritten = 0
       for (let employee of this.employeeList) {
         if (typeof employee.employee_id === 'string' && employee.employee_id.startsWith('new')) {
-          const response = await api.post('employee', nullIt(employee))
+          const response = await api.post('/employee', nullIt(employee))
           if (response.status === 201) {
             employee.employee_id = response.data.id
             recordsWritten++
           }
         } else if (!this.isInList(this.previousEmployeeList, employee)) {
-          await api.put(`employee/${employee.employee_id}`, nullIt(employee))
+          await api.put(`/employee/${employee.employee_id}`, nullIt(employee))
           recordsWritten++
         }
       }
       for (let id of this.deleteList) {
-        await api.delete(`employee/${id}`)
+        await api.delete(`/employee/${id}`)
         recordsWritten++
       }
 

@@ -61,7 +61,7 @@
 
 <script>
 import _ from 'lodash'
-import api, {nullIt} from '../api'
+import api, {nullIt} from '../services/api'
 
 export default {
 

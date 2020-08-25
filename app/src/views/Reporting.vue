@@ -66,7 +66,7 @@
 import DateInput from '../components/DateInput'
 import DateCalc from '../services/DateCalc.js'
 import reports from '../reports'
-import api from '../api'
+import api from '../services/api'
 
 const MSPDAY = 86400000
 
