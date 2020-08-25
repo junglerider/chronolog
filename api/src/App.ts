@@ -22,6 +22,7 @@ import { Customer } from './resources/Customer'
 import { Task } from './resources/Task'
 import { TimeLog } from './resources/TimeLog'
 import { TimeLogReport } from './resources/TimeLogReport'
+import { TimeClock } from './resources/TimeClock'
 
 const db = new Database (config, logger)
 const organisation = new Organisation (db, logger)
@@ -33,6 +34,7 @@ const customer = new Customer (db, logger)
 const task = new Task (db, logger)
 const timelog = new TimeLog (db, logger)
 const timelogReport = new TimeLogReport (db, logger)
+const timeclock = new TimeClock (db, logger)
 
 /**
  * Represents the Chronolog API server application.
@@ -184,6 +186,13 @@ class App {
     this.app.delete ('/timelog/:id(\\d+)', timelog.delete.bind (timelog))
 
     this.app.get ('/timelog/report', timelogReport.list.bind (timelogReport))
+
+    this.app.get ('/timeclock', timeclock.list.bind (timeclock))
+    this.app.get ('/timeclock/count', timeclock.count.bind (timeclock))
+    this.app.post ('/timeclock', timeclock.create.bind (timeclock))
+    this.app.get ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.read.bind (timeclock))
+    this.app.put ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.update.bind (timeclock))
+    this.app.delete ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.delete.bind (timeclock))
 
     this.app.use (this.notFoundHandler)
     this.app.use (this.errorHandler)

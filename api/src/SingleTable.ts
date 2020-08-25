@@ -34,12 +34,12 @@ export class SingleTable {
     return fields.map (field => field.substr (field.indexOf ('.') + 1)).join ( ', ')
   }
 
-  private getUpdateList(fields) {
+  public getUpdateList(fields) {
     return fields.map (field => field.substr (field.indexOf ('.') + 1) + ' = ?').join (', ')
   }
 
   public async list (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.list()`)
+    this.logger.trace (`${this.getTableName()}.list()`)
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT * FROM ${this.table} ` + whereClause
@@ -53,7 +53,7 @@ export class SingleTable {
   }
 
   public async count (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.count()`)
+    this.logger.trace (`${this.getTableName()}.count()`)
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT COUNT(*) AS count FROM ${this.table} ` + whereClause
@@ -67,7 +67,7 @@ export class SingleTable {
   }
 
   public async create (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.create()`)
+    this.logger.trace (`${this.getTableName()}.create()`)
     try {
       this.validateCreate (req)
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
@@ -89,7 +89,7 @@ export class SingleTable {
   }
 
   public async read (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.read(${[req.params.id]}))`)
+    this.logger.trace (`${this.getTableName()}.read(${[req.params.id]}))`)
     const sql = `SELECT * FROM ${this.table} WHERE id = ?`
     try {
       let row = await this.db.get (sql, [req.params.id])
@@ -103,7 +103,7 @@ export class SingleTable {
   }
 
   public async update (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.update(${[req.params.id]})`)
+    this.logger.trace (`${this.getTableName()}.update(${[req.params.id]})`)
     let status = 400
     try {
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
@@ -121,7 +121,7 @@ export class SingleTable {
   }
 
   public async delete (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.table}.delete(${[req.params.id]})`)
+    this.logger.trace (`${this.getTableName()}.delete(${[req.params.id]})`)
     try {
       const result: any = await this.db.run (`DELETE FROM ${this.getTableName()} WHERE id = ?`, [req.params.id])
       result && result.changes > 0 ? res.status (204).json () : res.status (404).json ()
