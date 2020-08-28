@@ -130,6 +130,9 @@ export default {
     },
 
     isActiveProject(id) {
+      if (!id) {
+        return true;
+      }
       for (let task of this.projects) {
         if (task.id == id) {
           return true
@@ -192,6 +195,7 @@ export default {
       }
       response = await api.get(`/todo/${this.userId}/projects`)
       this.projects = response.data
+      console.log(this.projects)
     } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')
