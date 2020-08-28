@@ -160,8 +160,8 @@ export default {
           break
         default: return
       }
-      this.report.start = this.$i18nIsoDate(startDate)
-      this.report.end = this.$i18nIsoDate(endDate)
+      this.report.start = DateCalc.isoDate(startDate)
+      this.report.end = DateCalc.isoDate(endDate)
     }
   },
 

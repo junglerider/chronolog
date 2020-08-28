@@ -1,5 +1,25 @@
 const MSPDAY = 86400000
 
+const isoDate = (date, withHours) => {
+  if (!date) {
+    date = new Date()
+  } else if (typeof date === 'string') {
+    date = new Date(date)
+  } else if (typeof date !== 'object' || typeof date.getMonth !== 'function') {
+    return date
+  }
+  try {
+    const isoStr = date.toISOString()
+    let result = isoStr.substr(0, 10)
+    if (withHours) {
+      result += ' ' + isoStr.substr(11, 8)
+    }
+    return result
+  } catch(e) {
+    return date
+  }
+}
+
 export default class DateCalc {
 
   static lastDayOfMonth(d) {
@@ -61,24 +81,12 @@ export default class DateCalc {
     return [hours, minutes, seconds].map(n => String(n).padStart(2, '0')).join(':')
   }
 
-  static isoDate(date = undefined, withHours = false) {
-    if (!date) {
-      date = new Date()
-    } else if (typeof date === 'string') {
-      date = new Date(date)
-    } else if (typeof date !== 'object' || typeof date.getMonth !== 'function') {
-      return date
-    }
-    try {
-      const isoStr = date.toISOString()
-      let result = isoStr.substr(0, 10)
-      if (withHours) {
-        result += ' ' + isoStr.substr(11, 8)
-      }
-      return result
-    } catch(e) {
-      return date
-    }
+  static isoDate(date = undefined) {
+    return isoDate(date, false)
+  }
+
+  static isoDateTime(date = undefined) {
+    return isoDate(date, true)
   }
 
 }

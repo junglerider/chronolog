@@ -104,7 +104,7 @@ export default {
 
   data() {
     return {
-      today: this.$i18nIsoDate(new Date()),
+      today: DateCalc.isoDate(),
       userId: 1,
       user: {},
       isPresent: false,
@@ -154,8 +154,8 @@ export default {
 
   async mounted() {
     try {
-      const startOfWeek = this.$i18nIsoDate(DateCalc.firstDayOfWeek(new Date()))
-      const startOfMonth = this.$i18nIsoDate(DateCalc.firstDayOfMonth(new Date()))
+      const startOfWeek = DateCalc.isoDate(DateCalc.firstDayOfWeek(new Date()))
+      const startOfMonth = DateCalc.isoDate(DateCalc.firstDayOfMonth(new Date()))
       let response = await api.get(`/user/${this.userId}`)
       this.user = response.data
       response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][eq]=${this.today}`)

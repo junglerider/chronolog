@@ -135,12 +135,13 @@
 <script>
 import _ from 'lodash'
 import api, { nullIt } from '../services/api'
+import DateCalc from '../services/DateCalc'
 
 export default {
 
   data() {
     return {
-      date: this.$route.params.date || this.$i18nIsoDate(),
+      date: this.$route.params.date || DateCalc.isoDate(),
       userId: 1,
       log: [],
       selected: [],
@@ -162,7 +163,7 @@ export default {
 
   watch: {
     $route() {
-      this.date = this.$route.params.date || this.$i18nIsoDate()
+      this.date = this.$route.params.date || DateCalc.isoDate()
       this.getData()
     }
   },
@@ -172,7 +173,7 @@ export default {
     navigate(days) {
       const newDate = (new Date(this.date))
       newDate.setDate(newDate.getDate() + days)
-      this.$router.push(`/time-sheet/${this.$i18nIsoDate(newDate)}`)
+      this.$router.push(`/time-sheet/${DateCalc.isoDate(newDate)}`)
     },
 
     async getData() {
