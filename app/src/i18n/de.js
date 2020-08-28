@@ -76,7 +76,7 @@ export default new Map([
   ['absent', 'abwesend'],
   ['Arrival today', 'Ankunft heute'],
   ['Working time today', 'Arbeitszeit heute'],
-  ['Working time this week', 'Arbeitszeit diese Woche'],
+  ['Departure', 'Checkout'],
   ['Hours today', 'Stunden heute'],
   ['Hours this week', 'Stunden diese Woche'],
   ['Hours this month', 'Stunden diesen Monat'],

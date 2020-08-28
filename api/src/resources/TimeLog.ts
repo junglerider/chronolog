@@ -45,7 +45,7 @@ export class TimeLog extends SingleTable {
   }
 
   public async sum (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace ('time_log.daily()')
+    this.logger.trace ('time_log.sum()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT SUM(tl.duration) AS duration FROM time_log AS tl ${whereClause}`

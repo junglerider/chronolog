@@ -3,9 +3,7 @@
     <v-row>
       <v-col md="12">
         <div class="page-title">{{ 'Welcome back' | i18n }}, {{ user.nick_name || user.first_name }}!</div>
-        {{ today.toLocaleString('en', { weekday: 'short' }) | i18n }},
-        {{ $i18nIsoDate(today) | i18nDate }}
-        {{ String(today).substr(34) }}
+        {{ todaysDate }}
 
       </v-col>
     </v-row>
@@ -15,9 +13,21 @@
           <analogue-clock secondHandColour="#1976d2" style="flex: 60%; margin-right: 2vw; margin-left: 1vw;"/>
           <div style="flex: 40%; align-self: center;">
             <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
-            <v-btn primary color="primary" class="centered mb-4">{{ 'Check in' | i18n }}</v-btn>
+            <v-btn
+              :disabled="isPresent"
+              @click="punchTheClock(1)"
+              class="centered mb-4"
+              primary
+              color="primary"
+            >{{ 'Check in' | i18n }}</v-btn>
             <div class="centered dotted-line">- - - - - - - - - -</div>
-            <v-btn primary color="primary" class="centered mt-4" :disabled="true">{{ 'Check out' | i18n }}</v-btn>
+            <v-btn
+              :disabled="!isPresent"
+              @click="punchTheClock(0)"
+              class="centered mt-4"
+              primary
+              color="primary"
+              >{{ 'Check out' | i18n }}</v-btn>
             <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
           </div>
         </div>
@@ -28,31 +38,31 @@
             <tbody>
               <tr key="list-status">
                 <td>{{ 'Status' | i18n }}</td>
-                <td class="data">{{ data.status }}</td>
+                <td class="data">{{ (isPresent ? 'present' : 'absent') | i18n }}</td>
               </tr>
               <tr key="list-arrival">
                 <td>{{ 'Arrival today' | i18n }}</td>
-                <td class="data">{{ data.arrival }}</td>
+                <td class="data">{{ arrivalTime }}</td>
               </tr>
               <tr key="list-time-today">
                 <td>{{ 'Working time today' | i18n }}</td>
-                <td class="data">{{ $i18nDecToHrs(data.timeToday) }}</td>
+                <td class="data">{{ $i18nDecToHrs(workingTime) }}</td>
               </tr>
-              <tr key="list-time-week">
-                <td>{{ 'Working time this week' | i18n }}</td>
-                <td class="data">{{ $i18nDecToHrs(data.timeThisWeek) }}</td>
+              <tr key="list-departure">
+                <td>{{ 'Departure' | i18n }}</td>
+                <td class="data">{{ departureTime }}</td>
               </tr>
               <tr key="list-hrs-today">
                 <td>{{ 'Hours today' | i18n }}</td>
-                <td class="data">{{ $i18nDecToHrs(data.hoursToday) }}</td>
+                <td class="data">{{ $i18nDecToHrs(timeSheet.hoursToday) }}</td>
               </tr>
               <tr key="list-hrs-week">
                 <td>{{ 'Hours this week' | i18n }}</td>
-                <td class="data">{{ $i18nDecToHrs(data.hoursThisWeek) }}</td>
+                <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisWeek) }}</td>
               </tr>
               <tr key="list-hrs-month">
                 <td>{{ 'Hours this month' | i18n }}</td>
-                <td class="data">{{ $i18nDecToHrs(data.hoursThisMonth) }}</td>
+                <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisMonth) }}</td>
               </tr>
             </tbody>
           </template>
@@ -83,6 +93,7 @@
 
 <script>
 import AnalogueClock from '../components/AnalogueClock'
+import TimeClock from '../services/TimeClock'
 import DateCalc from '../services/DateCalc'
 import api from '../services/api'
 
@@ -93,16 +104,14 @@ export default {
 
   data() {
     return {
-      today: new Date(),
-      startOfWeek: DateCalc.firstDayOfWeek(new Date()),
-      startOfMonth: DateCalc.firstDayOfMonth(new Date()),
+      today: this.$i18nIsoDate(new Date()),
       userId: 1,
       user: {},
-      data: {
-        status: this.$i18n('absent'),
-        arrival: '?',
-        timeToday: 0,
-        timeThisWeek: 0,
+      isPresent: false,
+      arrivalTime: '-',
+      workingTime: 0,
+      departureTime: '-',
+      timeSheet: {
         hoursToday: 0,
         hoursThisWeek: 0,
         hoursThisMonth: 0
@@ -113,6 +122,20 @@ export default {
     }
   },
   methods: {
+
+    async punchTheClock() {
+      const timeClockStatus = await TimeClock.punch(this.userId)
+      console.log(timeClockStatus)
+      this.updatePunchClock(timeClockStatus)
+    },
+
+    updatePunchClock(timeClockStatus) {
+      this.isPresent = timeClockStatus.arrival_time && !timeClockStatus.departure_time
+      this.arrivalTime = timeClockStatus.arrival_time || '-'
+      this.departureTime = timeClockStatus.departure_time || '-'
+      this.workingTime = timeClockStatus.work_duration || 0
+    },
+
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
@@ -120,16 +143,29 @@ export default {
     },
   },
 
+  computed: {
+    todaysDate() {
+      const date = new Date()
+      return this.$i18n(DateCalc.getWeekdayString(date, 'short')) + ', ' +
+        this.$i18nDate(this.today) + ', ' +
+        DateCalc.getTimeZoneString(date)
+    }
+  },
+
   async mounted() {
     try {
+      const startOfWeek = this.$i18nIsoDate(DateCalc.firstDayOfWeek(new Date()))
+      const startOfMonth = this.$i18nIsoDate(DateCalc.firstDayOfMonth(new Date()))
       let response = await api.get(`/user/${this.userId}`)
       this.user = response.data
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][eq]=${this.$i18nIsoDate(this.today)}`)
-      this.data.hoursToday = response.data.duration
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${this.$i18nIsoDate(this.startOfWeek)}`)
-      this.data.hoursThisWeek = response.data.duration
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${this.$i18nIsoDate(this.startOfMonth)}`)
-      this.data.hoursThisMonth = response.data.duration
+      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][eq]=${this.today}`)
+      this.timeSheet.hoursToday = response.data.duration
+      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${startOfWeek}`)
+      this.timeSheet.hoursThisWeek = response.data.duration
+      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${startOfMonth}`)
+      this.timeSheet.hoursThisMonth = response.data.duration
+      const timeClockStatus = await TimeClock.read(this.userId, this.today)
+      await this.updatePunchClock(timeClockStatus)
     } catch(e) {
       this.showMessage('Record could not be loaded.', 'error')
     }

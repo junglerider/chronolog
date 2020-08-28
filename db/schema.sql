@@ -121,3 +121,17 @@ CREATE TABLE `time_log` (
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
 CREATE INDEX `time_log_date_index` ON `time_log` (`date`);
+
+CREATE TABLE `time_clock` (
+    `user_id` INTEGER NOT NULL,
+    `date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `arrival_time` TEXT DEFAULT NULL,
+    `departure_time` TEXT DEFAULT NULL,
+    `work_duration` NUMERIC DEFAULT 0,
+    `json_log` TEXT DEFAULT NULL,
+    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`date`, `user_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+CREATE INDEX `time_clock_date_index` ON `time_clock` (`date`);
