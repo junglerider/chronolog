@@ -98,6 +98,7 @@ import DateInput from '../components/DateInput'
 import PhoneList from '../components/PhoneList'
 import EmployeeList from '../components/EmployeeList'
 import api, { nullIt } from '../services/api'
+import DateCalc from '../services/DateCalc'
 import countries from '../i18n/countries.json'
 
 export default {
@@ -159,7 +160,7 @@ export default {
       if (!_.isEqual(this.person, this.previousPerson)) {
         try {
           const id = this.person.id
-          this.person.updated_at = (new Date()).toISOString()
+          this.person.updated_at = DateCalc.isoDate()
           if (id === 'new') {
             const response = await api.post(`/person`, nullIt(this.person))
             if (response.status === 201) {

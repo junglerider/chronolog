@@ -1,23 +1,28 @@
 const MSPDAY = 86400000
 
+const pad = (num, length = 2) => {
+  return String(num).padStart(length, '0')
+}
+
+// formats current or given date in YYYY-MM-DD[ HH:MM:SS] format
+// using local date/time, not UTC!
 const isoDate = (date, withHours) => {
   if (!date) {
     date = new Date()
-  } else if (typeof date === 'string') {
+  } else if (typeof date === 'string' || typeof date === 'number') {
     date = new Date(date)
   } else if (typeof date !== 'object' || typeof date.getMonth !== 'function') {
     return date
   }
-  try {
-    const isoStr = date.toISOString()
-    let result = isoStr.substr(0, 10)
-    if (withHours) {
-      result += ' ' + isoStr.substr(11, 8)
-    }
-    return result
-  } catch(e) {
-    return date
+  let isoStr = date.getFullYear() +
+    '-' + pad(date.getMonth() + 1) +
+    '-' + pad(date.getDate())
+  if (withHours) {
+    isoStr += ' ' + pad(date.getHours()) +
+    ':' + pad(date.getMinutes()) +
+    ':' + pad(date.getSeconds())
   }
+  return isoStr
 }
 
 export default class DateCalc {

@@ -81,6 +81,7 @@
 <script>
 import _ from 'lodash'
 import api, { nullIt } from '../services/api'
+import DateCalc from '../services/DateCalc'
 
 export default {
 
@@ -151,13 +152,13 @@ export default {
         this.isSaving = true
         try {
           if (this.task.id == 'new') {
-            this.task.created_at = (new Date()).toISOString()
+            this.task.created_at = DateCalc.isoDateTime()
             const response = await api.post('/task', nullIt(this.task))
             if (response.status === 201) {
               this.task.id = response.data.id
             }
           } else {
-            this.task.updated_at = (new Date()).toISOString()
+            this.task.updated_at = DateCalc.isoDateTime()
             await api.put(`/task/${this.task.id}`, nullIt(this.task))
           }
           this.showMessage('OK - Saved!')

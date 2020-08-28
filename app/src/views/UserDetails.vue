@@ -71,6 +71,7 @@
 <script>
 import _ from 'lodash'
 import api, {nullIt} from '../services/api'
+import DateCalc from '../services/DateCalc'
 
 export default {
 
@@ -115,13 +116,13 @@ export default {
         let response
         try {
           if (this.user.id == 'new') {
-            this.user.created_at = (new Date()).toISOString()
+            this.user.created_at = DateCalc.isoDateTime()
             response = await api.post('/user', nullIt(this.user))
             if (response.status === 201) {
               this.user.id = response.data.id
             }
           } else {
-            this.user.updated_at = (new Date()).toISOString()
+            this.user.updated_at = DateCalc.isoDateTime()
             response = await api.put(`/user/${this.user.id}`, nullIt(this.user))
           }
           this.showMessage('OK - Saved!')

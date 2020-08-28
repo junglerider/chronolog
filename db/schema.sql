@@ -6,7 +6,7 @@ CREATE TABLE `entity` (
     `postcode` TEXT DEFAULT NULL,
     `country` TEXT DEFAULT NULL,
     `comment` TEXT DEFAULT NULL,
-    `first_contact` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `first_contact` TEXT DEFAULT (DATE('NOW', 'LOCALTIME')),
     `last_contact` TEXT DEFAULT NULL,
     `updated_at` TEXT DEFAULT NULL
 );
@@ -66,8 +66,8 @@ CREATE TABLE `user` (
     `visits` INTEGER NOT NULL DEFAULT 0,
     `last_visit` TEXT DEFAULT NULL,
     `notes` TEXT DEFAULT NULL,
-    `created_at` TEXT DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `created_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    `updated_at` TEXT DEFAULT NULL,
     FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -79,8 +79,8 @@ CREATE TABLE `customer` (
     `organisation_id` INTEGER NOT NULL UNIQUE,
     `is_retired` INTEGER NOT NULL DEFAULT 0,
     `notes` TEXT DEFAULT NULL,
-    `created_at` TEXT DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `created_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    `updated_at` TEXT NULL,
     FOREIGN KEY (`organisation_id`) REFERENCES `organisation` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -96,8 +96,8 @@ CREATE table `task` (
     `is_active` INTEGER NOT NULL DEFAULT 1,
     `is_closed` INTEGER NOT NULL DEFAULT 0,
     `is_leaf`  INTEGER NOT NULL DEFAULT 1,
-    `created_at` TEXT DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `created_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    `updated_at` TEXT DEFAULT NULL,
     FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
@@ -113,8 +113,8 @@ CREATE TABLE `time_log` (
     `user_id` INTEGER NOT NULL,
     `description` TEXT DEFAULT NULL,
     `duration` NUMERIC DEFAULT 0,
-    `date` TEXT DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `date` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    `updated_at` TEXT DEFAULT NULL,
     FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
@@ -124,12 +124,12 @@ CREATE INDEX `time_log_date_index` ON `time_log` (`date`);
 
 CREATE TABLE `time_clock` (
     `user_id` INTEGER NOT NULL,
-    `date` TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
     `arrival_time` TEXT DEFAULT NULL,
     `departure_time` TEXT DEFAULT NULL,
     `work_duration` NUMERIC DEFAULT 0,
     `json_log` TEXT DEFAULT NULL,
-    `updated_at` TEXT DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
     PRIMARY KEY (`date`, `user_id`),
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE

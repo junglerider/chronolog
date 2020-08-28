@@ -38,6 +38,7 @@ export default class TimeClock {
       record.json_log = JSON.stringify(jsonLog)
       record.departure_time = jsonLog.length % 2 == 0 ? timeToRecord : null
       record.work_duration = this.calcWorkDuration(jsonLog)
+      record.updated_at = DateCalc.isoDateTime()
       await api.put(`/timeclock/${userId}/${date}`, record)
     } else {
       const jsonLog = [timeToRecord]
@@ -46,7 +47,8 @@ export default class TimeClock {
         user_id: userId,
         arrival_time: timeToRecord,
         work_duration: 0,
-        json_log: JSON.stringify(jsonLog)
+        json_log: JSON.stringify(jsonLog),
+        updated_at: DateCalc.isoDateTime()
       }
       await api.post(`/timeclock`, record)
     }

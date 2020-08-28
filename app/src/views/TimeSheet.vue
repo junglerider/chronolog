@@ -240,14 +240,14 @@ export default {
       try {
         for (let log of this.log) {
           if (this.isNew(log)) {
-            log.updated_at = (new Date()).toISOString()
+            log.updated_at = DateCalc.isoDateTime()
             const response = await api.post('/timelog', nullIt(log))
             if (response.status === 201) {
               log.id = response.data.id
               recordsWritten++
             }
           } else if (!this.isInList(this.previousLog, log)) {
-            log.updated_at = (new Date()).toISOString()
+            log.updated_at = DateCalc.isoDateTime()
             await api.put(`/timelog/${log.id}`, nullIt(log))
             recordsWritten++
           }
