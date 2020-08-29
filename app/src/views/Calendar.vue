@@ -31,8 +31,7 @@
           :shortWeekdays="false"
           :locale="$getLanguage()"
           :events="events"
-          :event-height="30"
-          event-color="#2586d7"
+          :event-color="getEventColor"
           @change="onChange"
           @click:date="onClick"
           @click:day="onClick"
@@ -59,29 +58,39 @@
 import api from '../services/api'
 
   export default {
+
     data: () => ({
       focus: '',
       userId: 1,
       totalHours: 0,
       events: [],
     }),
+
     mounted () {
       this.$refs.calendar.checkChange()
     },
     methods: {
+
       setToday () {
         this.focus = ''
       },
+
       prev () {
         this.$refs.calendar.prev()
       },
+
       next () {
         this.$refs.calendar.next()
       },
+
+      getEventColor (event) {
+        return event.color
+      },
+
       async onChange(val) {
-        const url = `/timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+        let url = `/timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
-          const response = await api.get(url)
+          let response = await api.get(url)
           this.events = []
           let totalHours = 0
           for (let timelog of response.data) {
@@ -90,13 +99,25 @@ import api from '../services/api'
               timed: false,
               start: timelog.date,
               name: this.$i18nDecToHrs(timelog.duration),
+              color: '#2586d7',
             })
           }
           this.totalHours = totalHours
+          url = `/timeclock?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+          response = await api.get(url)
+          for (let timeclock of response.data) {
+            this.events.push({
+              timed: false,
+              start: timeclock.date,
+              name: this.$i18nDecToHrs(timeclock.work_duration),
+              color: 'indigo',
+            })
+          }
         } catch (e) {
           console.error(e)
         }
       },
+
       onClick(val) {
         this.$router.push(`/time-sheet/${val.date}`)
       }
