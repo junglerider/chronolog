@@ -59,6 +59,8 @@ export default new Map([
   ['Save', 'Speichern'],
   ['Cancel', 'Abbrechen'],
   ['Reset', 'Zurücksetzen'],
+  ['Password', 'Passwort'],
+  ['Login', 'Anmelden'],
   ['Previous month', 'Letzter Monat'],
   ['Next month', 'Nächster Monat'],
   ['Today', 'Heute'],

@@ -77,22 +77,7 @@
         <v-icon color="white">mdi-account-circle</v-icon>
       </v-btn>
 
-      <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" color="white" class="mr-4">
-            <img style="width: 30px" :src="`/images/flags/${selectedLanguage}.svg`"/>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <lang-menu-item locale="en" :name="'English' | i18n" @clicked="selectLanguage"/>
-          <lang-menu-item locale="de" :name="'German' | i18n" @clicked="selectLanguage"/>
-          <lang-menu-item locale="fr" :name="'French' | i18n" @clicked="selectLanguage"/>
-          <lang-menu-item locale="es" :name="'Spanish' | i18n" @clicked="selectLanguage"/>
-          <lang-menu-item locale="it" :name="'Italian' | i18n" @clicked="selectLanguage"/>
-        </v-list>
-
-      </v-menu>
+      <language-menu @changeLanguage="$forceUpdate()" />
 
     </v-app-bar>
 
@@ -146,30 +131,24 @@
 </style>
 
 <script>
-import SimpleClock from './components/SimpleClock.vue'
-import NavLink from './components/NavLink.vue'
-import LangMenuItem from './components/LangMenuItem.vue'
+import SimpleClock from './components/SimpleClock'
+import NavLink from './components/NavLink'
+import LanguageMenu from './components/LanguageMenu'
 
 export default {
   name: 'App',
   components: {
     SimpleClock,
     NavLink,
-    LangMenuItem
+    LanguageMenu
   },
   data() {
     return {
       drawer: null,
-      selectedLanguage: this.$getLanguage(),
-      selectLanguage: async language => {
-        this.selectedLanguage = language
-        await this.$setLanguage(language)
-        this.$forceUpdate()
-      }
   }},
   methods: {
     isBlankPage() {
-      return this.$route.path.startsWith('/reports')
+      return this.$route.path.startsWith('/reports') || this.$route.path.startsWith('/login')
     }
   }
 }

@@ -115,7 +115,7 @@ export default {
       messageColor: 'success',
       messageText: '',
       isSaving: false,
-      requiredRule: [ (v) => (Boolean(v) || 'Required') ],
+      requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
 

@@ -49,7 +49,7 @@ export default {
       phoneList: [],
       previousPhoneList: [],
       deleteList: [],
-      requiredRule: [ (v) => (Boolean(v) || 'Required') ],
+      requiredRule: [ (v) => (Boolean(v) || this.$i18n('Required')) ],
       types: [
         { value: 'PHO', text: this.$i18n('Phone') },
         { value: 'MOB', text: this.$i18n('Mobile') },
