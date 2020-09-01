@@ -1,8 +1,6 @@
+const supportedLanguages = ['en', 'de', 'fr', 'es', 'it']
 let i18nCatalog = new Map()
 let currentLocale = 'en'
-import('../i18n/en').then(catalog => {
-  i18nCatalog = catalog.default
-})
 
 export default {
   install(Vue) {
@@ -40,6 +38,20 @@ export default {
       return hours + ':' + (mins > 9 ? '' : '0') + mins
     }
 
+    const setLanguage = locale => {
+      return import(`../i18n/${locale}`).then(catalog => {
+        i18nCatalog = catalog.default
+        currentLocale = locale
+        window.localStorage.setItem('language', locale)
+      })
+    }
+
+    currentLocale = window.localStorage.getItem('language')
+    if (!currentLocale || !supportedLanguages.includes(currentLocale)) {
+      currentLocale = 'en'
+    }
+    setLanguage(currentLocale)
+
     Vue.filter('i18n', i18n)
     Vue.filter('i18nDate', i18nDate)
 
@@ -47,13 +59,7 @@ export default {
     Vue.prototype.$i18nDate = i18nDate
     Vue.prototype.$i18nDecToHrs = $i18nDecToHrs
 
+    Vue.prototype.$setLanguage = setLanguage
     Vue.prototype.$getLanguage = () => currentLocale
-
-    Vue.prototype.$setLanguage = locale => {
-      return import(`../i18n/${locale}`).then(catalog => {
-        i18nCatalog = catalog.default
-        currentLocale = locale
-      })
-    }
   }
 }
