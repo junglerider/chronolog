@@ -13,6 +13,7 @@ export const logger = Logger.createLogger({
 });
 
 import { Database } from './Database'
+import { Auth } from './Auth'
 import { Organisation } from './resources/Organisation'
 import { Person } from './resources/Person'
 import { Contact } from './resources/Contact'
@@ -25,6 +26,7 @@ import { TimeLogReport } from './resources/TimeLogReport'
 import { TimeClock } from './resources/TimeClock'
 
 const db = new Database (config, logger)
+const auth = new Auth (config, db, logger)
 const organisation = new Organisation (db, logger)
 const person = new Person (db, logger)
 const contact = new Contact (db, logger)
@@ -118,6 +120,10 @@ class App {
     // health status
     this.app.get ('/health', this.health)
 
+    // authentication
+    this.app.post ('/auth/login', auth.login.bind (auth))
+    this.app.post ('/auth/logout', auth.logout.bind (auth))
+
     // REST resources
     this.app.get ('/organisation', organisation.list.bind (organisation))
     this.app.get ('/organisation/count', organisation.count.bind (organisation))
@@ -157,6 +163,7 @@ class App {
     this.app.get ('/user/:id(\\d+)', user.read.bind (user))
     this.app.put ('/user/:id(\\d+)', user.update.bind (user))
     this.app.delete ('/user/:id(\\d+)', user.delete.bind (user))
+    this.app.put ('/user/:id(\\d+)/password', auth.updatePassword.bind (auth))
 
     this.app.get ('/customer', customer.list.bind (customer))
     this.app.get ('/customer/count', customer.count.bind (customer))

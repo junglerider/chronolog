@@ -38,6 +38,13 @@ export class SingleTable {
     return fields.map (field => field.substr (field.indexOf ('.') + 1) + ' = ?').join (', ')
   }
 
+  /**
+   * List filtered entities
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.list()`)
     try {
@@ -52,6 +59,13 @@ export class SingleTable {
     }
   }
 
+  /**
+   * Count filtered entities
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async count (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.count()`)
     try {
@@ -66,6 +80,13 @@ export class SingleTable {
     }
   }
 
+  /**
+   * Create a new entity
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async create (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.create()`)
     try {
@@ -88,6 +109,13 @@ export class SingleTable {
     }
   }
 
+  /**
+   * Read a new entity
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async read (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.read(${[req.params.id]}))`)
     const sql = `SELECT * FROM ${this.table} WHERE id = ?`
@@ -102,6 +130,13 @@ export class SingleTable {
     }
   }
 
+  /**
+   * Update an existing entity
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async update (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.update(${[req.params.id]})`)
     let status = 400
@@ -120,6 +155,13 @@ export class SingleTable {
     }
   }
 
+  /**
+   * Delete an existing entity
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
   public async delete (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.delete(${[req.params.id]})`)
     try {

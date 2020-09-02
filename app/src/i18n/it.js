@@ -7,9 +7,9 @@ export default new Map([
   ['Italian', 'Italiano'],
   // sidebar ----------------------------------------------
   ['Dashboard', 'Pagina iniziale'],
-  ['Monthly summary and statistics', 'Sommario mensile e statistice'],
+  ['Time clock, status and summary', 'Orologio da controllo, status e sommario'],
   ['Change Password', 'Cambia la password'],
-  ['Change your password', 'Cambia la tua password'],
+  ['Change your password', 'Cambia la password'],
   ['Logout', 'Disconnettersi'],
   ['Forget password and display login form', 'Dimentica la password e visualizza il modulo di accesso'],
   ['Time Sheets', 'Scheda attività'],
@@ -34,9 +34,10 @@ export default new Map([
   ['View project tree and maintain tasks', 'Visualizza la gerarchia del progetto e modifica i compiti'],
   ['Employees', 'Dipendenti'],
   ['Customers', 'Clienti'],
+  ['View/edit customers', 'Visualizza/modifica i clienti'],
   ['Users', 'Utenti'],
   ['User', 'Utento'],
-  ['View/edit employee details and access privileges', 'Visualizza/modifica i dettagli dei dipendenti ed i privilegi di accessso'],
+  ['View/edit users and access privileges', 'Visualizza/modifica gli utenti ed i privilegi di accessso'],
   ['Correct Time Logs', 'Correggi registro orario'],
   ['Amend time log entries of employees', 'Modifica le voci del registro orario dei dipendenti'],
   // data tables  -----------------------------------------

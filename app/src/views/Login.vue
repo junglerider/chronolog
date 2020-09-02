@@ -18,6 +18,7 @@
         v-model="username"
         :label="'User name' | i18n"
         :rules="requiredRule"
+        ref="username"
       ></v-text-field>
       <v-text-field
         v-model="password"
@@ -64,5 +65,8 @@ export default {
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
+  mounted() {
+    this.$refs.username.focus()
+  }
 }
 </script>

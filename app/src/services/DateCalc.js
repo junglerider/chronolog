@@ -28,16 +28,11 @@ const isoDate = (date, withHours) => {
 export default class DateCalc {
 
   static lastDayOfMonth(d) {
-    const date = new Date(d.getTime())
-    date.setMonth(date.getMonth() + 1)
-    date.setDate(0)
-    return date
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0)
   }
 
   static firstDayOfMonth(d) {
-    const date = new Date(d.getTime())
-    date.setDate(1)
-    return date
+    return new Date(d.getFullYear(), d.getMonth(), 1)
   }
 
   static firstDayOfWeek(d) {
@@ -71,7 +66,7 @@ export default class DateCalc {
 
   static getTimeZoneString(d) {
     const date = d || new Date()
-    return date.toLocaleString('en', {timeZoneName: 'long', hour12: false}).substr(20)
+    return date.toLocaleString('en', {timeZoneName: 'long', hour12: false}).substr(19)
   }
 
   static hhmmssToSec(timeString) {

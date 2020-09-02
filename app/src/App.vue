@@ -12,7 +12,7 @@
     >
       <v-list>
 
-        <nav-link link="/" :tooltip="'Monthly summary and statistics' | i18n ">
+        <nav-link link="/" :tooltip="'Time clock, status and summary' | i18n ">
           {{ 'Dashboard' | i18n }}
         </nav-link>
         <nav-link link="/password" :tooltip="'Change your password' | i18n ">
@@ -43,10 +43,10 @@
           {{ 'Reports' | i18n }}
         </nav-link>
         <nav-link>{{ 'Admin' | i18n }}</nav-link>
-        <nav-link link="/customers" :tooltip="'View/edit customer details' | i18n ">
+        <nav-link link="/customers" :tooltip="'View/edit customers' | i18n ">
           {{ 'Customers' | i18n }}
         </nav-link>
-        <nav-link link="/users" :tooltip="'View/edit user details and access privileges' | i18n ">
+        <nav-link link="/users" :tooltip="'View/edit users and access privileges' | i18n ">
           {{ 'Users' | i18n }}
         </nav-link>
         <nav-link link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
