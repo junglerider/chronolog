@@ -1,5 +1,3 @@
-const MSPDAY = 86400000
-
 const pad = (num, length = 2) => {
   return String(num).padStart(length, '0')
 }
@@ -36,22 +34,15 @@ export default class DateCalc {
   }
 
   static firstDayOfWeek(d) {
-    const date = new Date(d.getTime())
-    let day = date.getDay() - 1
-    if (day < 0) day = 0
-    if (day != 0)
-      date.setTime(date.getTime() - (day * MSPDAY))
-    return date
+    const day = d.getDay()
+    const newDay = d.getDate() - day + (day == 0 ? -6 : 1)
+    return new Date(d.getFullYear(), d.getMonth(), newDay)
   }
 
   static lastDayOfWeek(d) {
-    const date = new Date(d.getTime())
-    let day = date.getDay() - 1
-    if (day < 0) day = 0
-    day = 6 - day
-    if (day != 0)
-      date.setTime(date.getTime() + (day * MSPDAY))
-    return date
+    const day = d.getDay()
+    const newDay = d.getDate() + (day == 0 ? 0 : 7 - day)
+    return new Date(d.getFullYear(), d.getMonth(), newDay)
   }
 
   static getTimeString(d, style = 'medium') {
