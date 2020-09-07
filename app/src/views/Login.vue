@@ -12,31 +12,35 @@
       <language-menu @changeLanguage="$forceUpdate()" />
     </v-app-bar>
 
-    <v-card :elevation="6" class="login-form">
-      <div class="login-title">chronolog</div>
-      <v-text-field
-        v-model="username"
-        :label="'User name' | i18n"
-        :rules="requiredRule"
-        ref="username"
-      ></v-text-field>
-      <v-text-field
-        v-model="password"
-        :label="'Password' | i18n"
-        :rules="requiredRule"
-        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        :type="showPassword ? 'text' : 'password'"
-        @click:append="showPassword = !showPassword"
-      ></v-text-field>
-      <v-btn color="primary">{{ 'Login' | i18n }} </v-btn>
-    </v-card>
+    <v-form ref="form">
+      <v-card :elevation="6" class="login-form" @keyup="keyControl">
+        <div class="login-title">chronolog</div>
+        <v-text-field
+          v-model="username"
+          :label="'User name' | i18n"
+          :rules="requiredRule"
+          ref="username"
+        ></v-text-field>
+        <v-text-field
+          v-model="password"
+          :label="'Password' | i18n"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          @click:append="showPassword = !showPassword"
+        ></v-text-field>
+        <v-alert v-model="authError" text outlined type="error">
+          {{ 'User name or password not accepted.' | i18n }}
+        </v-alert>
+        <v-btn color="primary" @click="login" class="mt-2">{{ 'Login' | i18n }} </v-btn>
+      </v-card>
+    </v-form>
   </v-app>
 </template>
 
 <style scoped>
   .login-form {
     margin: auto;
-    margin-top: 20%;
+    margin-top: 30vh;
     width: 600px;
     padding: 20px;
   }
@@ -52,6 +56,7 @@
 
 <script>
 import LanguageMenu from '../components/LanguageMenu'
+import api from '../services/api'
 
 export default {
   components: {
@@ -61,8 +66,35 @@ export default {
     return {
       username: '',
       password: '',
+      authError: false,
       showPassword: false,
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
+    }
+  },
+  methods: {
+    async login() {
+      if (!this.$refs.form.validate()) {
+        return
+      }
+      this.authError = false
+      try {
+        await api.login({
+          username: this.username,
+          password: this.password
+        })
+        this.$router.push('/')
+      } catch (err) {
+        if (err.response && (err.response.status == 401 || err.response.status == 404)) {
+          this.authError = true
+        } else {
+          console.log(err)
+        }
+      }
+    },
+    keyControl(val) {
+      if (val.key == 'Enter') {
+        this.login()
+      }
     }
   },
   mounted() {

@@ -70,12 +70,13 @@
 
 <script>
 import _ from 'lodash'
-import api, {nullIt} from '../services/api'
+import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 
 export default {
 
   data() {
+
     return {
       user: { id: 'new', is_active: 1 },
       previousUser: { id: 'new' },
@@ -93,11 +94,9 @@ export default {
     updatedAt() {
       return this.user.updated_at ? this.$i18nDate(this.user.updated_at) : null
     },
-
     createdAt() {
       return this.user.created_at ? this.$i18nDate(this.user.created_at) : null
     },
-
     lastVisit() {
       return this.user.last_visit ? this.$i18nDate(this.user.last_visit) : null
     }
@@ -115,13 +114,13 @@ export default {
         try {
           if (this.user.id == 'new') {
             this.user.created_at = DateCalc.isoDateTime()
-            response = await api.post('/user', nullIt(this.user))
+            response = await api.post('/user', api.nullIt(this.user))
             if (response.status === 201) {
               this.user.id = response.data.id
             }
           } else {
             this.user.updated_at = DateCalc.isoDateTime()
-            response = await api.put(`/user/${this.user.id}`, nullIt(this.user))
+            response = await api.put(`/user/${this.user.id}`, api.nullIt(this.user))
           }
           this.showMessage('OK - Saved!')
           this.previousUser = _.cloneDeep(this.user)

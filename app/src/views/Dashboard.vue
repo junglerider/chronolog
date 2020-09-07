@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col md="12">
-        <div class="page-title">{{ 'Welcome back' | i18n }}, {{ user.nick_name || user.first_name }}!</div>
+        <div class="page-title">{{ 'Welcome back' | i18n }}{{ getUserName() }}!</div>
         {{ todaysDate }}
 
       </v-col>
@@ -105,8 +105,7 @@ export default {
   data() {
     return {
       today: DateCalc.isoDate(),
-      userId: 1,
-      user: {},
+      user: api.user,
       isPresent: false,
       arrivalTime: '-',
       workingTime: 0,
@@ -124,7 +123,7 @@ export default {
   methods: {
 
     async punchTheClock() {
-      const timeClockStatus = await TimeClock.punch(this.userId)
+      const timeClockStatus = await TimeClock.punch(this.user.id)
       console.log(timeClockStatus)
       this.updatePunchClock(timeClockStatus)
     },
@@ -141,6 +140,13 @@ export default {
       this.messageColor = color
       this.message = true
     },
+
+    getUserName() {
+      if (this.user.name) {
+        return ', ' + (this.user.name.split(' '))[0]
+      }
+      return ''
+    }
   },
 
   computed: {
@@ -156,15 +162,13 @@ export default {
     try {
       const startOfWeek = DateCalc.isoDate(DateCalc.firstDayOfWeek(new Date()))
       const startOfMonth = DateCalc.isoDate(DateCalc.firstDayOfMonth(new Date()))
-      let response = await api.get(`/user/${this.userId}`)
-      this.user = response.data
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][eq]=${this.today}`)
+      let response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.user.id}&filter[date][eq]=${this.today}`)
       this.timeSheet.hoursToday = response.data.duration
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${startOfWeek}`)
+      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.user.id}&filter[date][gte]=${startOfWeek}`)
       this.timeSheet.hoursThisWeek = response.data.duration
-      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.userId}&filter[date][gte]=${startOfMonth}`)
+      response = await api.get(`/timelog/sum?filter[user_id][eq]=${this.user.id}&filter[date][gte]=${startOfMonth}`)
       this.timeSheet.hoursThisMonth = response.data.duration
-      const timeClockStatus = await TimeClock.read(this.userId, this.today)
+      const timeClockStatus = await TimeClock.read(this.user.id, this.today)
       await this.updatePunchClock(timeClockStatus)
     } catch(e) {
       this.showMessage('Record could not be loaded.', 'error')

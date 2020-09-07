@@ -80,7 +80,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../services/api'
+import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 
 export default {
@@ -156,13 +156,13 @@ export default {
         try {
           if (this.task.id == 'new') {
             this.task.created_at = DateCalc.isoDateTime()
-            const response = await api.post('/task', nullIt(this.task))
+            const response = await api.post('/task', api.nullIt(this.task))
             if (response.status === 201) {
               this.task.id = response.data.id
             }
           } else {
             this.task.updated_at = DateCalc.isoDateTime()
-            await api.put(`/task/${this.task.id}`, nullIt(this.task))
+            await api.put(`/task/${this.task.id}`, api.nullIt(this.task))
           }
           this.showMessage('OK - Saved!')
           this.previousTask = _.cloneDeep(this.task)

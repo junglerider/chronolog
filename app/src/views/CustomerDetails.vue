@@ -61,7 +61,7 @@
 
 <script>
 import _ from 'lodash'
-import api, {nullIt} from '../services/api'
+import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 
 export default {
@@ -107,13 +107,13 @@ export default {
         try {
           if (this.customer.id == 'new') {
             this.customer.created_at = DateCalc.isoDateTime()
-            const response = await api.post('/customer', nullIt(this.customer))
+            const response = await api.post('/customer', api.nullIt(this.customer))
             if (response.status === 201) {
               this.customer.id = response.data.id
             }
           } else {
             this.customer.updated_at = DateCalc.isoDateTime()
-            await api.put(`/customer/${this.customer.id}`, nullIt(this.customer))
+            await api.put(`/customer/${this.customer.id}`, api.nullIt(this.customer))
           }
           this.showMessage('OK - Saved!')
           this.previouscustomer = _.cloneDeep(this.customer)

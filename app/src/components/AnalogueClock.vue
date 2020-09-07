@@ -97,7 +97,7 @@
 
 <script>
 export default {
-  name: 'StationClock',
+  name: 'AnalogueClock',
 
   props: {
     utcOffset: { type: Number, default: null },

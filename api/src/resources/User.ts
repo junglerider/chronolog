@@ -36,8 +36,13 @@ export class User extends SingleTable {
     this.logger.trace (`user.read(${[req.params.id]}))`)
     const sql = `SELECT u.*, p.first_name, p.last_name, p.nick_name from user u JOIN person p on p.id = u.person_id WHERE u.id = ?`
     try {
-      let row = await this.db.get (sql, [req.params.id])
-      row ? res.status (200).json (row) : res.status (404).json ()
+      let row: any = await this.db.get (sql, [req.params.id])
+      if (row) {
+        delete row.password
+        res.status (200).json (row)
+      } else {
+        res.status (404).json ()
+      }
       next ()
     }
     catch (err) {

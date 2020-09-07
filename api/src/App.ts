@@ -72,26 +72,28 @@ class App {
   // handle unrecognized routes
   private notFoundHandler (req: Request, res: Response, next: NextFunction): void {
     if (! res.headersSent) {
-      res.status (400).json ( { error: 'Unknown command or resource' })
+      const msg = 'Unknown command or resource'
+      logger.debug (msg)
+      res.status (400).json ( { error: msg })
     }
   }
 
   // handle errors and ouput messages with optional HTTP status code, e.g. "400:Invalid"
   private errorHandler (err: Error, req: Request, res: Response, next: NextFunction): void {
-    logger.error (err)
+    let statusCode = 500
     if (! res.headersSent) {
       let message = err.message
-      let statusCode = '500'
       let parsedErrorMessage = message.match (/^(\d\d\d):(.*)/)
       if (parsedErrorMessage) {
-        statusCode = parsedErrorMessage [1]
+        statusCode = parseInt(parsedErrorMessage [1])
         message = parsedErrorMessage [2]
       }
       if (message.includes('constraint failed')) {
-        statusCode = '409'
+        statusCode = 409
       }
-      res.status (parseInt (statusCode)). json ( { error: message }).end ()
+      res.status (statusCode). json ( { error: message }).end ()
     }
+    statusCode >= 500 ? logger.error (err) : logger.warn (err.message)
   }
 
   private mountRoutes (): void {
@@ -123,84 +125,95 @@ class App {
     // authentication
     this.app.post ('/auth/login', auth.login.bind (auth))
     this.app.post ('/auth/logout', auth.logout.bind (auth))
+    this.app.get ('/auth/session', auth.session.bind (auth))
+
+    const api  = express.Router()
+    api.use ((req: Request, res: Response, next: NextFunction): void => {
+      if (!auth.authenticate(req)) {
+        next (new Error('401:Authentication error'))
+      } else {
+        next()
+      }
+    })
 
     // REST resources
-    this.app.get ('/organisation', organisation.list.bind (organisation))
-    this.app.get ('/organisation/count', organisation.count.bind (organisation))
-    this.app.post ('/organisation', organisation.create.bind (organisation))
-    this.app.put ('/organisation/:id(\\d+)', organisation.update.bind (organisation))
-    this.app.get ('/organisation/:id(\\d+)', organisation.read.bind (organisation))
-    this.app.delete ('/organisation/:id(\\d+)', organisation.delete.bind (organisation))
-    this.app.get ('/organisation/:id(\\d+)/persons', organisation.getPersons.bind (organisation))
-    this.app.get ('/organisation/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
+    api.get ('/organisation', organisation.list.bind (organisation))
+    api.get ('/organisation/count', organisation.count.bind (organisation))
+    api.post ('/organisation', organisation.create.bind (organisation))
+    api.put ('/organisation/:id(\\d+)', organisation.update.bind (organisation))
+    api.get ('/organisation/:id(\\d+)', organisation.read.bind (organisation))
+    api.delete ('/organisation/:id(\\d+)', organisation.delete.bind (organisation))
+    api.get ('/organisation/:id(\\d+)/persons', organisation.getPersons.bind (organisation))
+    api.get ('/organisation/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
 
-    this.app.get ('/person', person.list.bind (person))
-    this.app.get ('/person/count', person.count.bind (person))
-    this.app.post ('/person', person.create.bind (person))
-    this.app.put ('/person/:id(\\d+)', person.update.bind (person))
-    this.app.get ('/person/:id(\\d+)', person.read.bind (person))
-    this.app.delete ('/person/:id(\\d+)', person.delete.bind (person))
-    this.app.get ('/person/:id(\\d+)/organisations', person.getOrganisations.bind (person))
-    this.app.get ('/person/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
+    api.get ('/person', person.list.bind (person))
+    api.get ('/person/count', person.count.bind (person))
+    api.post ('/person', person.create.bind (person))
+    api.put ('/person/:id(\\d+)', person.update.bind (person))
+    api.get ('/person/:id(\\d+)', person.read.bind (person))
+    api.delete ('/person/:id(\\d+)', person.delete.bind (person))
+    api.get ('/person/:id(\\d+)/organisations', person.getOrganisations.bind (person))
+    api.get ('/person/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
 
-    this.app.get ('/contact', contact.list.bind (contact))
-    this.app.get ('/contact/count', contact.count.bind (contact))
-    this.app.post ('/contact', contact.create.bind (contact))
-    this.app.get ('/contact/:id(\\d+)', contact.read.bind (contact))
-    this.app.put ('/contact/:id(\\d+)', contact.update.bind (contact))
-    this.app.delete ('/contact/:id(\\d+)', contact.delete.bind (contact))
+    api.get ('/contact', contact.list.bind (contact))
+    api.get ('/contact/count', contact.count.bind (contact))
+    api.post ('/contact', contact.create.bind (contact))
+    api.get ('/contact/:id(\\d+)', contact.read.bind (contact))
+    api.put ('/contact/:id(\\d+)', contact.update.bind (contact))
+    api.delete ('/contact/:id(\\d+)', contact.delete.bind (contact))
 
-    this.app.get ('/employee', employee.list.bind (employee))
-    this.app.get ('/employee/count', employee.count.bind (employee))
-    this.app.post ('/employee', employee.create.bind (employee))
-    this.app.get ('/employee/:id(\\d+)', employee.read.bind (employee))
-    this.app.put ('/employee/:id(\\d+)', employee.update.bind (employee))
-    this.app.delete ('/employee/:id(\\d+)', employee.delete.bind (employee))
+    api.get ('/employee', employee.list.bind (employee))
+    api.get ('/employee/count', employee.count.bind (employee))
+    api.post ('/employee', employee.create.bind (employee))
+    api.get ('/employee/:id(\\d+)', employee.read.bind (employee))
+    api.put ('/employee/:id(\\d+)', employee.update.bind (employee))
+    api.delete ('/employee/:id(\\d+)', employee.delete.bind (employee))
 
-    this.app.get ('/user', user.list.bind (user))
-    this.app.get ('/user/count', user.count.bind (user))
-    this.app.post ('/user', user.create.bind (user))
-    this.app.get ('/user/:id(\\d+)', user.read.bind (user))
-    this.app.put ('/user/:id(\\d+)', user.update.bind (user))
-    this.app.delete ('/user/:id(\\d+)', user.delete.bind (user))
-    this.app.put ('/user/:id(\\d+)/password', auth.updatePassword.bind (auth))
+    api.get ('/user', user.list.bind (user))
+    api.get ('/user/count', user.count.bind (user))
+    api.post ('/user', user.create.bind (user))
+    api.get ('/user/:id(\\d+)', user.read.bind (user))
+    api.put ('/user/:id(\\d+)', user.update.bind (user))
+    api.delete ('/user/:id(\\d+)', user.delete.bind (user))
+    api.put ('/user/:id(\\d+)/password', auth.updatePassword.bind (auth))
 
-    this.app.get ('/customer', customer.list.bind (customer))
-    this.app.get ('/customer/count', customer.count.bind (customer))
-    this.app.post ('/customer', customer.create.bind (customer))
-    this.app.get ('/customer/:id(\\d+)', customer.read.bind (customer))
-    this.app.put ('/customer/:id(\\d+)', customer.update.bind (customer))
-    this.app.delete ('/customer/:id(\\d+)', customer.delete.bind (customer))
-    this.app.get ('/customer/task-count', customer.taskCount.bind (customer))
+    api.get ('/customer', customer.list.bind (customer))
+    api.get ('/customer/count', customer.count.bind (customer))
+    api.post ('/customer', customer.create.bind (customer))
+    api.get ('/customer/:id(\\d+)', customer.read.bind (customer))
+    api.put ('/customer/:id(\\d+)', customer.update.bind (customer))
+    api.delete ('/customer/:id(\\d+)', customer.delete.bind (customer))
+    api.get ('/customer/task-count', customer.taskCount.bind (customer))
 
-    this.app.get ('/task', task.list.bind (task))
-    this.app.get ('/task/count', task.count.bind (task))
-    this.app.post ('/task', task.create.bind (task))
-    this.app.get ('/task/:id(\\d+)', task.read.bind (task))
-    this.app.put ('/task/:id(\\d+)', task.update.bind (task))
-    this.app.delete ('/task/:id(\\d+)', task.delete.bind (task))
-    this.app.get ('/todo/:userId(\\d+)', task.todoList.bind (task))
-    this.app.get ('/todo/:userId(\\d+)/count', task.todoCount.bind (task))
-    this.app.get ('/todo/:userId(\\d+)/projects', task.projectList.bind (task))
+    api.get ('/task', task.list.bind (task))
+    api.get ('/task/count', task.count.bind (task))
+    api.post ('/task', task.create.bind (task))
+    api.get ('/task/:id(\\d+)', task.read.bind (task))
+    api.put ('/task/:id(\\d+)', task.update.bind (task))
+    api.delete ('/task/:id(\\d+)', task.delete.bind (task))
+    api.get ('/todo/:userId(\\d+)', task.todoList.bind (task))
+    api.get ('/todo/:userId(\\d+)/count', task.todoCount.bind (task))
+    api.get ('/todo/:userId(\\d+)/projects', task.projectList.bind (task))
 
-    this.app.get ('/timelog', timelog.list.bind (timelog))
-    this.app.get ('/timelog/count', timelog.count.bind (timelog))
-    this.app.get ('/timelog/daily', timelog.daily.bind (timelog))
-    this.app.get ('/timelog/sum', timelog.sum.bind (timelog))
-    this.app.post ('/timelog', timelog.create.bind (timelog))
-    this.app.get ('/timelog/:id(\\d+)', timelog.read.bind (timelog))
-    this.app.put ('/timelog/:id(\\d+)', timelog.update.bind (timelog))
-    this.app.delete ('/timelog/:id(\\d+)', timelog.delete.bind (timelog))
+    api.get ('/timelog', timelog.list.bind (timelog))
+    api.get ('/timelog/count', timelog.count.bind (timelog))
+    api.get ('/timelog/daily', timelog.daily.bind (timelog))
+    api.get ('/timelog/sum', timelog.sum.bind (timelog))
+    api.post ('/timelog', timelog.create.bind (timelog))
+    api.get ('/timelog/:id(\\d+)', timelog.read.bind (timelog))
+    api.put ('/timelog/:id(\\d+)', timelog.update.bind (timelog))
+    api.delete ('/timelog/:id(\\d+)', timelog.delete.bind (timelog))
 
-    this.app.get ('/timelog/report', timelogReport.list.bind (timelogReport))
+    api.get ('/timelog/report', timelogReport.list.bind (timelogReport))
 
-    this.app.get ('/timeclock', timeclock.list.bind (timeclock))
-    this.app.get ('/timeclock/count', timeclock.count.bind (timeclock))
-    this.app.post ('/timeclock', timeclock.create.bind (timeclock))
-    this.app.get ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.read.bind (timeclock))
-    this.app.put ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.update.bind (timeclock))
-    this.app.delete ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.delete.bind (timeclock))
+    api.get ('/timeclock', timeclock.list.bind (timeclock))
+    api.get ('/timeclock/count', timeclock.count.bind (timeclock))
+    api.post ('/timeclock', timeclock.create.bind (timeclock))
+    api.get ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.read.bind (timeclock))
+    api.put ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.update.bind (timeclock))
+    api.delete ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.delete.bind (timeclock))
 
+    this.app.use ('/api', api)
     this.app.use (this.notFoundHandler)
     this.app.use (this.errorHandler)
   }

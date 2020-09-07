@@ -97,7 +97,7 @@ import _ from 'lodash'
 import DateInput from '../components/DateInput'
 import PhoneList from '../components/PhoneList'
 import EmployeeList from '../components/EmployeeList'
-import api, { nullIt } from '../services/api'
+import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 import countries from '../i18n/countries.json'
 
@@ -162,12 +162,12 @@ export default {
           const id = this.person.id
           this.person.updated_at = DateCalc.isoDate()
           if (id === 'new') {
-            const response = await api.post(`/person`, nullIt(this.person))
+            const response = await api.post(`/person`, api.nullIt(this.person))
             if (response.status === 201) {
               this.person.id = response.data.id
             }
           } else {
-            await api.put(`/person/${id}`, nullIt(this.person))
+            await api.put(`/person/${id}`, api.nullIt(this.person))
           }
           isDataWritten = true
           this.previousPerson = _.clone(this.person)

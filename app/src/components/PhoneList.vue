@@ -36,7 +36,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../services/api'
+import api from '../services/api'
 
 export default {
   name: 'PhoneList',
@@ -84,13 +84,13 @@ export default {
       let recordsWritten = 0
       for (let phoneItem of this.phoneList) {
         if (typeof phoneItem.id === 'string' && phoneItem.id.startsWith('new')) {
-          const response = await api.post('/contact', nullIt(phoneItem))
+          const response = await api.post('/contact', api.nullIt(phoneItem))
           if (response.status === 201) {
             phoneItem.id = response.data.id
             recordsWritten++
           }
         } else if (!this.isInList(this.previousPhoneList, phoneItem)) {
-          await api.put(`/contact/${phoneItem.id}`, nullIt(phoneItem))
+          await api.put(`/contact/${phoneItem.id}`, api.nullIt(phoneItem))
           recordsWritten++
         }
       }

@@ -62,7 +62,6 @@ export default class TimeClock {
         duration += DateCalc.hhmmssToSec(jsonLog[i + 1]) - DateCalc.hhmmssToSec(jsonLog[i])
       }
     }
-    //console.log(`duration=${DateCalc.secToHhmmss(duration)}, (${duration}ms=${Math.round(duration/36) / 100})`)
     duration = Math.round(duration/36) / 100
     return duration
   }

@@ -46,7 +46,7 @@
 
 <script>
 import _ from 'lodash'
-import api, { nullIt } from '../services/api'
+import api from '../services/api'
 import AutoComplete from './AutoComplete'
 
 export default {
@@ -121,13 +121,13 @@ export default {
       let recordsWritten = 0
       for (let employee of this.employeeList) {
         if (typeof employee.employee_id === 'string' && employee.employee_id.startsWith('new')) {
-          const response = await api.post('/employee', nullIt(employee))
+          const response = await api.post('/employee', api.nullIt(employee))
           if (response.status === 201) {
             employee.employee_id = response.data.id
             recordsWritten++
           }
         } else if (!this.isInList(this.previousEmployeeList, employee)) {
-          await api.put(`/employee/${employee.employee_id}`, nullIt(employee))
+          await api.put(`/employee/${employee.employee_id}`, api.nullIt(employee))
           recordsWritten++
         }
       }

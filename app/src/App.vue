@@ -1,7 +1,7 @@
 <template>
   <div v-if="isBlankPage()">
     <!-- reload contents when language changes -->
-    <router-view :key="$getLanguage()"/>
+    <router-view :key="$getLanguage() + user.id"/>
   </div>
   <v-app v-else id="chronolog">
     <v-navigation-drawer
@@ -17,9 +17,6 @@
         </nav-link>
         <nav-link link="/password" :tooltip="'Change your password' | i18n ">
           {{ 'Change Password' | i18n }}
-        </nav-link>
-        <nav-link link="/logout" :tooltip="'Forget password and display login form' | i18n ">
-          {{ 'Logout' | i18n }}
         </nav-link>
         <nav-link>{{ 'Time Sheets' | i18n }}</nav-link>
         <nav-link link="/time-sheet" :tooltip="'Enter working time and hours on a daily basis' | i18n ">
@@ -55,7 +52,6 @@
         <nav-link link="/time-logs" :tooltip="'Amend time log entries of employees' | i18n ">
           {{ 'Correct Time Logs' | i18n }}
         </nav-link>
-
       </v-list>
     </v-navigation-drawer>
 
@@ -68,14 +64,11 @@
       <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="app-title">chronolog</v-toolbar-title>
       <v-toolbar-title class="app-text">Time &amp; Project Management</v-toolbar-title>
-
       <v-spacer></v-spacer>
 
       <simple-clock />
 
-      <v-btn icon color="white" class=" ml-4 mr-2">
-        <v-icon color="white">mdi-account-circle</v-icon>
-      </v-btn>
+      <user-menu :key="$getLanguage() + user.id"/>
 
       <language-menu @changeLanguage="$forceUpdate()" />
 
@@ -84,7 +77,7 @@
     <v-main>
       <v-container fluid>
         <!-- reload contents when language changes -->
-        <router-view :key="$getLanguage()"/>
+        <router-view v-if="user.id" :key="$getLanguage() + user.id"/>
       </v-container>
     </v-main>
 
@@ -134,21 +127,31 @@
 import SimpleClock from './components/SimpleClock'
 import NavLink from './components/NavLink'
 import LanguageMenu from './components/LanguageMenu'
+import UserMenu from './components/UserMenu'
+import api from './services/api'
 
 export default {
   name: 'App',
   components: {
     SimpleClock,
     NavLink,
-    LanguageMenu
+    LanguageMenu,
+    UserMenu
   },
   data() {
     return {
       drawer: null,
+      user: api.user,
   }},
   methods: {
     isBlankPage() {
       return this.$route.path.startsWith('/reports') || this.$route.path.startsWith('/login')
+    }
+  },
+  async beforeUpdate() {
+    if (!this.user.id) {
+      await api.reloadSession()
+      this.user = api.user
     }
   }
 }
