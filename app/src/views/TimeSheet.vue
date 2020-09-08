@@ -142,7 +142,7 @@ export default {
   data() {
     return {
       date: this.$route.params.date || DateCalc.isoDate(),
-      userId: 1,
+      user: api.user,
       log: [],
       selected: [],
       tasks: [],
@@ -178,7 +178,7 @@ export default {
 
     async getData() {
       try {
-        const response = await api.get(`/timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.userId}`)
+        const response = await api.get(`/timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.user.id}`)
         this.log = response.data
         this.previousLog = _.cloneDeep(this.log)
         this.onChangeHours()
@@ -190,7 +190,7 @@ export default {
     onAdd() {
       this.log.push({
         id: _.uniqueId('new'),
-        user_id: this.userId,
+        user_id: this.user.id,
         date: this.date,
       })
       this.$nextTick(() => this.$refs.hours[this.$refs.hours.length-1].focus())
@@ -300,7 +300,7 @@ export default {
   async mounted() {
     this.getData()
     try {
-      const response = await api.get(`/todo/${this.userId}?order=id:desc`)
+      const response = await api.get(`/todo/${this.user.id}?order=id:desc`)
       this.tasks = response.data.filter(task => task.is_active)
       this.taskIds = this.tasks.map(item => item.id)
     } catch(e) {

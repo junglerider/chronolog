@@ -68,8 +68,6 @@ import DateCalc from '../services/DateCalc.js'
 import reports from '../reports'
 import api from '../services/api'
 
-const MSPDAY = 86400000
-
 export default {
   components: {
     DateInput,
@@ -96,7 +94,7 @@ export default {
         period: 'lastMonth',
         start: null,
         end: null,
-        userId: 1,
+        userId: api.user.id,
         customerId: 0,
       }
     }
@@ -119,8 +117,8 @@ export default {
           endDate = DateCalc.lastDayOfWeek(endDate)
           break
         case 'lastWeek':
-          startDate.setTime(startDate.getTime() - (7 * MSPDAY))
-          endDate.setTime(endDate.getTime() - (7 * MSPDAY))
+          startDate.setDate(startDate.getDate() - 7)
+          endDate.setDate(endDate.getDate() - 7)
           startDate = DateCalc.firstDayOfWeek(startDate)
           endDate = DateCalc.lastDayOfWeek(endDate)
           break
@@ -145,18 +143,12 @@ export default {
           endDate = DateCalc.lastDayOfMonth(endDate)
           break
         case 'thisYear':
-          startDate.setDate(1)
-          startDate.setMonth(0)
-          endDate.setMonth(11)
-          endDate.setDate(31)
+          startDate = new Date(startDate.getFullYear(), 0, 1)
+          endDate = new Date(endDate.getFullYear(), 11, 31)
           break
         case 'lastYear':
-          startDate.setYear(startDate.getYear()+1899)
-          startDate.setMonth(0)
-          startDate.setDate(1)
-          endDate.setYear(endDate.getYear()+1899)
-          endDate.setMonth(11)
-          endDate.setDate(31)
+          startDate = new Date(startDate.getFullYear() - 1, 0, 1)
+          endDate = new Date(endDate.getFullYear() - 1, 11, 31)
           break
         default: return
       }

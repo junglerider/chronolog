@@ -77,7 +77,7 @@
     <v-main>
       <v-container fluid>
         <!-- reload contents when language changes -->
-        <router-view v-if="user.id" :key="$getLanguage() + user.id"/>
+        <router-view :key="$getLanguage() + user.id"/>
       </v-container>
     </v-main>
 

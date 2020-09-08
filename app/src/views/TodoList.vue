@@ -6,7 +6,7 @@
     <data-list
       :title="'Todo List' | i18n"
       :headers="headers"
-      :apiBaseUrl="`/todo/${userId}`"
+      :apiBaseUrl="`/todo/${user.id}`"
       uiBaseUrl="/todo"
       :onGetData="getData"
       :onDeleteData="onDelete"
@@ -25,7 +25,7 @@
 
     data() {
       return {
-        userId: 1,
+        user: api.user,
         deletionError: false,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },
@@ -44,7 +44,7 @@
       async getData(options) {
         const sortDirection = options.sortDesc[0] ? 'desc' : 'asc'
         const sortClause = options.sortBy[0] ? `?order=${options.sortBy[0]}:${sortDirection}` : ''
-        const response = await api.get(`/todo/${this.userId}${sortClause}`)
+        const response = await api.get(`/todo/${this.user.id}${sortClause}`)
         return response.data.map(record => {
           return {
             ...record,

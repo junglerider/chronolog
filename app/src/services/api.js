@@ -24,10 +24,6 @@ api.interceptors.response.use(response => {
   return Promise.reject(error)
 });
 
-// reload session data if not on login page
-(async () => {
-})();
-
 const userApi = {
 
   request: (...args) => api.request(...args),

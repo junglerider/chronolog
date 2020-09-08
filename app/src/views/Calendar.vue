@@ -61,7 +61,7 @@ import api from '../services/api'
 
     data: () => ({
       focus: '',
-      userId: 1,
+      user: api.user,
       totalHours: 0,
       events: [],
     }),
@@ -88,7 +88,7 @@ import api from '../services/api'
       },
 
       async onChange(val) {
-        let url = `/timelog/daily?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+        let url = `/timelog/daily?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
           let response = await api.get(url)
           this.events = []
@@ -103,7 +103,7 @@ import api from '../services/api'
             })
           }
           this.totalHours = totalHours
-          url = `/timeclock?filter[user_id]=${this.userId}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
+          url = `/timeclock?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
           response = await api.get(url)
           for (let timeclock of response.data) {
             this.events.push({

@@ -87,7 +87,7 @@ export default {
 
   data() {
     return {
-      userId: 1,
+      user: api.user,
       task: { id: 'new' },
       previousTask: { id: 'new' },
       projects: [],
@@ -186,14 +186,14 @@ export default {
           is_active: 1,
           is_closed: 0,
           is_leaf: 1,
-          user_id: this.userId
+          user_id: this.user.id
         }
       } else {
         response = await api.get(`/task/${this.$route.params.id}`)
         this.task = response.data
         this.previousTask = _.clone(this.task)
       }
-      response = await api.get(`/todo/${this.userId}/projects`)
+      response = await api.get(`/todo/${this.user.id}/projects`)
       this.projects = response.data
       console.log(this.projects)
     } catch(e) {
