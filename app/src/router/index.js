@@ -18,6 +18,9 @@ Vue.use(VueRouter)
     path: '/login',
     component: () => import('../views/Login.vue')
   }, {
+    path: '/password',
+    component: () => import('../views/Password.vue')
+  }, {
     path: '/time-sheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
     component: () => import('../views/TimeSheet.vue')
   }, {

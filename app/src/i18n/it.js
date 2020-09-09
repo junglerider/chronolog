@@ -59,6 +59,7 @@ export default new Map([
   ['Edit', 'Modifica'],
   ['Save', 'Salva'],
   ['Cancel', 'Annulla'],
+  ['Update', 'Aggiorna'],
   ['Reset', 'Ripristina'],
   ['Password', 'Password'],
   ['Login', 'Accedere'],
@@ -164,7 +165,17 @@ export default new Map([
   ['Total visits', 'Numero totale di sessioni'],
   ['Number of time sheet entries', 'Numero di scheda attività'],
   ['This user name already exists.', 'Questo nome utente esiste già.'],
-// reporting --------------------------------------------
+  // login/password ---- ----------------------------------
+  ['Old password', 'Password precedente'],
+  ['New password', 'Nuova password'],
+  ['Retype new password', 'Ripetere la nuova password'],
+  ['Password is identical to previous one', 'La password precedente non può essere riutilizzata'],
+  ['Insufficient password strength', 'La password non è sufficientemente sicura'],
+  ['The retyped password is not the same', 'La password ridigitata non è la stessa'],
+  ['The server did not accept the credentials.', 'Il server non ha accettato le credenziali.'],
+  ['The server could not update the password.', 'Il server non ha potuto aggiornare la password.'],
+  ['Your password has been updated.', 'La tua password è stata aggiornata.'],
+  // reporting --------------------------------------------
   ['Chronological time sheet', 'Scheda attività cronologica'],
   ['Time sheet by task', 'Scheda attività in base ai compiti'],
   ['Generate', 'Creare'],

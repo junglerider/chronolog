@@ -24,12 +24,20 @@
         <v-text-field
           v-model="password"
           :label="'Password' | i18n"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :type="showPassword ? 'text' : 'password'"
-          @click:append="showPassword = !showPassword"
-        ></v-text-field>
+        >
+        <v-btn
+          @click="showPassword = !showPassword"
+          tabindex="-1"
+          icon small color="grey"
+          slot="append"
+        >
+          <v-icon v-if="showPassword" >mdi-eye</v-icon>
+          <v-icon v-if="!showPassword" >mdi-eye-off</v-icon>
+        </v-btn>
+        </v-text-field>
         <v-alert v-model="authError" text outlined type="error">
-          {{ 'User name or password not accepted.' | i18n }}
+          {{ 'The server did not accept the credentials.' | i18n }}
         </v-alert>
         <v-btn color="primary" @click="login" class="mt-2">{{ 'Login' | i18n }} </v-btn>
       </v-card>

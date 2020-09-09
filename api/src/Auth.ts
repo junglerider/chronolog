@@ -154,19 +154,19 @@ export class Auth {
     }
   }
 
-  private isoDate = (date = undefined) => {
+  private isoDate = (date = undefined): string => {
     const pad = num => {
       return (num < 10 ? '0' : '') + String (num)
     }
     if (!date) {
       date = new Date ()
+    }
     return date.getFullYear () +
       '-' + pad(date.getMonth () + 1) +
       '-' + pad(date.getDate ()) +
       ' ' + pad(date.getHours ()) +
       ':' + pad(date.getMinutes ()) +
       ':' + pad(date.getSeconds ())
-    }
   }
 
   /**
@@ -175,7 +175,7 @@ export class Auth {
    * @param user User object from DB
    * @param existingToken the bearer token that was provided in the request header
    */
-  private createSession (user: any, existingToken: string) {
+  private createSession (user: any, existingToken: string): string {
     if (existingToken && this.sessions.has (existingToken)) {
       const session = this.sessions.get (existingToken)
       session.time = Date.now ()
@@ -202,6 +202,15 @@ export class Auth {
     return undefined
   }
 
+  private userIdMatchesLoggedInUser (req: Request, userId: number): boolean {
+    const token = this.getToken (req)
+    if (!token || !this.sessions.has (token)) {
+      return false
+    }
+    const session = this.sessions.get (token)
+    return session.id == userId
+  }
+
   /**
    * Updates the password of a user.
    *
@@ -212,9 +221,17 @@ export class Auth {
   public async updatePassword (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Auth.updatePassword()')
     try {
+      if (!this.userIdMatchesLoggedInUser(req, req.params.id)) {
+        throw new Error (`403:User ${req.params.id} cannot change password of another user`)
+      }
+      let sql = 'SELECT password FROM user WHERE id = ?'
+      let result: any = await this.db.get (sql, [req.params.id])
+      if (!this.compare (req.body.oldPassword || '', result.password)) {
+        throw new Error (`400:Old password of user ${req.params.id} does not match`)
+      }
       const password = this.hash (req.body.password)
-      const sql = 'UPDATE user SET password = ? WHERE id = ?'
-      const result: any = await this.db.run (sql, [password, req.params.id])
+      sql = 'UPDATE user SET password = ? WHERE id = ?'
+      result = await this.db.run (sql, [password, req.params.id])
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {
