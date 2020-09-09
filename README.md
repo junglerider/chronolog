@@ -6,9 +6,21 @@ Time sheet application with TypeScript/Node.js backend and Vue/JavaScript fronte
 
 Disclaimer: This application is currently in alpha stage and not ready for production.
 
+## Install
+
+You need the npm package manager for installation. The API and web application have to be installed separately:
+
+```
+cd api
+npm install
+
+cd ../app
+npm install
+```
+
 ## Build and deploy
 
-The applications runs in a single Docker container. It uses an SQLite database to persist information. To create a production build, run:
+The application runs in a single Docker container. It uses an SQLite database to persist information. To create a production build, run:
 
 ```
 ./build docker
@@ -21,3 +33,10 @@ docker run -d --name chronolog -p 5000:8888 -v /your/db/directory:/home/db chron
 ```
 
 This makes the application available at localhost:5000 and it will look for the chronolog.db file in /your/db/directory.
+
+## Run
+
+```
+http://localhost:5000
+```
+The Chronolog web application at this URL should display a login dialogue. Sample data includes four configured users with the following user names: `enzo`, `james`, `gabriella` and `mehmed`. The passwords are left empty.
