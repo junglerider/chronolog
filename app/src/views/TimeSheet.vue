@@ -1,10 +1,9 @@
 <template>
   <div>
-    <v-toolbar flat color="white">
+    <v-toolbar flat color="white" class="mb-4" height="100px" bottom>
+    <calendar-leaflet :date="date" class="ml-2 mr-4"></calendar-leaflet>
       <div class="page-title">
-        {{ 'Daily time sheet for' | i18n }}
-        {{ new Date(date).toLocaleString('en', {weekday: 'short'}) | i18n }}
-        {{ date | i18nDate }}
+        {{ 'Daily Time Sheet' | i18n }}
       </div>
       <v-btn fab text small class="ml-2" @click="navigate(-1)">
         <v-icon small>mdi-chevron-left</v-icon>
@@ -118,7 +117,7 @@
             </div>
           </v-col>
           <v-col class="col-12 col-sm-10 form-col" align="right">
-            <v-btn color="primary" @click="onSave">
+            <v-btn color="primary" @click="onSave" style="margin-right: -16px">
               <v-icon left>mdi-content-save</v-icon>
               {{ 'Save' | i18n }}
             </v-btn>
@@ -136,9 +135,12 @@
 import _ from 'lodash'
 import api from '../services/api'
 import DateCalc from '../services/DateCalc'
+import CalendarLeaflet from '../components/CalendarLeaflet'
 
 export default {
-
+  components: {
+    CalendarLeaflet,
+  },
   data() {
     return {
       date: this.$route.params.date || DateCalc.isoDate(),
@@ -160,22 +162,18 @@ export default {
       ],
     }
   },
-
   watch: {
     $route() {
       this.date = this.$route.params.date || DateCalc.isoDate()
       this.getData()
     }
   },
-
   methods: {
-
     navigate(days) {
       const newDate = (new Date(this.date))
       newDate.setDate(newDate.getDate() + days)
       this.$router.push(`/time-sheet/${DateCalc.isoDate(newDate)}`)
     },
-
     async getData() {
       try {
         const response = await api.get(`/timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.user.id}`)
@@ -186,7 +184,6 @@ export default {
         console.error(e)
       }
     },
-
     onAdd() {
       this.log.push({
         id: _.uniqueId('new'),
@@ -195,11 +192,9 @@ export default {
       })
       this.$nextTick(() => this.$refs.hours[this.$refs.hours.length-1].focus())
     },
-
     remove(itemId) {
       this.log = this.log.filter(item => item.id !== itemId)
     },
-
     async onDelete() {
       try {
         for (let id of this.selected) {
@@ -214,7 +209,6 @@ export default {
       this.getData()
       this.deleteDialog = false
     },
-
     onTaskSelect(taskId, logItem) {
       for (let task of this.tasks) {
         if (task.id === taskId) {
@@ -223,7 +217,6 @@ export default {
         }
       }
     },
-
     isNew(log) {
       return (typeof log.id === 'string') && log.id.startsWith('new')
     },
@@ -231,7 +224,6 @@ export default {
     onChangeHours() {
       this.totalHours = this.log.reduce((total, item) => total + (Number(item.duration) || 0), 0)
     },
-
     async onSave() {
       if (!this.$refs.form.validate()) {
         return
@@ -266,7 +258,6 @@ export default {
       }
       this.isSaving = false
     },
-
     isInList(list, item) {
       for (let listItem of list) {
         if (_.isEqual(listItem, item)) {
@@ -275,13 +266,11 @@ export default {
       }
       return false
     },
-
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
       this.message = true
     },
-
     keyControl(val) {
       switch (val.key) {
         case 'Insert':
@@ -296,7 +285,6 @@ export default {
       }
     }
   },
-
   async mounted() {
     this.getData()
     try {
