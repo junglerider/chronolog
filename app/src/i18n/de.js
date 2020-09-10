@@ -17,6 +17,8 @@ export default new Map([
   ['Enter working time and hours on a daily basis', 'Tägliche Arbeitsstunden und Zeiterfassung'],
   ['Monthly Overview', 'Monatsüberblick'],
   ['See working time entries for a whole month', 'Anzeige der Arbeitsstunden für den ganzen Monat'],
+  ['Weekly Overview', 'Wochenüberblick'],
+  ['See working time entries for a week', 'Wöchentliche Übersicht der Arbeitsstunden'],
   ['Todo List', 'Aufgabenliste'],
   ['See/edit todo list, add tasks', 'Aufgabenliste ansehen und ändern'],
   ['Contacts', 'Kontakte'],

@@ -58,35 +58,28 @@
 import api from '../services/api'
 
   export default {
-
     data: () => ({
       focus: '',
       user: api.user,
       totalHours: 0,
       events: [],
     }),
-
     mounted () {
       this.$refs.calendar.checkChange()
     },
     methods: {
-
       setToday () {
         this.focus = ''
       },
-
       prev () {
         this.$refs.calendar.prev()
       },
-
       next () {
         this.$refs.calendar.next()
       },
-
       getEventColor (event) {
         return event.color
       },
-
       async onChange(val) {
         let url = `/timelog/daily?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
@@ -113,11 +106,10 @@ import api from '../services/api'
               color: 'indigo',
             })
           }
-        } catch (e) {
-          console.error(e)
+        } catch (err) {
+          console.error(err)
         }
       },
-
       onClick(val) {
         this.$router.push(`/time-sheet/${val.date}`)
       }

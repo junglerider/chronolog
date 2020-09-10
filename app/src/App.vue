@@ -22,7 +22,10 @@
         <nav-link link="/time-sheet" :tooltip="'Enter working time and hours on a daily basis' | i18n ">
           {{ 'Edit Time Sheet' | i18n }}
         </nav-link>
-        <nav-link link="/calendar" :tooltip="'See working time entries for a whole month' | i18n">
+        <nav-link link="/weekly-overview" :tooltip="'See working time entries for a week' | i18n">
+          {{ 'Weekly Overview' | i18n }}
+        </nav-link>
+        <nav-link link="/monthly-overview" :tooltip="'See working time entries for a whole month' | i18n">
           {{ 'Monthly Overview' | i18n }}
         </nav-link>
         <nav-link link="/todo" :tooltip="'See/edit todo list, add tasks' | i18n">

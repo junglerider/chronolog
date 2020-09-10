@@ -24,8 +24,11 @@ Vue.use(VueRouter)
     path: '/time-sheet/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)?',
     component: () => import('../views/TimeSheet.vue')
   }, {
-    path: '/calendar',
-    component: () => import('../views/Calendar.vue')
+    path: '/weekly-overview',
+    component: () => import('../views/TimeSheetWeekly.vue')
+  }, {
+    path: '/monthly-overview',
+    component: () => import('../views/TimeSheetMonthly.vue')
   }, {
     path: '/todo',
     component: () => import('../views/TodoList.vue')

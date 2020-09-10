@@ -7,7 +7,7 @@ import * as history from 'connect-history-api-fallback'
 import * as config from './config.json'
 import * as Logger from 'bunyan'
 
-export const logger = Logger.createLogger({
+export const logger = Logger.createLogger ({
   name: config.app_name || 'chronolog',
   level: process.env.NODE_ENV == 'production' ? 'info' : (config.log_level as Logger.LogLevel || 'info')
 });
@@ -85,10 +85,10 @@ class App {
       let message = err.message
       let parsedErrorMessage = message.match (/^(\d\d\d):(.*)/)
       if (parsedErrorMessage) {
-        statusCode = parseInt(parsedErrorMessage [1])
+        statusCode = parseInt (parsedErrorMessage [1])
         message = parsedErrorMessage [2]
       }
-      if (message.includes('constraint failed')) {
+      if (message.includes ('constraint failed')) {
         statusCode = 409
       }
       res.status (statusCode). json ( { error: message }).end ()
@@ -99,25 +99,25 @@ class App {
   private mountRoutes (): void {
 
     // parse application/x-www-form-urlencoded request body
-    this.app.use (bodyParser.json())
+    this.app.use (bodyParser.json ())
 
     // parse application/json request body
-    this.app.use (bodyParser.urlencoded({ extended: false }))
+    this.app.use (bodyParser.urlencoded ({ extended: false }))
 
     this.app.use ((req: Request, res: Response, next: NextFunction): void => {
       logger.debug ({params: req.params, body: req.body}, `Incoming request: ${req.method} ${req.url}`)
-      next()
+      next ()
     })
 
     // enable CORS requests
     this.app.use (cors ())
 
     // serve static files of SPA web application
-    const webApp = express.static('app')
-    this.app.use(webApp)
-    this.app.use(history())
+    const webApp = express.static ('app')
+    this.app.use (webApp)
+    this.app.use (history())
     // 2nd call for redirection
-    this.app.use(webApp)
+    this.app.use (webApp)
 
     // health status
     this.app.get ('/health', this.health)
@@ -127,12 +127,12 @@ class App {
     this.app.post ('/auth/logout', auth.logout.bind (auth))
     this.app.get ('/auth/session', auth.session.bind (auth))
 
-    const api  = express.Router()
+    const api  = express.Router ()
     api.use ((req: Request, res: Response, next: NextFunction): void => {
-      if (!auth.authenticate(req)) {
-        next (new Error('401:Authentication error'))
+      if (!auth.authenticate (req)) {
+        next (new Error ('401:Authentication error'))
       } else {
-        next()
+        next ()
       }
     })
 
@@ -219,4 +219,4 @@ class App {
   }
 }
 
-export default new App()
+export default new App ()

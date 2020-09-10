@@ -21,9 +21,9 @@ export class Auth {
     this.config = config
     this.db = db
     this.logger = logger
-    this.sessions = new Map()
+    this.sessions = new Map ()
     // invalidate sessions periodically
-    setInterval(this.sessionTimeout.bind(this), 30000)
+    setInterval (this.sessionTimeout.bind (this), 30000)
   }
 
   /**
@@ -73,7 +73,7 @@ export class Auth {
             name: row.name,
             visits: row.visits,
             last_visit: row.last_visit,
-            token: this.createSession(row, this.getToken (req))
+            token: this.createSession (row, this.getToken (req))
           })
         } else {
           res.status (401).json ()
@@ -99,7 +99,7 @@ export class Auth {
     const token = this.getToken (req)
     if (token && this.sessions.has (token)) {
       this.sessions.delete (token)
-      this.logger.debug(`Removed session token ${token}, total = ${this.sessions.size} sessions`)
+      this.logger.debug (`Removed session token ${token}, total = ${this.sessions.size} sessions`)
       res.status (205).json ()
     } else {
       res.status (400).json ()
@@ -148,7 +148,7 @@ export class Auth {
   private async updateUserStats (user: any) {
     try {
       const sql = 'UPDATE user SET visits = ?, last_visit = ? WHERE id = ?'
-      await this.db.run (sql, [user.visits + 1, this.isoDate(), user.id])
+      await this.db.run (sql, [user.visits + 1, this.isoDate (), user.id])
     } catch (err) {
       this.logger.warn ('failed to update user stats: ' + err.message)
     }
@@ -162,11 +162,11 @@ export class Auth {
       date = new Date ()
     }
     return date.getFullYear () +
-      '-' + pad(date.getMonth () + 1) +
-      '-' + pad(date.getDate ()) +
-      ' ' + pad(date.getHours ()) +
-      ':' + pad(date.getMinutes ()) +
-      ':' + pad(date.getSeconds ())
+      '-' + pad (date.getMonth () + 1) +
+      '-' + pad (date.getDate ()) +
+      ' ' + pad (date.getHours ()) +
+      ':' + pad (date.getMinutes ()) +
+      ':' + pad (date.getSeconds ())
   }
 
   /**
@@ -197,11 +197,17 @@ export class Auth {
 
   private getToken (req: Request): string | undefined {
     if (req.headers.authorization) {
-      return String(req.headers.authorization).substr(6).trim()
+      return String (req.headers.authorization).substr (6).trim ()
     }
     return undefined
   }
 
+  /**
+   * Checks whether given user id matches the owner of the token.
+   *
+   * @param req Express request object
+   * @param userId user id
+   */
   private userIdMatchesLoggedInUser (req: Request, userId: number): boolean {
     const token = this.getToken (req)
     if (!token || !this.sessions.has (token)) {
@@ -221,7 +227,7 @@ export class Auth {
   public async updatePassword (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Auth.updatePassword()')
     try {
-      if (!this.userIdMatchesLoggedInUser(req, req.params.id)) {
+      if (!this.userIdMatchesLoggedInUser (req, req.params.id)) {
         throw new Error (`403:User ${req.params.id} cannot change password of another user`)
       }
       let sql = 'SELECT password FROM user WHERE id = ?'
@@ -242,12 +248,12 @@ export class Auth {
   /**
    * Periodically checks if any session has timed out and -if yes- removes it.
    */
-  private sessionTimeout() {
+  private sessionTimeout () {
     const now = Date.now ()
     this.sessions.forEach ((session, token) => {
       if (now - session.time > this.config.session_timeout) {
         this.sessions.delete (token)
-        this.logger.debug(`Timed out session with token ${token}, total = ${this.sessions.size} sessions`)
+        this.logger.debug (`Timed out session with token ${token}, total = ${this.sessions.size} sessions`)
       }
     })
   }
