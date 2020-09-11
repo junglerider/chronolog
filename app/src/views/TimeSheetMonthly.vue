@@ -19,7 +19,7 @@
           </v-btn>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+      <v-sheet :height="height">
         <v-calendar
           ref="calendar"
           type="month"
@@ -35,7 +35,25 @@
           @change="onChange"
           @click:date="onClick"
           @click:day="onClick"
-        ></v-calendar>
+        >
+          <template v-slot:day={date}>
+            <div v-if="records.has(date)" :set="record=records.get(date)">
+              <div v-if="record.arrival" class="timeclock">
+                <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-right-bold</v-icon>
+                <span>{{ record.arrival }}</span>
+              </div>
+              <div v-if="record.logged || record.clocked" class="timelog">
+                <span v-if="record.clocked">{{ $i18nDecToHrs(record.clocked) }} {{ 'clocked' | i18n }}</span>
+                <hr v-if="record.logged && record.clocked"/>
+                <span v-if="record.logged">{{ $i18nDecToHrs(record.logged) }} {{ 'logged' | i18n }}</span>
+              </div>
+              <div v-if="record.departure" class="timeclock">
+                <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-left-bold</v-icon>
+                <span>{{ record.departure }}</span>
+              </div>
+            </div>
+          </template>
+        </v-calendar>
       </v-sheet>
     </v-col>
   </v-row>
@@ -52,6 +70,23 @@
   .v-calendar .v-event {
     font-size: 1em !important;
   }
+  div.timeclock {
+    color: #1958b7;
+    margin: 4px 4px 2px 4px;
+    font-size: 0.9em;
+  }
+  div.timelog {
+    margin: 4px 4px 2px 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 4px;
+    background-color: #1958b7;
+    color: white;
+  }
+  div.timelog hr {
+    border-top: 1px dashed white;
+    border-bottom: none;
+  }
 </style>
 
 <script>
@@ -60,9 +95,10 @@ import api from '../services/api'
   export default {
     data: () => ({
       focus: '',
+      height: 600,
       user: api.user,
       totalHours: 0,
-      events: [],
+      records: new Map(),
     }),
     mounted () {
       this.$refs.calendar.checkChange()
@@ -81,31 +117,30 @@ import api from '../services/api'
         return event.color
       },
       async onChange(val) {
+        const records = new Map()
         let url = `/timelog/daily?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
           let response = await api.get(url)
           this.events = []
           let totalHours = 0
           for (let timelog of response.data) {
+            const record = records.has(timelog.date) ? records.get(timelog.date) : {}
+            record.logged = timelog.duration
+            records.set(timelog.date, record)
             totalHours += timelog.duration
-            this.events.push({
-              timed: false,
-              start: timelog.date,
-              name: this.$i18nDecToHrs(timelog.duration),
-              color: '#2586d7',
-            })
           }
           this.totalHours = totalHours
           url = `/timeclock?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
           response = await api.get(url)
+          this.height = response.data.length ? 800 : 600
           for (let timeclock of response.data) {
-            this.events.push({
-              timed: false,
-              start: timeclock.date,
-              name: this.$i18nDecToHrs(timeclock.work_duration),
-              color: 'indigo',
-            })
+            const record = records.has(timeclock.date) ? records.get(timeclock.date) : {}
+            record.arrival = timeclock.arrival_time
+            record.departure = timeclock.departure_time
+            record.clocked = timeclock.work_duration
+            records.set(timeclock.date, record)
           }
+          this.records = records
         } catch (err) {
           console.error(err)
         }

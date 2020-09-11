@@ -128,6 +128,8 @@ export default new Map([
   ['Home', 'Casa'],
   ['Website', 'Sito web'],
   ['Members/Employees', 'Membri/dependenti'],
+  ['logged', 'ore/giorno'],
+  ['clocked', 'cronometrato'],
   // time sheets + todo list ------------------------------
   ['Mon', 'lun'],
   ['Tue', 'mar'],

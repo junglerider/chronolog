@@ -140,7 +140,7 @@ export class Auth {
     if (token && this.sessions.has (token)) {
       res.status (200).json (this.sessions.get (token))
     } else {
-      res.status (400).json ()
+      res.status (401).json ()
     }
     next ()
   }

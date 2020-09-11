@@ -35,13 +35,13 @@
           @click:date="onDateClick"
         >
         <template v-slot:day={date}>
-          <div v-if="records.has(date)">
-            <div v-if="(records.get(date)).arrival" class="timeclock">
+          <div v-if="records.has(date)" :set="record=records.get(date)">
+            <div v-if="record.arrival" class="timeclock">
               <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-right-bold</v-icon>
-              <span>{{ (records.get(date)).arrival }}</span>
+              <span>{{ record.arrival }}</span>
             </div>
             <div
-              v-for="timelog in records.get(date).timelog"
+              v-for="timelog in record.timelog"
               :title="timelog.description"
               :key="timelog.id"
               :style="'background-color:' + assignColour(timelog.task_id)"
@@ -51,9 +51,9 @@
               <span>{{ timelog.task_name }}</span> <hr/>
               <span style="font-size: 0.8em">{{ timelog.customer_name }}</span>
             </div>
-            <div v-if="(records.get(date)).departure" class="timeclock">
+            <div v-if="record.departure" class="timeclock">
               <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-left-bold</v-icon>
-              <span>{{ (records.get(date)).departure }}</span>
+              <span>{{ record.departure }}</span>
             </div>
           </div>
         </template>

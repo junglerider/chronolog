@@ -174,6 +174,8 @@ export default new Map([
   ['Start date', 'Fecha de inicio'],
   ['End date', 'Fecha final'],
   ['Assigned to me', 'Asignado a mí'],
+  ['logged', 'horas'],
+  ['clocked', 'registrado'],
     // customers and users ----------------------------------
   ['Is Retired', 'Retirado'],
   ['Customer Details', 'Detalles del cliente'],

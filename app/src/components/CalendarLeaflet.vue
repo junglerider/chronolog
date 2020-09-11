@@ -4,7 +4,9 @@
     <tr><td class="weekday" :style="{backgroundColor: colour || '#003086'}">
       {{ today.toLocaleString('en', { weekday: 'long' }) | i18n }}
     </td></tr>
-    <tr><td class="day">{{ today.getDate() }}</td></tr>
+    <tr><td class="day" :style="{color: [0, 6].includes(today.getDay())? 'crimson' : 'black' }">
+      {{ today.getDate() }}
+    </td></tr>
     <tr><td class="month" :style="{color: colour || '#003086'}">
       {{ today.toLocaleString('en', { month: 'long' }) | i18n }}
     </td></tr>
@@ -28,7 +30,6 @@ td.weekday {
 }
 td.day {
   height: 50%;
-  color: black;
   background-color: white;
   text-align: center;
   font-family: Roboto, sans-serif;

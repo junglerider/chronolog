@@ -220,7 +220,6 @@ export default {
     isNew(log) {
       return (typeof log.id === 'string') && log.id.startsWith('new')
     },
-
     onChangeHours() {
       this.totalHours = this.log.reduce((total, item) => total + (Number(item.duration) || 0), 0)
     },
