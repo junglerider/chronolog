@@ -95,15 +95,15 @@ describe ('SqlGenerator', () => {
   it ('should generate a correct SQL WHERE clause with "IN" comparison for "in" operator', () => {
     let query = { filter: { name: { in: 'Aron,Aram,Anton' } } }
     const [sql, params] = instance.generate (query)
-    expect (sql).toEqual ('WHERE table.name IN ?')
-    expect (params[0]).toEqual (['Aron', 'Aram', 'Anton'])
+    expect (sql).toEqual (`WHERE table.name IN ('Aron','Aram','Anton')`)
+    expect (params).toEqual ([])
   })
 
   it ('should generate a correct SQL WHERE clause with "NOT IN" comparison for "notin" operator', () => {
     let query = { filter: { name: { notin: 'Bill,Bernie,Barnes' } } }
     const [sql, params] = instance.generate (query)
-    expect (sql).toEqual ('WHERE table.name NOT IN ?')
-    expect (params[0]).toEqual (['Bill', 'Bernie', 'Barnes'])
+    expect (sql).toEqual (`WHERE table.name NOT IN ('Bill','Bernie','Barnes')`)
+    expect (params).toEqual ([])
   })
 
   it ('should throw an error if a filter expression has an unrecognized comparison operator', () => {

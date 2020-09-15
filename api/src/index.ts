@@ -7,11 +7,8 @@ import * as config from './config.json';
 
 const port:number = config.port || 8080
 
-server.app.listen (port, (err) => {
+server.app.listen (port, () => {
 
-  if (err) {
-    return console.log (err)
-  }
   server.log (`Chronolog API server is listening on port ${port}`)
 
   process.on ('SIGINT', () => {
