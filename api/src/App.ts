@@ -24,6 +24,8 @@ import { Task } from './resources/Task'
 import { TimeLog } from './resources/TimeLog'
 import { TimeLogReport } from './resources/TimeLogReport'
 import { TimeClock } from './resources/TimeClock'
+import { Invoice } from './resources/Invoice'
+import { InvoiceItem } from './resources/InvoiceItem'
 
 const db = new Database (config, logger)
 const auth = new Auth (config, db, logger)
@@ -37,6 +39,8 @@ const task = new Task (db, logger)
 const timelog = new TimeLog (db, logger)
 const timelogReport = new TimeLogReport (db, logger)
 const timeclock = new TimeClock (db, logger)
+const invoice = new Invoice (db, logger)
+const invoiceItem = new InvoiceItem (db, logger)
 
 /**
  * Represents the Chronolog API server application.
@@ -212,6 +216,21 @@ class App {
     api.get ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.read.bind (timeclock))
     api.put ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.update.bind (timeclock))
     api.delete ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.delete.bind (timeclock))
+
+    api.get ('/invoice', invoice.list.bind (invoice))
+    api.get ('/invoice/count', invoice.count.bind (invoice))
+    api.post ('/invoice', invoice.create.bind (invoice))
+    api.get ('/invoice/:invoice_no', invoice.read.bind (invoice))
+    api.get ('/invoice/:invoice_no/items', invoiceItem.items.bind (invoiceItem))
+    api.put ('/invoice/:invoice_no', invoice.update.bind (invoice))
+    api.delete ('/invoice/:invoice_no', invoice.delete.bind (invoice))
+
+    api.get ('/invoice-item', invoiceItem.list.bind (invoiceItem))
+    api.get ('/invoice-item/count', invoiceItem.count.bind (invoiceItem))
+    api.post ('/invoice-item', invoiceItem.create.bind (invoiceItem))
+    api.get ('/invoice-item/:id(\\d+)', invoiceItem.read.bind (invoiceItem))
+    api.put ('/invoice-item/:id(\\d+)', invoiceItem.update.bind (invoiceItem))
+    api.delete ('/invoice-item/:id(\\d+)', invoiceItem.delete.bind (invoiceItem))
 
     this.app.use ('/api', api)
     this.app.use (this.notFoundHandler)

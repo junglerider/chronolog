@@ -227,7 +227,7 @@ export class Auth {
   public async updatePassword (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Auth.updatePassword()')
     try {
-      if (!this.userIdMatchesLoggedInUser (req, req.params.id)) {
+      if (!this.userIdMatchesLoggedInUser (req, Number(req.params.id))) {
         throw new Error (`403:User ${req.params.id} cannot change password of another user`)
       }
       let sql = 'SELECT password FROM user WHERE id = ?'

@@ -13,13 +13,15 @@ export class SingleTable {
   protected logger: Logger
   protected sqlGenerator: SqlGenerator
   protected schema: object
+  protected idColumn: string
 
-  constructor (table: string, schema: object, db: Database, logger: Logger) {
+  constructor (table: string, schema: object, db: Database, logger: Logger, id = 'id') {
     this.table = table
     this.db = db
     this.logger = logger
     this.schema = schema
     this.sqlGenerator = new SqlGenerator (logger, schema)
+    this.idColumn = id
   }
 
   public validateCreate (req: Request) {
@@ -99,9 +101,9 @@ export class SingleTable {
       let result: any = await this.db.run (sql, values)
       const id = result.lastID
       if (!id) {
-        throw new Error(`Could not obtain new ${this.table} id`)
+        throw new Error(`Could not obtain new ${this.table} ${this.idColumn}`)
       }
-      res.status (201).json ({id: id})
+      res.status (201).json ({[this.idColumn]: id})
       next ()
     }
     catch (err) {
@@ -110,17 +112,17 @@ export class SingleTable {
   }
 
   /**
-   * Read a new entity
+   * Read an entity
    *
    * @param req Express request object
    * @param res Express response object
    * @param next Express next function
    */
   public async read (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.getTableName()}.read(${[req.params.id]}))`)
-    const sql = `SELECT * FROM ${this.table} WHERE id = ?`
+    this.logger.trace (`${this.getTableName()}.read(${[req.params[this.idColumn]]}))`)
+    const sql = `SELECT * FROM ${this.table} WHERE ${this.idColumn} = ?`
     try {
-      let row = await this.db.get (sql, [req.params.id])
+      let row = await this.db.get (sql, [req.params[this.idColumn]])
       res.header ( {'Access-Control-Allow-Origin': '*'} )
       row ? res.status (200).json (row) : res.status (404).json ()
       next ()
@@ -138,12 +140,13 @@ export class SingleTable {
    * @param next Express next function
    */
   public async update (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.getTableName()}.update(${[req.params.id]})`)
+    this.logger.trace (`${this.getTableName()}.update(${[req.params[this.idColumn]]})`)
     let status = 400
     try {
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
-        const sql = `UPDATE ${this.getTableName()} SET ` + this.getUpdateList(names) + ' WHERE id = ' + req.params.id
+        values.push(req.params[this.idColumn])
+        const sql = `UPDATE ${this.getTableName()} SET ` + this.getUpdateList(names) + ` WHERE ${this.idColumn} = ?`
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404
       }
@@ -156,16 +159,16 @@ export class SingleTable {
   }
 
   /**
-   * Delete an existing entity
+   * Delete an entity
    *
    * @param req Express request object
    * @param res Express response object
    * @param next Express next function
    */
   public async delete (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`${this.getTableName()}.delete(${[req.params.id]})`)
+    this.logger.trace (`${this.getTableName()}.delete(${[req.params[this.idColumn]]})`)
     try {
-      const result: any = await this.db.run (`DELETE FROM ${this.getTableName()} WHERE id = ?`, [req.params.id])
+      const result: any = await this.db.run (`DELETE FROM ${this.getTableName()} WHERE ${this.idColumn} = ?`, [req.params[this.idColumn]])
       result && result.changes > 0 ? res.status (204).json () : res.status (404).json ()
       next ()
     }

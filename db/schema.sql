@@ -134,4 +134,38 @@ CREATE TABLE `time_clock` (
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE INDEX `time_clock_date_index` ON `time_clock` (`date`);
+
+CREATE TABLE `invoice` (
+    `invoice_no` TEXT NOT NULL PRIMARY KEY,
+    `customer_id` INTEGER NOT NULL,
+    `status` TEXT NOT NULL DEFAULT 'draft',
+    `date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
+    `due_date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
+    `address` TEXT NOT NULL,
+    `issuer` TEXT DEFAULT NULL,
+    `currency` TEXT NOT NULL DEFAULT '€',
+    `net_total` NUMERIC DEFAULT 0,
+    `show_tax` INTEGER NOT NULL DEFAULT 1,
+    `tax_rate` NUMERIC DEFAULT 0,
+    `tax_amount` NUMERIC DEFAULT 0,
+    `grand_total` NUMERIC DEFAULT 0,
+    `payment_terms` TEXT DEFAULT NULL,
+    `template` TEXT DEFAULT NULL,
+    `created_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
+    `updated_at` TEXT DEFAULT NULL,
+    FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+CREATE INDEX `invoice_date_index` ON `invoice` (`date`);
+
+CREATE TABLE `invoice_item` (
+    `id` INTEGER PRIMARY KEY,
+    `invoice_no` TEXT NOT NULL,
+    `item_no` INTEGER NOT NULL,
+    `description` TEXT NULL,
+    `quantity` NUMERIC DEFAULT 0,
+    `unit_price` NUMERIC DEFAULT 0,
+    FOREIGN KEY (`invoice_no`) REFERENCES `invoice` (`invoice_no`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+CREATE INDEX `invoice_item_invoice_no_index` ON `invoice_item` (`invoice_no`);
