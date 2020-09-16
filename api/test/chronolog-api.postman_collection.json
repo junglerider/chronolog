@@ -1,0 +1,2569 @@
+{
+	"info": {
+		"_postman_id": "2e0b21bf-bd31-48f4-a721-853643c8702c",
+		"name": "Chronolog API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"james\",\n    \"password\": \"chronolog\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{domain}}/auth/login",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/auth/logout",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "password UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"chronolog\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/1/password",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"1",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "session",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{domain}}/auth/session",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"auth",
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Organisation",
+			"item": [
+				{
+					"name": "organisation LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation?filter[name][like]=B%&order=id&limit=10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation"
+							],
+							"query": [
+								{
+									"key": "filter[name][like]",
+									"value": "B%"
+								},
+								{
+									"key": "order",
+									"value": "id"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation/count?filter[country][eq]=Spain",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"count"
+							],
+							"query": [
+								{
+									"key": "filter[country][eq]",
+									"value": "Spain"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation LIST employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation/24/persons",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"24",
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation LIST contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation/49/contacts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"49",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"type\": \"CUS\",\n\t\"name\": \"Big Retailer\",\n\t\"street_address\": \"Long Street 123\",\n\t\"city\": \"Big City\",\n\t\"industry\": \"Retail\",\n\t\"postcode\": \"12354\",\n\t\"country\": \"Thailand\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/organisation",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation/49",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"49"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/organisation/50",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organisation UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Electronics Superstore\",\n\t\"type\": \"SUP\",\n\t\"last_contact\": null\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/organisation/10475",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"organisation",
+								"10475"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Person",
+			"item": [
+				{
+					"name": "person LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person?order=id&limit=10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "id"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person/count?filter[country][eq]=France",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"count"
+							],
+							"query": [
+								{
+									"key": "filter[country][eq]",
+									"value": "France"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person/56",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"56"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"type\": \"PRV\",\n\t\"title\": \"Mrs.\",\n\t\"first_name\": \"Marilyn\",\n\t\"last_name\": \"Monroe\",\n\t\"street_address\": \"Avalon Boulevard\",\n\t\"postcode\": \"12354\",\n\t\"country\": \"USA\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/person",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\": \"Arnold\",\n\t\"last_name\": \"Schwarzenegger\",\n\t\"type\": \"CUS\",\n\t\"comment\": \"very strong guy\",\n\t\"last_contact\": null\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/person/56",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"56"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person/10476",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"10476"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person LIST organisations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person/22/organisations",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"22",
+								"organisations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "person LIST contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/person/49/contacts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"person",
+								"49",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "contact LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contact?filter[entry][like]=%gmail%",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact"
+							],
+							"query": [
+								{
+									"key": "filter[entry][like]",
+									"value": "%gmail%"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contact/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"entity_id\": 10,\n\t\"type\": \"EML\",\n\t\"entry\": \"someone@somewhere.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/contact",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contact/10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"entry\": \"somebody@someplace.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/contact/10",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contact DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contact/100",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contact",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "employee LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/employee?filter[position][like]=%Manager",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee"
+							],
+							"query": [
+								{
+									"key": "filter[position][like]",
+									"value": "%Manager"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/employee/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"person_id\": 22,\n        \"organisation_id\": 14,\n        \"position\": \"Programmer\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/employee",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/employee/21",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"position\": \"Analyst\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/employee/21",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/employee/100",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"employee",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "user LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/user/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"person_id\": 9,\n        \"login\": \"pierre\",\n        \"is_active\": 1\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/user/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"login\": \"nobody\",\n        \"is_active\": 0\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/user/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bdc564c2-9e2a-4b31-ba48-7cd67aefe8d9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c85c1a0-2796-4f95-89f4-6237da0bf44e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "customer LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/customer",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/customer/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer TASK COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/customer/task-count?filter[id][in]=1,2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer",
+								"task-count"
+							],
+							"query": [
+								{
+									"key": "filter[id][in]",
+									"value": "1,2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"person_id\": 10326,\n        \"login\": \"root\",\n        \"is_active\": 1\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/customer/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"is_retired\": 1\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/customer/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/customer/5",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"customer",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bdc564c2-9e2a-4b31-ba48-7cd67aefe8d9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c85c1a0-2796-4f95-89f4-6237da0bf44e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "todo COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/todo/1/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"todo",
+								"1",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todo LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/todo/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"todo",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todo projects LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/todo/1/projects",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"todo",
+								"1",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task?filter[is_active][eq]=0&filter[is_closed][eq]=0&filter[is_leaf][eq]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task"
+							],
+							"query": [
+								{
+									"key": "filter[is_active][eq]",
+									"value": "0"
+								},
+								{
+									"key": "filter[is_closed][eq]",
+									"value": "0"
+								},
+								{
+									"key": "filter[is_leaf][eq]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/count?filter[created_at][gte]=2019-01-01",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"count"
+							],
+							"query": [
+								{
+									"key": "filter[created_at][gte]",
+									"value": "2019-01-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"customer_id\": 1,\n        \"user_id\": 1,\n        \"parent_id\": 20,\n        \"name\": \"Something difficult\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/task",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/1370",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"1370"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"name\": \"Something very difficult\",\n        \"description\": \"Find the mathematical proof that PHP sucks.\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/task/1370",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"1370"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/1370",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"1370"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bdc564c2-9e2a-4b31-ba48-7cd67aefe8d9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c85c1a0-2796-4f95-89f4-6237da0bf44e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "TimeLog",
+			"item": [
+				{
+					"name": "timelog LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog?filter[date][gte]=2020-09-07",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog"
+							],
+							"query": [
+								{
+									"key": "filter[date][gte]",
+									"value": "2020-09-07"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog-report LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/report?filter[date][gte]=2020-08-01&filter[date][lte]=2020-08-31&filter[user_id][eq]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"report"
+							],
+							"query": [
+								{
+									"key": "filter[date][gte]",
+									"value": "2020-08-01"
+								},
+								{
+									"key": "filter[date][lte]",
+									"value": "2020-08-31"
+								},
+								{
+									"key": "filter[user_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/count?filter[updated_at][gte]=2019-01-01",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"count"
+							],
+							"query": [
+								{
+									"key": "filter[updated_at][gte]",
+									"value": "2019-01-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog DAILY",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/daily?filter[date][gte]=2020-05-01&filter[date][lte]=2020-31-05&filter[user_id]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"daily"
+							],
+							"query": [
+								{
+									"key": "filter[date][gte]",
+									"value": "2020-05-01"
+								},
+								{
+									"key": "filter[date][lte]",
+									"value": "2020-31-05"
+								},
+								{
+									"key": "filter[user_id]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog SUM",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/sum?filter[date][gte]=2020-08-17&filter[date][lte]=2020-08-23&filter[user_id][eq]=2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"sum"
+							],
+							"query": [
+								{
+									"key": "filter[date][gte]",
+									"value": "2020-08-17"
+								},
+								{
+									"key": "filter[date][lte]",
+									"value": "2020-08-23"
+								},
+								{
+									"key": "filter[user_id][eq]",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"date\": \"2020-01-01\",\n        \"user_id\": 1,\n        \"task_id\": 1370,\n        \"duration\": 2.5\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/timelog",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/9785",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"9785"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"description\": \"Worked hard on finding a cure for PHP legacy code.\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/timelog/9887",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"9887"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timelog DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timelog/9887",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timelog",
+								"9887"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "bdc564c2-9e2a-4b31-ba48-7cd67aefe8d9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c85c1a0-2796-4f95-89f4-6237da0bf44e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "TimeClock",
+			"item": [
+				{
+					"name": "timeclock LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timeclock?filter[user_id][eq]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock"
+							],
+							"query": [
+								{
+									"key": "filter[user_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timeclock COUNT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timeclock/count?filter[user_id][eq]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock",
+								"count"
+							],
+							"query": [
+								{
+									"key": "filter[user_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timeclock CREATE",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"date\": \"2020-08-28\",\n        \"user_id\": 1,\n        \"work_duration\": 0,\n        \"arrival_time\": \"07:30:48\",\n        \"departure_time\": null,\n        \"json_log\": \"[\\\"07:30:48\\\"]\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/timeclock",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timeclock READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timeclock/1/2020-08-26",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock",
+								"1",
+								"2020-08-26"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timeclock UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"departure_time\": null\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/timeclock/1/2020-08-26",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock",
+								"1",
+								"2020-08-26"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "timeclock DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/timeclock/1/2020-08-28",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"timeclock",
+								"1",
+								"2020-08-28"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "invoice LIST",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/invoice?order=date",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "date"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice COUNT",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/invoice/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice CREATE",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"invoice_no\": \"MY-ORG-20-031\",\n        \"date\": \"2020-04-28\",\n        \"due_date\": \"2020-05-21\",\n        \"customer_id\": 1,\n        \"address\": \"Werthmann AG\\nMozartstraße 98\\n78021 Karlsruhe\\n\",\n        \"currency\": \"EUR\",\n        \"show_tax\": 0,\n        \"net_total\": \"3500\",\n        \"grand_total\": \"3500\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/invoice",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/invoice/4",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice ITEMS",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/invoice/2/items",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice",
+								"2",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"issuer\": \"Walter Lorenz\",\n        \"payment_terms\": \"14 days\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/invoice/4",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/invoice/4",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "InvoiceItem",
+			"item": [
+				{
+					"name": "invoice-item LIST",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/invoice-item?order=invoice_id,item_no",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item"
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "invoice_id,item_no"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice-item COUNT",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/invoice-item/count",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice-item CREATE",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"invoice_id\": 4,\n        \"item_no\": 1,\n        \"description\": \"Professional Services\",\n        \"quantity\": 100,\n        \"unit_price\": 60\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/invoice-item",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice-item READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/invoice-item/8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice-item UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"unit_price\": 65\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/invoice-item/8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invoice-item DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/invoice-item/8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"invoice-item",
+								"8"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "866472a8-6244-4487-bf99-1299d9886fb6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6d9d6ba5-c1d4-401b-b70d-89ef795c95cf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "HEALTH status",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/health",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "8460439ae320b1aea23112bae232750b40b111481bf05fb9e98b7135fde1b8a5",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "78d9fe6b-9df3-4308-afe0-4ee02d66ca1e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2acf0987-41b2-4e21-90e6-80adfffb8700",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "2e17483e-5a4b-471e-b733-8574215eb3b6",
+			"key": "domain",
+			"value": "http://localhost:8888"
+		},
+		{
+			"id": "704a3ab3-3e83-4bcc-a64f-b7a8648fbd88",
+			"key": "baseURL",
+			"value": "http://localhost:8888/api"
+		}
+	]
+}
