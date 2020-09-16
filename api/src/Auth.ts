@@ -22,6 +22,15 @@ export class Auth {
     this.db = db
     this.logger = logger
     this.sessions = new Map ()
+    // create default session if in dev mode
+    if (process.env.NODE_ENV === 'development') {
+      this.logger.debug ('--> creating default session')
+      this.sessions.set ('8460439ae320b1aea23112bae232750b40b111481bf05fb9e98b7135fde1b8a5', {
+        id: 1,
+        login: 'enzo',
+        name: 'Lorenzo'
+      })
+    }
     // invalidate sessions periodically
     setInterval (this.sessionTimeout.bind (this), 30000)
   }

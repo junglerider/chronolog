@@ -136,7 +136,8 @@ CREATE TABLE `time_clock` (
 );
 
 CREATE TABLE `invoice` (
-    `invoice_no` TEXT NOT NULL PRIMARY KEY,
+    `id` INTEGER PRIMARY KEY,
+    `invoice_no` TEXT NOT NULL UNIQUE,
     `customer_id` INTEGER NOT NULL,
     `status` TEXT NOT NULL DEFAULT 'draft',
     `date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
@@ -160,12 +161,12 @@ CREATE INDEX `invoice_date_index` ON `invoice` (`date`);
 
 CREATE TABLE `invoice_item` (
     `id` INTEGER PRIMARY KEY,
-    `invoice_no` TEXT NOT NULL,
+    `invoice_id` INTEGER NOT NULL,
     `item_no` INTEGER NOT NULL,
-    `description` TEXT NULL,
+    `description` TEXT DEFAULT NULL,
     `quantity` NUMERIC DEFAULT 0,
     `unit_price` NUMERIC DEFAULT 0,
-    FOREIGN KEY (`invoice_no`) REFERENCES `invoice` (`invoice_no`)
+    FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`id`)
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE INDEX `invoice_item_invoice_no_index` ON `invoice_item` (`invoice_no`);
+CREATE INDEX `invoice_item_invoice_id_index` ON `invoice_item` (`invoice_id`);

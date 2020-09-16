@@ -73,7 +73,7 @@ class App {
     next ()
   }
 
-  // handle unrecognized routes
+  // handle unrecognised routes
   private notFoundHandler (req: Request, res: Response, next: NextFunction): void {
     if (! res.headersSent) {
       const msg = 'Unknown command or resource'
@@ -82,7 +82,7 @@ class App {
     }
   }
 
-  // handle errors and ouput messages with optional HTTP status code, e.g. "400:Invalid"
+  // handle errors and output messages with optional HTTP status code, e.g. "400:Invalid"
   private errorHandler (err: Error, req: Request, res: Response, next: NextFunction): void {
     let statusCode = 500
     if (! res.headersSent) {
@@ -108,6 +108,7 @@ class App {
     // parse application/json request body
     this.app.use (bodyParser.urlencoded ({ extended: false }))
 
+    // log requests in debug mode
     this.app.use ((req: Request, res: Response, next: NextFunction): void => {
       logger.debug ({params: req.params, body: req.body}, `Incoming request: ${req.method} ${req.url}`)
       next ()
@@ -220,10 +221,10 @@ class App {
     api.get ('/invoice', invoice.list.bind (invoice))
     api.get ('/invoice/count', invoice.count.bind (invoice))
     api.post ('/invoice', invoice.create.bind (invoice))
-    api.get ('/invoice/:invoice_no', invoice.read.bind (invoice))
-    api.get ('/invoice/:invoice_no/items', invoiceItem.items.bind (invoiceItem))
-    api.put ('/invoice/:invoice_no', invoice.update.bind (invoice))
-    api.delete ('/invoice/:invoice_no', invoice.delete.bind (invoice))
+    api.get ('/invoice/:id(\\d+)', invoice.read.bind (invoice))
+    api.get ('/invoice/:id(\\d+)/items', invoiceItem.items.bind (invoiceItem))
+    api.put ('/invoice/:id(\\d+)', invoice.update.bind (invoice))
+    api.delete ('/invoice/:id(\\d+)', invoice.delete.bind (invoice))
 
     api.get ('/invoice-item', invoiceItem.list.bind (invoiceItem))
     api.get ('/invoice-item/count', invoiceItem.count.bind (invoiceItem))

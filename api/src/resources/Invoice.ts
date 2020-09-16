@@ -7,6 +7,7 @@ export class Invoice extends SingleTable {
 
   constructor (db: Database, logger: Logger) {
     const schema = {
+      id: 'id',
       invoice_no: 'invoice_no',
       customer_id: 'customer_id',
       status: 'status',
@@ -24,14 +25,14 @@ export class Invoice extends SingleTable {
       created_at: 'created_at',
       updated_at: 'updated_at',
     }
-    super ('invoice', schema, db, logger, 'invoice_no')
+    super ('invoice', schema, db, logger)
   }
 
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('invoice.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT invoice_no, date, grand_total, currency, status, c.name AS customer_name FROM invoice i LEFT JOIN customer c ON (c.id = i.customer_id) ${whereClause}`
+      const sql = `SELECT i.id, invoice_no, date, grand_total, currency, status, c.name AS customer_name FROM invoice i LEFT JOIN customer c ON (c.id = i.customer_id) ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()
@@ -47,4 +48,5 @@ export class Invoice extends SingleTable {
       }
     }
   }
+
 }
