@@ -8,7 +8,7 @@ Disclaimer: This application is currently in alpha stage and not ready for produ
 
 ## Install
 
-You need the npm package manager for installation. The API and web application have to be installed separately:
+You need the npm package manager for installation. You also need sqlite3 for building the database. The API and web application are installed separately:
 
 ```
 cd api
