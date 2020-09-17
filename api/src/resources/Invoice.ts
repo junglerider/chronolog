@@ -7,25 +7,25 @@ export class Invoice extends SingleTable {
 
   constructor (db: Database, logger: Logger) {
     const schema = {
-      id: 'id',
-      invoice_no: 'invoice_no',
+      id: 'i.id',
+      invoice_no: 'i.invoice_no',
       customer_id: 'customer_id',
-      status: 'status',
-      date: 'date',
-      due_date: 'due_date',
-      address: 'address',
-      issuer: 'issuer',
-      net_total: 'net_total',
-      show_tax: 'show_tax',
-      tax_rate: 'tax_rate',
-      tax_amount: 'tax_amount',
-      grand_total: 'grand_total',
-      payment_terms: 'payment_terms',
-      template: 'template',
-      created_at: 'created_at',
-      updated_at: 'updated_at',
+      status: 'i.status',
+      date: 'i.date',
+      due_date: 'i.due_date',
+      address: 'i.address',
+      issuer: 'i.issuer',
+      net_total: 'i.net_total',
+      show_tax: 'i.show_tax',
+      tax_rate: 'i.tax_rate',
+      tax_amount: 'i.tax_amount',
+      grand_total: 'i.grand_total',
+      payment_terms: 'i.payment_terms',
+      template: 'i.template',
+      created_at: 'i.created_at',
+      updated_at: 'i.updated_at',
     }
-    super ('invoice', schema, db, logger)
+    super ('invoice AS i', schema, db, logger)
   }
 
   public async list (req: Request, res: Response, next: NextFunction) {

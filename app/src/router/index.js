@@ -51,6 +51,12 @@ Vue.use(VueRouter)
     path: '/reporting',
     component: () => import('../views/Reporting.vue')
   }, {
+    path: '/invoices',
+    component: () => import('../views/InvoiceList.vue')
+  }, {
+    path: '/invoices/:id(new|\\d+)',
+    component: () => import('../views/InvoiceDetails.vue')
+  }, {
     path: '/customers',
     component: () => import('../views/CustomerList.vue')
   }, {
