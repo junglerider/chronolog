@@ -15,6 +15,7 @@ export class Invoice extends SingleTable {
       due_date: 'i.due_date',
       address: 'i.address',
       issuer: 'i.issuer',
+      currency: 'i.currency',
       net_total: 'i.net_total',
       show_tax: 'i.show_tax',
       tax_rate: 'i.tax_rate',
@@ -42,7 +43,7 @@ export class Invoice extends SingleTable {
   }
 
   public validateCreate(req: Request) {
-    for (const column of ['invoice_no', 'customer_id', 'date', 'due_date', 'address', 'currency', 'net_total', 'grand_total']) {
+    for (const column of ['invoice_no', 'customer_id', 'status', 'date', 'due_date', 'address', 'currency']) {
       if (!req.body[column]) {
         throw new Error (`400:Create new invoice: ${column} is required`)
       }

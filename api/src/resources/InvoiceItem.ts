@@ -9,7 +9,6 @@ export class InvoiceItem extends SingleTable {
     const schema = {
       id: 'id',
       invoice_id: 'invoice_id',
-      item_no: 'item_no',
       description: 'description',
       quantity: 'quantity',
       unit_price: 'unit_price',
@@ -21,7 +20,7 @@ export class InvoiceItem extends SingleTable {
     this.logger.trace ('invoiceItem.list()')
     try {
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT id, invoice_id, item_no FROM invoice_item ${whereClause}`
+      const sql = `SELECT id, invoice_id, FROM invoice_item ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()
@@ -33,7 +32,7 @@ export class InvoiceItem extends SingleTable {
   public async items (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('invoice.items()')
     try {
-      const sql = `SELECT * FROM invoice_item WHERE invoice_id = ? ORDER BY item_no`
+      const sql = `SELECT * FROM invoice_item WHERE invoice_id = ? ORDER BY id`
       const rows = await this.db.all (sql, [req.params.id])
       rows ? res.json (rows) : res.status (404).json ()
       next ()
@@ -43,7 +42,7 @@ export class InvoiceItem extends SingleTable {
   }
 
   public validateCreate (req: Request) {
-    for (const column of ['invoice_id', 'item_no']) {
+    for (const column of ['invoice_id']) {
       if (!req.body[column]) {
         throw new Error (`400:Create new invoice_item: ${column} is required`)
       }

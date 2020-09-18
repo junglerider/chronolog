@@ -144,7 +144,7 @@ CREATE TABLE `invoice` (
     `due_date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
     `address` TEXT NOT NULL,
     `issuer` TEXT DEFAULT NULL,
-    `currency` TEXT NOT NULL DEFAULT '€',
+    `currency` TEXT NOT NULL DEFAULT 'EUR',
     `net_total` NUMERIC DEFAULT 0,
     `show_tax` INTEGER NOT NULL DEFAULT 1,
     `tax_rate` NUMERIC DEFAULT 0,
@@ -162,11 +162,10 @@ CREATE INDEX `invoice_date_index` ON `invoice` (`date`);
 CREATE TABLE `invoice_item` (
     `id` INTEGER PRIMARY KEY,
     `invoice_id` INTEGER NOT NULL,
-    `item_no` INTEGER NOT NULL,
     `description` TEXT DEFAULT NULL,
     `quantity` NUMERIC DEFAULT 0,
     `unit_price` NUMERIC DEFAULT 0,
     FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`id`)
-    ON DELETE RESTRICT ON UPDATE CASCADE
+    ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX `invoice_item_invoice_id_index` ON `invoice_item` (`invoice_id`);

@@ -42,7 +42,7 @@
           </v-row>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
-            <v-textarea :label="'Address' | i18n" v-model="invoice.address" auto-grow rows="1"></v-textarea>
+            <v-textarea :label="'Address' | i18n" :rules="requiredRule" v-model="invoice.address" auto-grow rows="1"></v-textarea>
         </v-col>
         <v-col class="col-12 col-sm-12 col-md-6 form-col">
           <v-row>
@@ -63,7 +63,6 @@
           </v-row>
         </v-col>
       </v-row>
-      <div v-if="invoice.id !== 'new'">
         <div style="display: flex; margin-bottom: 16px">
           <div style="margin-left: -10px; margin-right: 5px">
             <v-tooltip bottom>
@@ -82,7 +81,7 @@
             <div style="margin-left: -10px; margin-right: 5px; padding-top: 10px;">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" @click="removeItem(item)">
+                  <v-btn icon v-bind="attrs" v-on="on" @click="removeItem(item.id)">
                     <v-icon>mdi-minus-circle-outline</v-icon>
                   </v-btn>
                 </template>
@@ -90,16 +89,28 @@
               </v-tooltip>
             </div>
             <div style="flex: 80%">
-              <v-textarea :label="'Description' | i18n" v-model="item.description" auto-grow rows="1"></v-textarea>
+              <v-textarea :label="'Description' | i18n" v-model="item.description" :rules="requiredRule" auto-grow rows="1"></v-textarea>
             </div>
           </v-col>
           <v-col class="col-12 col-sm-6 col-md-3 form-col">
             <v-row>
               <v-col class="col-6 sm-6 md-6 form-col">
-                <v-text-field :label="'Quantity' | i18n" v-model="item.quantity" type="number" @change="recalc"></v-text-field>
+                <v-text-field
+                  :label="'Quantity' | i18n"
+                  v-model="item.quantity"
+                  type="number"
+                  @change="recalc"
+                  :rules="requiredRule"
+              ></v-text-field>
               </v-col>
               <v-col class="col-6 sm-6 md-6 form-col">
-                <v-text-field :label="'Unit price' | i18n" v-model="item.unit_price" :suffix="invoice.currency" @change="recalc"></v-text-field>
+                <v-text-field
+                  :label="'Unit price' | i18n"
+                  v-model="item.unit_price"
+                  :suffix="invoice.currency"
+                  @change="recalc"
+                  :rules="requiredRule"
+                  ></v-text-field>
               </v-col>
             </v-row>
           </v-col>
@@ -107,7 +118,6 @@
             <v-text-field :label="'Amount' | i18n" :value="calcAmount(item)" readonly tabindex="-1" :suffix="invoice.currency"></v-text-field>
           </v-col>
         </v-row>
-      </div>
       <v-row style="margin-top: 30px">
         <v-col class="col-12 col-sm-6 col-md-9 form-col">
           <div class="page-title">{{ 'Total' | i18n }}</div>
@@ -164,6 +174,7 @@
 import _ from 'lodash'
 import api from '../services/api'
 import DateInput from '../components/DateInput'
+import DateCalc from '../services/DateCalc'
 
 export default {
   components: {
@@ -172,12 +183,20 @@ export default {
 
   data() {
     return {
-      invoice: { id: 'new' },
+      invoice: { id: 'new', net_total: 0, tax_rate: 0 },
       previousInvoice: null,
       items: [],
+      previousItems: null,
+      deleteList: [],
       customers: [],
       currencies: ['EUR', 'USD', 'GBP', 'CHF', 'CAD'],
-      statusValues: ['draft', 'sent', 'paid', 'overdue', 'voided'],
+      statusValues: [
+        { value: 'draft', text: this.$i18n('draft') },
+        { value: 'sent', text: this.$i18n('sent') },
+        { value: 'paid', text: this.$i18n('paid') },
+        { value: 'overdue', text: this.$i18n('overdue') },
+        { value: 'voided', text: this.$i18n('voided') },
+      ],
       message: false,
       messageColor: 'success',
       messageText: '',
@@ -197,26 +216,103 @@ export default {
 
   methods: {
     async onSave() {
+      let isDataWritten = false
       if (!this.$refs.form.validate()) {
         return
       }
+      this.isSaving = true
+      if (!_.isEqual(this.invoice, this.previousInvoice)) {
+        try {
+          this.invoice.updated_at = DateCalc.isoDateTime()
+          if (this.invoice.id === 'new') {
+            const response = await api.post(`/invoice`, api.nullIt(this.invoice))
+            if (response.status === 201) {
+              this.invoice.id = response.data.id
+            }
+          } else {
+            await api.put(`/invoice/${this.invoice.id}`, api.nullIt(this.invoice))
+          }
+          isDataWritten = true
+          this.previousInvoice = _.clone(this.invoice)
+        } catch (err) {
+          console.error(err)
+          const msg = err.response.status == 409 ? 'Invoice number already exists.' : 'Saving did not succeed.'
+          this.showMessage(msg, 'error')
+          this.isSaving = false
+          return
+        }
+      }
+      try {
+        let itemsWritten = await this.saveItems(this.invoice.id)
+        isDataWritten = isDataWritten || Boolean(itemsWritten)
+      } catch(err) {
+          console.error(err)
+          this.showMessage('Saving did not succeed.', 'error')
+          this.isSaving = false
+          return
+      }
+      if (isDataWritten) {
+        this.showMessage('OK - Saved!')
+      } else {
+        this.showMessage('No changes were made.', 'info')
+      }
+      this.isSaving = false
+    },
+    async saveItems(invoice_id) {
+      let recordsWritten = 0
+      for (let item of this.items) {
+        if (typeof item.id === 'string' && item.id.startsWith('new')) {
+          item.invoice_id = invoice_id
+          const response = await api.post('/invoice-item', api.nullIt(item))
+          if (response.status === 201) {
+            item.id = response.data.id
+            recordsWritten++
+          }
+        } else if (!this.isInList(this.previousItems, item)) {
+          await api.put(`/invoice-item/${item.id}`, api.nullIt(item))
+          recordsWritten++
+        }
+      }
+      for (let id of this.deleteList) {
+        await api.delete(`/invoice-item/${id}`)
+        recordsWritten++
+      }
+      this.deleteList = []
+      this.previousItems = _.cloneDeep(this.items)
+      return recordsWritten
+    },
+    isInList(list, item) {
+      for (let listItem of list) {
+        if (_.isEqual(listItem, item)) {
+          return true
+        }
+      }
+      return false
     },
     addItem() {
-      console.log('adding invoice item')
+      this.items.push({
+        id: _.uniqueId('new'),
+        invoice_id: this.invoice.id,
+        item_no: this.items.length + 1
+      })
     },
-    removeItem() {
-      console.log('removing invoice item')
+    removeItem(id) {
+      if (typeof id !== 'string' || !id.startsWith('new')) {
+        this.deleteList.push(id)
+      }
+      this.items = this.items.filter(item => item.id !== id)
+      this.recalc()
     },
     calcAmount(item) {
-      return item.unit_price * item.quantity
+      return item.unit_price && item.quantity ? item.unit_price * item.quantity : 0
     },
     recalc() {
-      console.log('recalc')
-      this.invoice.net_total = this.items.reduce((acc, item) => acc + item.unit_price * item.quantity, 0)
+      this.invoice.net_total = this.items.reduce(
+        (acc, item) => acc + (item.unit_price && item.quantity ? item.unit_price * item.quantity : 0), 0
+      )
       this.onTaxChange()
     },
     onTaxChange() {
-      console.log('onTaxChange')
       this.invoice.tax_amount = this.invoice.tax_rate * this.invoice.net_total / 100
       this.invoice.grand_total = this.invoice.show_tax === 1 ?
         this.invoice.net_total + this.invoice.tax_amount :
@@ -238,7 +334,7 @@ export default {
         this.previousInvoice = _.clone(this.invoice)
         response = await api.get(`/invoice/${id}/items`)
         this.items = response.data
-        console.log(this.items)
+        this.previousItems = _.cloneDeep(this.items)
       } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')

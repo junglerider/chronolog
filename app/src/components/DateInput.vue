@@ -9,6 +9,7 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
+        v-bind="$attrs"
         :label="label"
         :disabled="disabled"
         v-model="formattedDate"

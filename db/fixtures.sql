@@ -415,15 +415,15 @@ INSERT INTO time_clock (`user_id`, `date`, `arrival_time`, `departure_time`, `wo
 (4,(SELECT DATE('now')), '08:50:58', '18:03:39', 8.21, '["08:50:58","13:02:05","14:02:05","18:03:39"]');
 
 INSERT INTO `invoice` (`id`, `invoice_no`, `customer_id`, `status`, `date`, `due_date`, `address`, `issuer`, `currency`, `net_total`, `show_tax`, `tax_rate`, `tax_amount`, `grand_total`, `payment_terms`, `template`, `created_at`, `updated_at`) VALUES
-(1, 'MY-ORG-20-051', 1, 'draft', (SELECT DATE('now', '-6 day')), (SELECT DATE('now', '+14 day')), 'Werthmann AG' || char(13) || 'Mozartstraße 98' || char(13) || '78021 Karlsruhe' || char(13) || '', 'Maria Hagenkamp', 'USD', 4800, 1, 19, 912, 5712, '20 days', null, (SELECT DATE('now', '-6 day')), null),
+(1, 'MY-ORG-20-051', 1, 'draft', (SELECT DATE('now', '-6 day')), (SELECT DATE('now', '+14 day')), 'Werthmann AG' || char(13) || 'Mozartstraße 98' || char(13) || '78021 Karlsruhe', 'Maria Hagenkamp', 'USD', 4800, 1, 19, 912, 5712, '20 days', null, (SELECT DATE('now', '-6 day')), null),
 (2, 'MY-ORG-20-050', 2, 'sent', (SELECT DATE('now', '-10 day')), (SELECT DATE('now', '+10 day')), 'InfoCom Leblanc SARL' || char(13) || 'Frederic DUPONT' || char(13) || 'Rue du Chevaleret 75' || char(13) || '87451 Marseille' || char(13) || 'France', 'Maria Hagenkamp', 'EUR', 12350, 1, 20, 2470, 14820, '20 days', null, (SELECT DATE('now', '-10 day')), null),
 (3, 'MY-ORG-20-049', 3, 'paid', (SELECT DATE('now', '-30 day')), (SELECT DATE('now', '-10 day')), 'Banco Santander Logroño' || char(13) || 'Sr. Antonio Ruiz-Orellana' || char(13) || 'Avenida Vera Cruz 98' || char(13) || '39301 Logroño' || char(13) || 'La Rioja, Spain', 'Maria Hagenkamp', 'EUR', 8500, 1, 21, 1785, 10285, '20 days', null, (SELECT DATE('now', '-32 day')), null);
 
-INSERT INTO `invoice_item` (`id`, `invoice_id`, `item_no`, `description`, `quantity`, `unit_price`) VALUES
-(1, 1, 1, 'Professional services' || char(13) || 'UI development and implementation', 120, 40),
-(2, 2, 1, 'Consulting services' || char(13) || 'Requirements Analysis', 40, 50),
-(3, 2, 2, 'Consulting services' || char(13) || 'System Analysis', 53, 50),
-(4, 2, 3, 'Software development' || char(13) || 'Machine Learning Model Development', 120, 40),
-(5, 2, 4, 'Software development' || char(13) || 'Design and Implementation', 58, 50),
-(6, 3, 1, 'Professional Services' || char(13) || 'Requirements Analysis + system analysis' || char(13) || 'Program design', 78, 50),
-(7, 3, 2, 'Software Development' || char(13) || 'Phase 1 Implementation + Testing', 92, 50);
+INSERT INTO `invoice_item` (`id`, `invoice_id`, `description`, `quantity`, `unit_price`) VALUES
+(1, 1, 'Professional services' || char(13) || 'UI development and implementation', 120, 40),
+(2, 2, 'Consulting services' || char(13) || 'Requirements Analysis', 40, 50),
+(3, 2, 'Consulting services' || char(13) || 'System Analysis', 53, 50),
+(4, 2, 'Software development' || char(13) || 'Machine Learning Model Development', 120, 40),
+(5, 2, 'Software development' || char(13) || 'Design and Implementation', 58, 50),
+(6, 3, 'Professional Services' || char(13) || 'Requirements Analysis + system analysis' || char(13) || 'Program design', 78, 50),
+(7, 3, 'Software Development' || char(13) || 'Phase 1 Implementation + Testing', 92, 50);
