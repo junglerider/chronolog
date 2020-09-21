@@ -128,8 +128,6 @@ export default new Map([
   ['Home', 'Casa'],
   ['Website', 'Sito web'],
   ['Members/Employees', 'Membri/dependenti'],
-  ['logged', 'ore/giorno'],
-  ['clocked', 'cronometrato'],
   // time sheets + todo list ------------------------------
   ['Mon', 'lun'],
   ['Tue', 'mar'],
@@ -175,6 +173,11 @@ export default new Map([
   ['Start date', 'Data d\'inizio'],
   ['End date', 'Data di fine'],
   ['Assigned to me', 'Assegnato a me'],
+  ['logged', 'ore/giorno'],
+  ['clocked', 'cronometrato'],
+  ['Invalid time', 'Inserimento non valido'],
+  ['Must not be zero', 'Non deve essere 0'],
+  ['May not execed {1} hrs', 'Non può superare le {1} ore'],
   // customers and users ----------------------------------
   ['Is Retired', 'Inattivo'],
   ['Customer Details', 'Dettagli cliente'],

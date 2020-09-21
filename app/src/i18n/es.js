@@ -176,6 +176,9 @@ export default new Map([
   ['Assigned to me', 'Asignado a mí'],
   ['logged', 'horas'],
   ['clocked', 'registrado'],
+  ['Invalid time', 'Entrada inválida'],
+  ['Must not be zero', 'No debe ser 0'],
+  ['May not execed {1} hrs', 'No puede exceder {1} horas'],
     // customers and users ----------------------------------
   ['Is Retired', 'Retirado'],
   ['Customer Details', 'Detalles del cliente'],

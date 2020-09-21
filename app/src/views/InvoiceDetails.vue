@@ -104,18 +104,27 @@
               ></v-text-field>
               </v-col>
               <v-col class="col-6 sm-6 md-6 form-col">
-                <v-text-field
+                <currency-input
                   :label="'Unit price' | i18n"
                   v-model="item.unit_price"
-                  :suffix="invoice.currency"
                   @change="recalc"
                   :rules="requiredRule"
-                  ></v-text-field>
+                  :currency="invoice.currency"
+                  :locale="$getLanguage()"
+                  type='cu'
+                ></currency-input>
               </v-col>
             </v-row>
           </v-col>
           <v-col class="col-12 col-sm-6 col-md-3 form-col">
-            <v-text-field :label="'Amount' | i18n" :value="calcAmount(item)" readonly tabindex="-1" :suffix="invoice.currency"></v-text-field>
+            <currency-input
+              :label="'Amount' | i18n"
+              :value="calcAmount(item)"
+              :currency="invoice.currency"
+              :locale="$getLanguage()"
+              readonly
+              tabindex="-1"
+            ></currency-input>
           </v-col>
         </v-row>
       <v-row style="margin-top: 30px">
@@ -123,7 +132,13 @@
           <div class="page-title">{{ 'Total' | i18n }}</div>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
-          <v-text-field :label="'Net total' | i18n" v-model="invoice.net_total" readonly tabindex="-1" :suffix="invoice.currency"></v-text-field>
+          <currency-input
+            :label="'Net total' | i18n"
+            v-model="invoice.net_total"
+            readonly tabindex="-1"
+            :currency="invoice.currency"
+            :locale="$getLanguage()"
+          ></currency-input>
         </v-col>
       </v-row>
       <v-row>
@@ -150,10 +165,23 @@
           </div>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
-          <v-text-field :label="'Tax amount' | i18n" v-model="invoice.tax_amount" readonly tabindex="-1" :suffix="invoice.currency" :disabled="invoice.show_tax == 0"></v-text-field>
+          <currency-input
+          :label="'Tax amount' | i18n"
+          v-model="invoice.tax_amount"
+          :currency="invoice.currency"
+          :locale="$getLanguage()"
+          readonly tabindex="-1"
+          :disabled="invoice.show_tax == 0"
+        ></currency-input>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
-          <v-text-field :label="'Grand total' | i18n" v-model="invoice.grand_total" readonly tabindex="-1" :suffix="invoice.currency"></v-text-field>
+          <currency-input
+          :label="'Grand total' | i18n"
+          v-model="invoice.grand_total"
+          :currency="invoice.currency"
+          :locale="$getLanguage()"
+          readonly tabindex="-1"
+        ></currency-input>
         </v-col>
       </v-row>
       <v-row>
@@ -174,11 +202,13 @@
 import _ from 'lodash'
 import api from '../services/api'
 import DateInput from '../components/DateInput'
+import CurrencyInput from '../components/CurrencyInput'
 import DateCalc from '../services/DateCalc'
 
 export default {
   components: {
     DateInput,
+    CurrencyInput,
   },
 
   data() {
@@ -189,7 +219,7 @@ export default {
       previousItems: null,
       deleteList: [],
       customers: [],
-      currencies: ['EUR', 'USD', 'GBP', 'CHF', 'CAD'],
+      currencies: ['EUR', 'USD', 'GBP', 'CHF', 'CNY', 'JPY'],
       statusValues: [
         { value: 'draft', text: this.$i18n('draft') },
         { value: 'sent', text: this.$i18n('sent') },

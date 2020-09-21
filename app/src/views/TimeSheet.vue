@@ -63,14 +63,15 @@
               <v-checkbox v-else v-model="selected" :value="item.id"></v-checkbox>
             </div>
             <div style="flex: 80%">
-              <v-text-field
+              <time-input
                 :label="'Hours' | i18n"
                 v-model="item.duration"
-                :rules="hoursInputRules"
                 @change="onChangeHours"
+                :max="12"
+                :allowZero="false"
                 ref="hours"
                 >
-              </v-text-field>
+              </time-input>
             </div>
           </v-col>
           <v-col class="col-12 col-sm-3 form-col">
@@ -113,7 +114,12 @@
             <div style="flex: 50%; max-width: 50px">
             </div>
             <div style="flex: 80%">
-              <v-text-field :label="'Total hours' | i18n" v-model="totalHours" readonly></v-text-field>
+              <time-input
+              :label="'Total hours' | i18n"
+              v-model="totalHours"
+              readonly
+              :allowZero="true"
+            ></time-input>
             </div>
           </v-col>
           <v-col class="col-12 col-sm-10 form-col" align="right">
@@ -136,10 +142,12 @@ import _ from 'lodash'
 import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 import CalendarLeaflet from '../components/CalendarLeaflet'
+import TimeInput from '../components/TimeInput'
 
 export default {
   components: {
     CalendarLeaflet,
+    TimeInput,
   },
   data() {
     return {
@@ -155,11 +163,6 @@ export default {
       messageColor: 'success',
       messageText: '',
       requiredRule: [ v => (Boolean(v) || this.$i18n('Required')) ],
-      hoursInputRules: [
-        v => (Boolean(v) || this.$i18n('Required')),
-        v => (Number(v) == v || this.$i18n('Must be a number')),
-        v => (Number(v) > 0 || this.$i18n('Must be larger than zero')),
-      ],
     }
   },
   watch: {
@@ -190,10 +193,11 @@ export default {
         user_id: this.user.id,
         date: this.date,
       })
-      this.$nextTick(() => this.$refs.hours[this.$refs.hours.length-1].focus())
+      this.$nextTick(() => this.$refs.hours[this.$refs.hours.length-1].$refs.timeInput.focus())
     },
     remove(itemId) {
       this.log = this.log.filter(item => item.id !== itemId)
+      this.onChangeHours()
     },
     async onDelete() {
       try {
