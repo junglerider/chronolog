@@ -42,6 +42,19 @@ export class Invoice extends SingleTable {
     }
   }
 
+  public async read (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace (`invoice.read(${[req.params.id]}))`)
+    const sql = `SELECT i.*, c.organisation_id FROM invoice i JOIN customer c on (i.customer_id = c.id) WHERE i.id = ?`
+    try {
+      let row = await this.db.get (sql, [req.params.id])
+      row ? res.status (200).json (row) : res.status (404).json ()
+      next ()
+    }
+    catch (err) {
+      next (err)
+    }
+  }
+
   public validateCreate(req: Request) {
     for (const column of ['invoice_no', 'customer_id', 'status', 'date', 'due_date', 'address', 'currency']) {
       if (!req.body[column]) {

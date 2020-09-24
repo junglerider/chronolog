@@ -70,6 +70,9 @@ Vue.use(VueRouter)
     component: () => import('../views/UserDetails.vue')
   },
   ...reportRoutes, {
+    path: '/reports/invoice/:id(new|\\d+)',
+    component: () => import('../reports/Invoice.vue')
+  }, {
     path: '/*',
     component: UnderConstruction
   }

@@ -50,7 +50,7 @@
               <v-text-field :label="'Payment terms' | i18n" v-model="invoice.payment_terms"></v-text-field>
             </v-col>
             <v-col class="col-12 col-sm-6 col-md-6 form-col">
-              <v-text-field :label="'Issuer' | i18n" v-model="invoice.issuer"></v-text-field>
+              <v-text-field :label="'Issued by' | i18n" v-model="invoice.issuer"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -76,6 +76,13 @@
           </div>
           <div class="page-title">{{ 'Invoice items' | i18n }}</div>
         </div>
+        <v-row align="end">
+          <v-col class="col-12 col-sm-6 col-md-6 form-col">
+            <v-textarea :label="'Headline' | i18n" v-model="invoice.headline" auto-grow rows="1"></v-textarea>
+          </v-col>
+          <v-col class="col-12 col-sm-6 col-md-6 form-col">
+          </v-col>
+        </v-row>
         <v-row v-for="item in items" :key="item.id" align="end">
           <v-col class="col-12 col-sm-6 col-md-6 form-col" style="display: flex">
             <div style="margin-left: -10px; margin-right: 5px; padding-top: 10px;">
@@ -147,7 +154,7 @@
         <v-col class="col-12 col-sm-6 col-md-3 form-col" style="display: flex;">
           <div style="max-width: 180px; margin-right: 15px">
             <v-checkbox
-              :label="'Tax' | i18n"
+              :label="'Sales tax' | i18n"
               v-model="invoice.show_tax"
               :true-value="1" :false-value="0"
               @change="onTaxChange"
@@ -155,7 +162,7 @@
           </div>
           <div style="flex: 80%;">
             <v-text-field
-              :label="'Tax rate' | i18n"
+              :label="'Sales tax rate' | i18n"
               v-model="invoice.tax_rate"
               prefix="%" reverse
               :disabled="invoice.show_tax == 0"
@@ -166,7 +173,7 @@
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
           <currency-input
-          :label="'Tax amount' | i18n"
+          :label="'Sales tax amount' | i18n"
           v-model="invoice.tax_amount"
           :currency="invoice.currency"
           :locale="$getLanguage()"
@@ -186,8 +193,9 @@
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-12 form-col" align="right">
-          <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
+          <v-btn class="ml-2 mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onPrint">{{ 'Print' | i18n }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -202,8 +210,8 @@
 import _ from 'lodash'
 import api from '../services/api'
 import DateInput from '../components/DateInput'
-import CurrencyInput from '../components/CurrencyInput'
 import DateCalc from '../services/DateCalc'
+import CurrencyInput from '../components/CurrencyInput'
 
 export default {
   components: {
@@ -245,6 +253,9 @@ export default {
   },
 
   methods: {
+    onPrint() {
+      window.open(`/reports/invoice/${this.invoice.id}`, '_blank')
+    },
     async onSave() {
       let isDataWritten = false
       if (!this.$refs.form.validate()) {

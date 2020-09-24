@@ -26,6 +26,7 @@ import { TimeLogReport } from './resources/TimeLogReport'
 import { TimeClock } from './resources/TimeClock'
 import { Invoice } from './resources/Invoice'
 import { InvoiceItem } from './resources/InvoiceItem'
+import { Setting } from './resources/Setting'
 
 const db = new Database (config, logger)
 const auth = new Auth (config, db, logger)
@@ -41,6 +42,7 @@ const timelogReport = new TimeLogReport (db, logger)
 const timeclock = new TimeClock (db, logger)
 const invoice = new Invoice (db, logger)
 const invoiceItem = new InvoiceItem (db, logger)
+const setting = new Setting (db, logger)
 
 /**
  * Represents the Chronolog API server application.
@@ -232,6 +234,12 @@ class App {
     api.get ('/invoice-item/:id(\\d+)', invoiceItem.read.bind (invoiceItem))
     api.put ('/invoice-item/:id(\\d+)', invoiceItem.update.bind (invoiceItem))
     api.delete ('/invoice-item/:id(\\d+)', invoiceItem.delete.bind (invoiceItem))
+
+    api.post ('/setting', setting.create.bind (setting))
+    api.get ('/setting/:key', setting.read.bind (setting))
+    api.get ('/settings/:key', setting.readMany.bind (setting))
+    api.put ('/setting/:key', setting.update.bind (setting))
+    api.delete ('/setting/:key', setting.delete.bind (setting))
 
     this.app.use ('/api', api)
     this.app.use (this.notFoundHandler)

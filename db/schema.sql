@@ -144,9 +144,11 @@ CREATE TABLE `invoice` (
     `due_date` TEXT NOT NULL DEFAULT (DATE('NOW', 'LOCALTIME')),
     `address` TEXT NOT NULL,
     `issuer` TEXT DEFAULT NULL,
+    `headline` TEXT DEFAULT NULL,
     `currency` TEXT NOT NULL DEFAULT 'EUR',
     `net_total` NUMERIC DEFAULT 0,
     `show_tax` INTEGER NOT NULL DEFAULT 1,
+    `show_tax_details` INTEGER NOT NULL DEFAULT 0,
     `tax_rate` NUMERIC DEFAULT 0,
     `tax_amount` NUMERIC DEFAULT 0,
     `grand_total` NUMERIC DEFAULT 0,
@@ -169,3 +171,8 @@ CREATE TABLE `invoice_item` (
     ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE INDEX `invoice_item_invoice_id_index` ON `invoice_item` (`invoice_id`);
+
+CREATE TABLE `setting` (
+    `key` TEXT NOT NULL PRIMARY KEY,
+    `value` TEXT DEFAULT NULL
+);

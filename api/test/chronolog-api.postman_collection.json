@@ -2178,7 +2178,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"invoice_no\": \"MY-ORG-20-031\",\n        \"date\": \"2020-04-28\",\n        \"due_date\": \"2020-05-21\",\n        \"customer_id\": 1,\n        \"address\": \"Werthmann AG\\nMozartstraße 98\\n78021 Karlsruhe\\n\",\n        \"currency\": \"EUR\",\n        \"show_tax\": 0,\n        \"net_total\": \"3500\",\n        \"grand_total\": \"3500\"\n    }",
+							"raw": "    {\n        \"invoice_no\": \"MY-ORG-20-031\",\n        \"date\": \"2020-04-28\",\n        \"due_date\": \"2020-05-21\",\n        \"customer_id\": 1,\n        \"address\": \"Werthmann AG\\nMozartstraße 98\\n78021 Karlsruhe\\n\",\n        \"currency\": \"EUR\",\n        \"show_tax\": 0,\n        \"net_total\": \"3500\",\n        \"grand_total\": \"3500\",\n        \"status\": \"draft\"\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2500,6 +2500,149 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "Setting",
+			"item": [
+				{
+					"name": "setting CREATE",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"key\": \"my_setting\",\n        \"value\": \"This is my setting\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/setting",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"setting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setting READ",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/setting/my_setting",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"setting",
+								"my_setting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "settings LIST",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/settings/inv",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"settings",
+								"inv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setting UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"value\": \"A new value for my setting\"\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/setting/my_setting",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"setting",
+								"my_setting"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setting DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/setting/my_setting",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"setting",
+								"my_setting"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "HEALTH status",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
@@ -2556,12 +2699,12 @@
 	],
 	"variable": [
 		{
-			"id": "2e17483e-5a4b-471e-b733-8574215eb3b6",
+			"id": "99ef2ecc-c3bf-4b5e-9ae4-75796f30f71a",
 			"key": "domain",
 			"value": "http://localhost:8888"
 		},
 		{
-			"id": "704a3ab3-3e83-4bcc-a64f-b7a8648fbd88",
+			"id": "78ff13c5-0f74-4c7b-9b23-06ea52c5a5c0",
 			"key": "baseURL",
 			"value": "http://localhost:8888/api"
 		}

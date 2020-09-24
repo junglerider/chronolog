@@ -6,8 +6,6 @@
    @input="onInput"
    @blur="onBlur"
    @focus="onFocus"
-   :suffix="suffix"
-   :prefix="prefix"
    :reverse="true"
   ></v-text-field>
 </template>
@@ -44,8 +42,6 @@ export default {
       number: this.value,
       lastNumber: this.value,
       formatter: new NumberFormat(this.locale, this.currency),
-      prefix: null,
-      suffix: null,
     }
   },
   methods: {
@@ -53,7 +49,7 @@ export default {
       if (val === null) {
         return 0
       }
-      return this.formatter.format(val)
+      return this.formatter.formatAmount(val)
     },
     onChange() {
       this.number = Math.round(this.number * 100) / 100
@@ -73,11 +69,6 @@ export default {
     },
     updateFormat() {
       this.formatter = new NumberFormat(this.locale, this.currency)
-      if (this.locale === 'en') {
-        this.suffix = this.formatter.currencySign
-      } else {
-        this.prefix = this.formatter.currencySign
-      }
     }
   },
   computed: {
