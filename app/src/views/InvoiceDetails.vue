@@ -2,7 +2,7 @@
   <v-form ref="form">
     <v-container>
       <v-row>
-        <v-col md="12">
+        <v-col class="col-12 col-md-12">
           <div class="page-title">{{ 'Invoice Details' | i18n }}</div>
           <span>{{ 'ID' | i18n }}: {{ invoice.id }}</span>
         </v-col>
@@ -19,6 +19,7 @@
             item-value="id"
             item-text="name"
             :rules="requiredRule"
+            @change="onCustomerChange"
           ></v-autocomplete>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
@@ -32,7 +33,7 @@
         <v-col class="col-12 col-sm-6 col-md-3 form-col">
           <v-row>
             <v-col class="col-12 form-col">
-              <date-input :label="'Due date' | i18n" v-model="invoice.due_date" :rules="requiredRule"></date-input>
+              <date-input :label="'Due date' | i18n" v-model="invoice.due_date" :rules="requiredRule" :hint="dateDifference"></date-input>
             </v-col>
           </v-row>
           <v-row>
@@ -221,7 +222,7 @@ export default {
 
   data() {
     return {
-      invoice: { id: 'new', net_total: 0, tax_rate: 0 },
+      invoice: { id: 'new', net_total: 0, tax_rate: 0, show_tax: 1 },
       previousInvoice: null,
       items: [],
       previousItems: null,
@@ -250,9 +251,28 @@ export default {
     createdAt() {
       return this.invoice.created_at ? this.$i18nDate(this.invoice.created_at) : null
     },
+    dateDifference() {
+      if (!this.invoice.date || !this.invoice.due_date) {
+        return null
+      }
+      const diffTime = new Date(this.invoice.due_date) - new Date(this.invoice.date)
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
+      return diffDays + ' ' + this.$i18n('days')
+    }
   },
 
   methods: {
+    async onCustomerChange() {
+      const organisationId = this.customers.reduce(
+        (id, cust) => cust.id === this.invoice.customer_id ? cust.organisation_id : id, undefined
+      )
+      const response = await api.get(`/organisation/${organisationId}`)
+      const a = response.data
+      let address = `${a.name}\n${a.street_address}\n${a.postcode} ${a.city}\n`
+      if (a.state_province) address += a.state_province + '\n'
+      if (a.country) address += a.country + '\n'
+      this.$set(this.invoice, 'address', address.slice(0, -1))
+    },
     onPrint() {
       window.open(`/reports/invoice/${this.invoice.id}`, '_blank')
     },
@@ -383,7 +403,7 @@ export default {
     }
     const response = await api.get(`/customer?order=name`)
     this.customers = response.data.map(customer => { return {
-      id: customer.id, name: customer.name
+      id: customer.id, name: customer.name, organisation_id: customer.organisation_id
     }})
   },
 

@@ -8,6 +8,7 @@
       :searchFilter="'&filter[invoice_no][like]={search}%'"
       :afterGetData="afterGetData"
       :onDeleteData="onDelete"
+      settings="inv:header,inv:footer"
     ></data-list>
   </div>
 </template>

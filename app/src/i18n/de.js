@@ -63,6 +63,7 @@ export default new Map([
   ['Cancel', 'Abbrechen'],
   ['Update', 'Aktualisieren'],
   ['Reset', 'Zurücksetzen'],
+  ['Print', 'Drucken'],
   ['Password', 'Passwort'],
   ['Login', 'Anmelden'],
   ['Previous month', 'Letzter Monat'],
@@ -203,7 +204,6 @@ export default new Map([
   ['The server could not update the password.', 'Das Passwort konnte nicht vom Server aktualisiert werden.'],
   ['Your password has been updated.', 'Ihr Passwort wurde aktualisiert.'],
   // reporting --------------------------------------------
-  // invoices ---------------------------------------------
   ['Chronological time sheet', 'Chronologische Stundenberichte'],
   ['Time sheet by task', 'Stundenberichte nach Aufgaben'],
   ['Generate', 'Generieren'],
@@ -222,6 +222,7 @@ export default new Map([
   ['Invoice', 'Rechnung'],
   ['Invoice Details', 'Rechnungsdetails'],
   ['Invoice items', 'Rechnungsposten'],
+  ['Headline', 'Überschrift'],
   ['Invoice no.', 'Rechnungs-Nr.'],
   ['No.', 'Nr.'],
   ['Cust. no.', 'Kundennr.'],
@@ -233,7 +234,7 @@ export default new Map([
   ['Currency', 'Währung'],
   ['Amount', 'Betrag'],
   ['Quantity', 'Anzahl'],
-  ['Unit price', 'Preis pro Einheit'],
+  ['Unit price', 'Einzelpreis'],
   ['Total', 'Summe'],
   ['Net total', 'Nettosumme'],
   ['Subtotal', 'Zwischensumme'],
@@ -249,4 +250,9 @@ export default new Map([
   ['paid', 'Bezahlt'],
   ['overdue', 'Überfällig'],
   ['voided', 'Annulliert'],
+  ['days', 'Tage'],
+  ['Invoice header', 'Rechnnungs-Kopfzeile'],
+  ['Invoice footer', 'Rechnnungs-Fußtext'],
+  ['Enter HTML for the printable invoice header', 'HTML für den Inhalt des druckbaren Rechnungskopfes'],
+  ['Enter HTML for the printable invoice footer', 'HTML für den Inhalt der druckbaren Rechnungs-Fußzeile'],
 ])

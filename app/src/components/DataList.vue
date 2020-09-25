@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
+      <settings v-if="settings" :keys="settings" style="margin-left: -12px"></settings>
       <div class="page-title">{{ title }}</div>
       <v-spacer></v-spacer>
       <v-text-field
@@ -45,10 +46,10 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="onDelete">
-              {{ "OK" || i18n }}
+              {{ "OK" | i18n }}
             </v-btn>
             <v-btn text @click="deleteDialog = false">
-              {{ "Cancel" || i18n }}
+              {{ "Cancel" | i18n }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -99,9 +100,14 @@
 
 <script>
 import api from '../services/api'
+import Settings from '../components/Settings'
 
 export default {
   name: 'DataList',
+
+  components: {
+    Settings
+  },
 
   props: {
     title: String,
@@ -112,6 +118,7 @@ export default {
     onGetData: Function,
     afterGetData: Function,
     onDeleteData: Function,
+    settings: String,
   },
 
   data() {
