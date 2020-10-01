@@ -89,6 +89,10 @@ export default {
         this.dialog = true
       } catch (err) {
         console.log(err)
+        if (err.request.status === 404) {
+          this.value = ''
+          this.dialog = true
+        }
       }
     },
     async onSave() {

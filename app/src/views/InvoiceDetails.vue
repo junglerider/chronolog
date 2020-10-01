@@ -268,10 +268,12 @@ export default {
       )
       const response = await api.get(`/organisation/${organisationId}`)
       const a = response.data
-      let address = `${a.name}\n${a.street_address}\n${a.postcode} ${a.city}\n`
-      if (a.state_province) address += a.state_province + '\n'
-      if (a.country) address += a.country + '\n'
-      this.$set(this.invoice, 'address', address.slice(0, -1))
+      a.postcode_city = a.postcode && a.city ? (a.postcode + ' ' + a.city) : a.postcode ? a.postcode : a.city
+      const address = ['name', 'street_address', 'postcode_city', 'state_province', 'country'].
+        filter(line => Boolean(a[line])).
+        map(line => a[line]).
+        join('\n')
+      this.$set(this.invoice, 'address', address)
     },
     onPrint() {
       window.open(`/reports/invoice/${this.invoice.id}`, '_blank')
