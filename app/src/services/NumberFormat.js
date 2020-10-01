@@ -39,7 +39,7 @@ export default class NumberFormat {
   }
 
   format(num) {
-    if (!num) return num
+    if (num === null || num === undefined) return num
     num = num.toFixed(2).replace('.', this.decimalPoint)
     return num.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, `$1${this.thousandsSeparator}`)
   }
