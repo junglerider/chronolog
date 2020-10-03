@@ -13,10 +13,10 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "lodash": "^4.17.19",
+    "n2words": "^1.7.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuetify": "^2.2.11",
-    "written-number": "^0.9.1"
+    "vuetify": "^2.2.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

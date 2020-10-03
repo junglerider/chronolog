@@ -246,7 +246,7 @@ div#invoice {
 import api from '../services/api'
 import NumberFormat from '../services/NumberFormat'
 import TextBlock from '../components/TextBlock'
-import writtenNumber  from 'written-number'
+import n2words  from 'n2words'
 
 export default {
   components: {
@@ -279,9 +279,9 @@ export default {
       const options = {lang: this.$getLanguage()}
       const amount = Math.floor(this.invoice.grand_total)
       const hundredth = Math.floor((this.invoice.grand_total - amount) * 100)
-      let writtenAmount = writtenNumber(amount, options)
+      let writtenAmount = n2words(amount, options)
       if (hundredth > 0) {
-        writtenAmount += ' / ' + writtenNumber(hundredth, options)
+        writtenAmount += ' / ' + n2words(hundredth, options)
       }
       return writtenAmount
     }
