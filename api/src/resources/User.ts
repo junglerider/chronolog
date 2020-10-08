@@ -11,6 +11,7 @@ export class User extends SingleTable {
       person_id: 'u.person_id',
       login: 'u.login',
       password: 'u.password',
+      roles: 'u.roles',
       visits: 'u.visits',
       last_visit: 'u.last_visit',
       last_task: 'u.last_task',

@@ -32,6 +32,7 @@ export default new Map([
   ['Report', 'Informe'],
   ['Select report to view/print from a list of reports', 'Seleccione el informe para ver/imprimir de una lista de informes'],
   ['Admin', 'Administración'],
+  ['Administrator', 'Administrador'],
   ['Projects & Tasks', 'Proyectos y tareas'],
   ['View project tree and maintain tasks', 'Ver jerarquía de proyectos y editar tareas'],
   ['Employees', 'Empleados'],
@@ -193,6 +194,7 @@ export default new Map([
   ['Total visits', 'Numero de sesiones'],
   ['Number of time sheet entries', 'Numero de tarjetas de hojas'],
   ['This user name already exists.', 'Este nombre de usuario ya existe.'],
+  ['Access control', 'Derechos de acceso'],
   // login/password ---- ----------------------------------
   ['Old password', 'Contraseña anterior'],
   ['New password', 'Nueva contraseña'],
@@ -220,6 +222,7 @@ export default new Map([
   // invoices ---------------------------------------------
   ['Invoices', 'Facturas'],
   ['Invoice', 'Factura'],
+  ['Invoicing', 'Facturación'],
   ['Invoice Details', 'Detalles de la factura'],
   ['Invoice items', 'Artículos'],
   ['Headline', 'Cabecera'],

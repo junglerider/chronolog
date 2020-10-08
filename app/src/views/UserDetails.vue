@@ -8,10 +8,10 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col class="col-12 col-sm-6 form-col">
           <v-text-field :label="'User name' | i18n" v-model="user.login" :rules="requiredRule"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col class="col-12 col-sm-6 form-col">
           <v-autocomplete
             :label="'Contact' | i18n"
             :items="persons"
@@ -32,30 +32,44 @@
           </div>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col class="col-12 col-sm-6 form-col">
+          <v-select
+          v-model="roles"
+          :label="'Access control' | i18n"
+          :items="allRoles"
+          multiple
+          chips
+          @change="onChangeRoles"
+        ></v-select>
+        </v-col>
+        <v-col class="col-12 col-sm-6 form-col">
+        </v-col>
+      </v-row>
       <v-row v-if="user.id !== 'new'">
-        <v-col class="col-12 col-md-3 col-sm-6 form-col">
+        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
           <v-text-field :label="'Last visit' | i18n" v-model="lastVisit" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-md-3 col-sm-6 form-col">
+        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
           <v-text-field :label="'Total visits' | i18n" v-model="user.visits" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-md-3 col-sm-6 form-col">
+        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
           <v-text-field :label="'Number of tasks' | i18n" v-model="user.task_count" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-md-3 col-sm-6 form-col">
+        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
           <v-text-field :label="'Number of time sheet entries' | i18n" v-model="user.time_log_count" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="user.id !== 'new'">
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col class="col-12 col-sm-6 form-col">
           <v-text-field :label="'Created at' | i18n" v-model="createdAt" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col class="col-12 col-sm-6 form-col">
           <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col" align="right">
+        <v-col class="col-12 col-sm-12 form-col" align="right">
           <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
         </v-col>
@@ -75,7 +89,7 @@ import DateCalc from '../services/DateCalc'
 
 export default {
 
-  data() {
+    data() {
 
     return {
       user: { id: 'new', is_active: 1 },
@@ -85,6 +99,13 @@ export default {
       messageColor: 'success',
       messageText: '',
       isSaving: false,
+      allRoles: [
+        { value: 'admin', text: this.$i18n('Administrator') },
+        { value: 'invoicing', text: this.$i18n('Invoicing') },
+        { value: 'reporting', text: this.$i18n('Reporting') },
+        { value: 'contacts', text: this.$i18n('Contacts') },
+      ],
+      roles: [],
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
@@ -136,6 +157,10 @@ export default {
       }
     },
 
+    onChangeRoles(val) {
+      this.user.roles = val && val.length ? val.join(',') : null
+    },
+
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
@@ -149,6 +174,7 @@ export default {
         const id = this.$route.params.id
         let response = await api.get(`/user/${id}`)
         this.user = response.data
+        this.roles = this.user.roles ? this.user.roles.split(',') : []
         response = await api.get(`/task/count?filter[user_id][eq]=${id}`)
         this.user.task_count = response.data.count
         response = await api.get(`/timelog/count?filter[user_id][eq]=${id}`)

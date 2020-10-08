@@ -63,6 +63,7 @@ CREATE TABLE `user` (
     `is_active` INTEGER NOT NULL DEFAULT 1,
     `login` TEXT NOT NULL UNIQUE,
     `password` TEXT DEFAULT NULL,
+    `roles` TEXT DEFAULT NULL,
     `visits` INTEGER NOT NULL DEFAULT 0,
     `last_visit` TEXT DEFAULT NULL,
     `notes` TEXT DEFAULT NULL,
