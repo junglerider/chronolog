@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import { Database } from '../Database'
 import { SingleTable } from '../SingleTable'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Employee extends SingleTable {
@@ -15,12 +16,18 @@ export class Employee extends SingleTable {
     super ('employee', schema, db, logger)
   }
 
-  public validateCreate(req: Request) {
+  public validateCreate (req: Request) {
     if (!req.body.organisation_id) {
       throw new Error ('400:Create new employee: organisation id is required')
     }
     if (!req.body.person_id) {
       throw new Error ('400:Create new employee: person id is required')
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasContacts ()) {
+      throw new Error ('403:No contacts credentials')
     }
   }
 }

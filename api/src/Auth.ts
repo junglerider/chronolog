@@ -1,6 +1,7 @@
 import * as crypto from 'crypto'
 import { Request, Response, NextFunction } from 'express'
 import { Database } from './Database'
+import { IRequest, IUserSession, UserSession } from './UserSession'
 import * as Logger from 'bunyan'
 
 /**
@@ -14,21 +15,23 @@ export class Auth {
 
   protected db: Database
   protected logger: Logger
-  private sessions
+  private sessions: Map <string, IUserSession>
   private config
 
   constructor (config, db: Database, logger: Logger) {
     this.config = config
     this.db = db
     this.logger = logger
-    this.sessions = new Map ()
+    this.sessions = new Map <string, IUserSession> ()
     // create default session if in dev mode
     if (process.env.NODE_ENV === 'development') {
       this.logger.debug ('--> creating default session')
       this.sessions.set ('8460439ae320b1aea23112bae232750b40b111481bf05fb9e98b7135fde1b8a5', {
+        time: Date.now (),
         id: 1,
-        login: 'enzo',
-        name: 'Lorenzo'
+        username: 'enzo',
+        name: 'Lorenzo Regio',
+        roles: ['admin']
       })
     }
     // invalidate sessions periodically
@@ -61,7 +64,7 @@ export class Auth {
   }
 
   /**
-   * Performs an authentication using login credentials and if successful creates a new
+   * Performs authentication using login credentials and if successful creates a new
    * session. Returns a 200 OK response with user details and token, or 401 otherwise.
    *
    * @param req Express request object
@@ -80,6 +83,7 @@ export class Auth {
             user_id: row.id,
             username: row.login,
             name: row.name,
+            roles: row.roles ? row.roles.split(',') : [],
             visits: row.visits,
             last_visit: row.last_visit,
             token: this.createSession (row, this.getToken (req))
@@ -128,8 +132,8 @@ export class Auth {
     if (token) {
       const session = this.sessions.get (token)
       if (session) {
-        session.time = Date.now ()
-        req.params._user_ = session
+        session.time = Date.now ();
+        (<IRequest>req).session = new UserSession(session)
         return true
       }
     }
@@ -196,7 +200,8 @@ export class Auth {
       time: Date.now (),
       id: user.id,
       username: user.login,
-      name: user.name
+      name: user.name,
+      roles: user.roles ? user.roles.split(',') : [],
     }
     this.sessions.set (token, session)
     this.updateUserStats (user)

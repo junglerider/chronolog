@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SingleTable } from '../SingleTable'
-import { Database } from '../Database';
+import { Database } from '../Database'
 import * as Logger from 'bunyan'
 
 export class Task extends SingleTable {
@@ -86,7 +86,7 @@ export class Task extends SingleTable {
     }
   }
 
-  public validateCreate(req: Request) {
+  public validateCreate (req: Request) {
     if (!req.body.name) {
       throw new Error ('400:Create new task: name is required')
     }

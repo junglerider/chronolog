@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SingleTable } from '../SingleTable'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Invoice extends SingleTable {
@@ -33,6 +34,7 @@ export class Invoice extends SingleTable {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('invoice.list()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT i.id, invoice_no, date, grand_total, currency, status, c.name AS customer_name FROM invoice i LEFT JOIN customer c ON (c.id = i.customer_id) ${whereClause}`
       const rows = await this.db.all (sql, params)
@@ -45,8 +47,9 @@ export class Invoice extends SingleTable {
 
   public async read (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`invoice.read(${[req.params.id]}))`)
-    const sql = `SELECT i.*, c.organisation_id FROM invoice i JOIN customer c on (i.customer_id = c.id) WHERE i.id = ?`
     try {
+      this.validateAccess (<IRequest>req)
+      const sql = `SELECT i.*, c.organisation_id FROM invoice i JOIN customer c on (i.customer_id = c.id) WHERE i.id = ?`
       let row = await this.db.get (sql, [req.params.id])
       row ? res.status (200).json (row) : res.status (404).json ()
       next ()
@@ -56,7 +59,7 @@ export class Invoice extends SingleTable {
     }
   }
 
-  public validateCreate(req: Request) {
+  public validateCreate (req: Request) {
     for (const column of ['invoice_no', 'customer_id', 'status', 'date', 'due_date', 'address', 'currency']) {
       if (!req.body[column]) {
         throw new Error (`400:Create new invoice: ${column} is required`)
@@ -64,4 +67,9 @@ export class Invoice extends SingleTable {
     }
   }
 
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasInvoicing ()) {
+      throw new Error ('403:No invoicing credentials')
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { SqlGenerator } from './SqlGenerator'
 import { Database } from './Database'
+import { IRequest } from './UserSession'
 import * as Logger from 'bunyan'
 
 /**
@@ -28,6 +29,14 @@ export class SingleTable {
     // override
   }
 
+  public validateAccess (req: IRequest) {
+    // override
+  }
+
+  protected isWriteAccess(req: Request) {
+    return ['PUT', 'POST', 'PATCH', 'DELETE'].includes(req.method)
+  }
+
   private getTableName() {
     return this.table.split(' ')[0]
   }
@@ -50,10 +59,10 @@ export class SingleTable {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.list()`)
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT * FROM ${this.table} ` + whereClause
       const rows = await this.db.all (sql, params)
-      res.header ( {'Access-Control-Allow-Origin': '*'} )
       rows ? res.status (200).json (rows) : res.status (404).json ()
       next ()
     } catch (err) {
@@ -71,10 +80,10 @@ export class SingleTable {
   public async count (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.count()`)
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT COUNT(*) AS count FROM ${this.table} ` + whereClause
       const row = await this.db.get (sql, params)
-      res.header ( {'Access-Control-Allow-Origin': '*'} )
       row ? res.status (200).json (row) : res.status (404)
       next ()
     } catch (err) {
@@ -92,6 +101,7 @@ export class SingleTable {
   public async create (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.create()`)
     try {
+      this.validateAccess (<IRequest>req)
       this.validateCreate (req)
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length === 0) {
@@ -120,10 +130,10 @@ export class SingleTable {
    */
   public async read (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.read(${[req.params[this.idColumn]]}))`)
-    const sql = `SELECT * FROM ${this.table} WHERE ${this.idColumn} = ?`
     try {
+      this.validateAccess (<IRequest>req)
+      const sql = `SELECT * FROM ${this.table} WHERE ${this.idColumn} = ?`
       let row = await this.db.get (sql, [req.params[this.idColumn]])
-      res.header ( {'Access-Control-Allow-Origin': '*'} )
       row ? res.status (200).json (row) : res.status (404).json ()
       next ()
     }
@@ -141,8 +151,9 @@ export class SingleTable {
    */
   public async update (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.update(${[req.params[this.idColumn]]})`)
-    let status = 400
     try {
+      this.validateAccess (<IRequest>req)
+      let status = 400
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
         values.push(req.params[this.idColumn])
@@ -168,6 +179,7 @@ export class SingleTable {
   public async delete (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`${this.getTableName()}.delete(${[req.params[this.idColumn]]})`)
     try {
+      this.validateAccess (<IRequest>req)
       const result: any = await this.db.run (`DELETE FROM ${this.getTableName()} WHERE ${this.idColumn} = ?`, [req.params[this.idColumn]])
       result && result.changes > 0 ? res.status (204).json () : res.status (404).json ()
       next ()

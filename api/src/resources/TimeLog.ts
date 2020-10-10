@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Database } from '../Database'
 import { SingleTable } from '../SingleTable'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class TimeLog extends SingleTable {
@@ -60,7 +61,7 @@ export class TimeLog extends SingleTable {
     }
   }
 
-  public validateCreate(req: Request) {
+  public validateCreate (req: Request) {
     if (!req.body.date) {
       throw new Error ('400:Create new time log: date is required')
     }
@@ -70,5 +71,26 @@ export class TimeLog extends SingleTable {
     if (!req.body.user_id) {
       throw new Error ('400:Create new time log: user_id is required')
     }
+  }
+
+  private async isOwnRecord(req: IRequest) {
+    if (!req.params.id) {
+      return false
+    }
+    let row: any = await this.db.get (`SELECT * FROM time_log WHERE id = ?`, [req.params.id])
+    return req.session.hasUserId (row.user_id)
+  }
+
+  public async validateAccess (req: IRequest) {
+    if (!this.isWriteAccess (req) || req.session.hasAdmin ()) {
+      return
+    }
+    if ((req.method === 'POST' || req.method === 'PUT') && req.body && req.session.hasUserId (Number (req.body.user_id))) {
+      return
+    }
+    if (req.method === 'DELETE' && await this.isOwnRecord(req)) {
+      return
+    }
+    throw new Error ('403:Insufficient credentials')
   }
 }

@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SqlGenerator } from '../SqlGenerator'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Person {
@@ -36,6 +37,7 @@ export class Person {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Person.list()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = 'SELECT p.id, p.type, p.title, p.first_name, p.last_name, p.first_name || " " || p.last_name AS name, e.city, e.country FROM person p JOIN entity e ON e.id = p.id ' + whereClause
       const rows = await this.db.all (sql, params)
@@ -49,6 +51,7 @@ export class Person {
   public async count (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Person.count()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = 'SELECT COUNT(*) AS count FROM person p JOIN entity e ON e.id = p.id ' + whereClause
       const row = await this.db.get (sql, params)
@@ -66,6 +69,7 @@ export class Person {
     }
     try {
       await this.db.run ('BEGIN TRANSACTION')
+      this.validateAccess (<IRequest>req)
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body, 'e.')
       let sql = `INSERT INTO entity (${ names.join (', ') }) VALUES (${ names.map (n => '?').join (', ') })`
       let result: any = await this.db.run (sql, values)
@@ -95,6 +99,7 @@ export class Person {
     this.logger.trace (`Person.update(${[req.params.id]})`)
     try {
       await this.db.run ('BEGIN TRANSACTION')
+      this.validateAccess (<IRequest>req)
       let tablesToUpdate = 0
       let tablesUpdated = 0
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body, 'e.')
@@ -123,8 +128,9 @@ export class Person {
 
   public async read (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Person.read(${[req.params.id]})`)
-    const sql = 'SELECT * FROM person p JOIN entity e ON e.id = p.id WHERE p.id = ?'
     try {
+      this.validateAccess (<IRequest>req)
+      const sql = 'SELECT * FROM person p JOIN entity e ON e.id = p.id WHERE p.id = ?'
       let row = await this.db.get (sql, [req.params.id])
       row ? res.status (200).json (row) : res.status (404).json ()
       next ()
@@ -137,6 +143,7 @@ export class Person {
   public async delete (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Person.delete(${[req.params.id]})`)
     try {
+      this.validateAccess (<IRequest>req)
       let result: any = undefined
       const row = await this.db.get ('SELECT * FROM person WHERE id = ?', [req.params.id])
       if (row) {
@@ -153,12 +160,19 @@ export class Person {
   public async getOrganisations (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Person.getOrganisations(${[req.params.id]})`)
     try {
+      this.validateAccess (<IRequest>req)
       const sql = 'SELECT o.id AS organisation_id, e.id AS employee_id, o.name, e.position FROM employee e JOIN organisation o ON e.organisation_id = o.id WHERE e.person_id = ?'
       const rows = await this.db.all (sql, [req.params.id])
       rows ? res.status (200).json (rows) : res.status (404).json ()
       next ()
     } catch (err) {
       next (err)
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasContacts ()) {
+      throw new Error ('403:No contacts credentials')
     }
   }
 }

@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SqlGenerator } from '../SqlGenerator'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Organisation {
@@ -34,6 +35,7 @@ export class Organisation {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Organisation.list()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = 'SELECT o.id, o.type, o.name, o.industry, e.city, e.country FROM organisation o JOIN entity e ON e.id = o.id ' + whereClause
       const rows = await this.db.all (sql, params)
@@ -47,6 +49,7 @@ export class Organisation {
   public async count (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Organisation.count()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = 'SELECT COUNT(*) AS count FROM organisation o JOIN entity e ON e.id = o.id ' + whereClause
       const row = await this.db.get (sql, params)
@@ -64,6 +67,7 @@ export class Organisation {
     }
     try {
       await this.db.run ('BEGIN TRANSACTION')
+      this.validateAccess (<IRequest>req)
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body, 'e.')
       let sql = `INSERT INTO entity (${ names.join (', ') }) VALUES (${ names.map (n => '?').join (', ') })`
       let result: any = await this.db.run (sql, values)
@@ -84,6 +88,7 @@ export class Organisation {
       next ()
     }
     catch (err) {
+      await this.db.run ('ROLLBACK')
       next (err)
     }
   }
@@ -92,6 +97,7 @@ export class Organisation {
     this.logger.trace (`Organisation.update(${[req.params.id]})`)
     try {
       await this.db.run ('BEGIN TRANSACTION')
+      this.validateAccess (<IRequest>req)
       let tablesToUpdate = 0
       let tablesUpdated = 0
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body, 'e.')
@@ -113,14 +119,16 @@ export class Organisation {
       next ()
     }
     catch (err) {
+      await this.db.run ('ROLLBACK')
       next (err)
     }
   }
 
   public async read (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Organisation.read(${[req.params.id]})`)
-    const sql = 'SELECT * FROM organisation o JOIN entity e ON e.id = o.id WHERE o.id = ?'
     try {
+      this.validateAccess (<IRequest>req)
+      const sql = 'SELECT * FROM organisation o JOIN entity e ON e.id = o.id WHERE o.id = ?'
       let row = await this.db.get (sql, [req.params.id])
       row ? res.status (200).json (row) : res.status (404).json ()
       next ()
@@ -133,6 +141,7 @@ export class Organisation {
   public async delete (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Organisation.delete(${[req.params.id]})`)
     try {
+      this.validateAccess (<IRequest>req)
       let result: any = undefined
       const row = await this.db.get ('SELECT * FROM organisation WHERE id = ?', [req.params.id])
       if (row) {
@@ -149,12 +158,19 @@ export class Organisation {
   public async getPersons (req: Request, res: Response, next: NextFunction) {
     this.logger.trace (`Organisation.getPersons(${[req.params.id]})`)
     try {
+      this.validateAccess (<IRequest>req)
       const sql = 'SELECT p.id AS person_id, e.id AS employee_id, p.first_name || " " || p.last_name AS name, e.position FROM employee e JOIN person p ON e.person_id = p.id WHERE e.organisation_id = ?'
       const rows = await this.db.all (sql, [req.params.id])
       rows ? res.status (200).json (rows) : res.status (404).json ()
       next ()
     } catch (err) {
       next (err)
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasContacts ()) {
+      throw new Error ('403:No contacts credentials')
     }
   }
 }

@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SingleTable } from '../SingleTable'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Contact extends SingleTable {
@@ -15,7 +16,20 @@ export class Contact extends SingleTable {
     super('contact', schema, db, logger)
   }
 
-  public validateCreate(req: Request) {
+  public async listByEntity (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace (`contact.listByEntity(${[req.params.id]})`)
+    try {
+      this.validateAccess (<IRequest>req)
+      const sql = 'SELECT id, type, entry FROM contact WHERE entity_id = ?'
+      const rows = await this.db.all (sql, [req.params.id])
+      rows ? res.json (rows) : res.status (404).json ()
+      next ()
+    } catch (err) {
+      next (err)
+    }
+  }
+
+  public validateCreate (req: Request) {
     if (!req.body.entity_id) {
       throw new Error ('400:Create new contact: entity id is required')
     }
@@ -27,15 +41,9 @@ export class Contact extends SingleTable {
     }
   }
 
-  public async listByEntity (req: Request, res: Response, next: NextFunction) {
-    this.logger.trace (`contact.listByEntity(${[req.params.id]})`)
-    try {
-      const sql = 'SELECT id, type, entry FROM contact WHERE entity_id = ?'
-      const rows = await this.db.all (sql, [req.params.id])
-      rows ? res.json (rows) : res.status (404).json ()
-      next ()
-    } catch (err) {
-      next (err)
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasContacts ()) {
+      throw new Error ('403:No contacts credentials')
     }
   }
 }

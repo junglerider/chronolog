@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SingleTable } from '../SingleTable'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Customer extends SingleTable {
@@ -57,12 +58,18 @@ export class Customer extends SingleTable {
     }
   }
 
-  public validateCreate(req: Request) {
+  public validateCreate (req: Request) {
     if (!req.body.name) {
       throw new Error ('400:Create new customer: name is required')
     }
     if (!req.body.organisation_id) {
       throw new Error ('400:Create new customer: organisation_id is required')
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (this.isWriteAccess (req) && !req.session.hasInvoicing ()) {
+      throw new Error ('403:No invoicing credentials')
     }
   }
 }

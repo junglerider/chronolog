@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import { SingleTable } from '../SingleTable'
-import { Database } from '../Database';
+import { Database } from '../Database'
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class InvoiceItem extends SingleTable {
@@ -19,6 +20,7 @@ export class InvoiceItem extends SingleTable {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('invoiceItem.list()')
     try {
+      this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
       const sql = `SELECT id, invoice_id, FROM invoice_item ${whereClause}`
       const rows = await this.db.all (sql, params)
@@ -32,6 +34,7 @@ export class InvoiceItem extends SingleTable {
   public async items (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('invoice.items()')
     try {
+      this.validateAccess (<IRequest>req)
       const sql = `SELECT * FROM invoice_item WHERE invoice_id = ? ORDER BY id`
       const rows = await this.db.all (sql, [req.params.id])
       rows ? res.json (rows) : res.status (404).json ()
@@ -46,6 +49,12 @@ export class InvoiceItem extends SingleTable {
       if (!req.body[column]) {
         throw new Error (`400:Create new invoice_item: ${column} is required`)
       }
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasInvoicing ()) {
+      throw new Error ('403:No invoicing credentials')
     }
   }
 }

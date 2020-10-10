@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { SingleTable } from '../SingleTable'
 import { Database } from '../Database';
+import { IRequest } from '../UserSession'
 import * as Logger from 'bunyan'
 
 export class Setting extends SingleTable {
@@ -16,6 +17,7 @@ export class Setting extends SingleTable {
   public async readMany (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('setting.readMany()')
     try {
+      this.validateAccess (<IRequest>req)
       const term = req.params.key.indexOf('%') >= 0 ? req.params.key : req.params.key + '%'
       const sql = `SELECT * FROM setting WHERE key LIKE ?`
       const rows = await this.db.all (sql, [term])
@@ -29,6 +31,12 @@ export class Setting extends SingleTable {
   public validateCreate (req: Request) {
     if (!req.body.key) {
       throw new Error (`400:Create new setting: key is required`)
+    }
+  }
+
+  public validateAccess (req: IRequest) {
+    if (!req.session.hasAdmin ()) {
+      throw new Error ('403:No admin credentials')
     }
   }
 }
