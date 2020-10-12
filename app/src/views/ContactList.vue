@@ -1,5 +1,6 @@
 <template>
   <data-list
+    v-if="user.hasRole('contacts')"
     :title="'Contacts' | i18n"
     :headers="headers"
     apiBaseUrl="/person"
@@ -10,6 +11,7 @@
 
 <script>
   import DataList from '../components/DataList'
+  import api from '../services/api'
 
   export default {
     components: {
@@ -17,6 +19,7 @@
     },
     data() {
       return {
+        user: api.user,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },
           { text: this.$i18n('Type'), value: 'type', sortable: false },

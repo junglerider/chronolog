@@ -30,7 +30,6 @@
           :show-week="true"
           :shortWeekdays="false"
           :locale="$getLanguage()"
-          :events="events"
           :event-color="getEventColor"
           @change="onChange"
           @click:date="onClick"
@@ -121,7 +120,6 @@ import api from '../services/api'
         let url = `/timelog/daily?filter[user_id]=${this.user.id}&filter[date][gte]=${val.start.date}&filter[date][lte]=${val.end.date}`
         try {
           let response = await api.get(url)
-          this.events = []
           let totalHours = 0
           for (let timelog of response.data) {
             const record = records.has(timelog.date) ? records.get(timelog.date) : {}

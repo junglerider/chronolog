@@ -1,6 +1,7 @@
 <template>
   <div>
     <data-list
+      v-if="user.hasRole('invoicing')"
       :title="'Invoices' | i18n"
       :headers="headers"
       apiBaseUrl="/invoice"
@@ -23,6 +24,7 @@
     },
     data() {
       return {
+        user: api.user,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },
           { text: this.$i18n('Invoice no.'), value: 'invoice_no' },

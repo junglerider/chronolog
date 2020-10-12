@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form">
+  <v-form ref="form" v-if="user.hasRole('invoicing')">
     <v-container>
       <v-row>
         <v-col md="12">
@@ -68,6 +68,7 @@ export default {
 
   data() {
     return {
+      user: api.user,
       customer: { id: 'new' },
       previousCustomer: { id: 'new' },
       organisations: [],

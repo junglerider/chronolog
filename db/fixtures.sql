@@ -111,8 +111,8 @@ INSERT INTO person (`id`, `type`, `title`, `first_name`, `last_name`, `nick_name
 
 INSERT INTO user (`id`, `person_id`, `is_active`, `login`, `password`, `roles`, `visits`, `last_visit`) VALUES
 ( 1,  3, 1, 'enzo', null, 'admin', 114, '2020-08-18'),
-( 2,  8, 1, 'james', null, 'reporting,contacts,invoicing', 21, '2020-08-16'),
-( 3, 18, 1, 'gabriella', null, 'reporting', 78, '2020-08-17'),
+( 2,  8, 1, 'james', null, 'reporting,invoicing', 21, '2020-08-16'),
+( 3, 18, 1, 'gabriella', null, 'contacts', 78, '2020-08-17'),
 ( 4, 21, 1, 'mehmed', null, null, 17, '2020-08-15');
 
 INSERT INTO organisation (`id`, `type`, `name`, `industry`) VALUES

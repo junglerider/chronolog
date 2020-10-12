@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form">
+  <v-form ref="form" v-if="user.hasRole('contacts')">
     <v-container>
       <v-row>
         <v-col md="12">
@@ -100,6 +100,7 @@ export default {
 
   data() {
     return {
+      user: api.user,
       organisation: { id: 'new' },
       previousOrganisation: { id: 'new' },
       types: [

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="loggedInUser.hasRole('admin')">
     <v-alert v-model="deletionError" text outlined dismissible type="error">
       {{ 'Some users have tasks or time sheets assigned. Users with tasks or time sheets cannot be deleted.' | i18n }}
     </v-alert>
@@ -25,6 +25,7 @@
     },
     data() {
       return {
+        loggedInUser: api.user,
         deletionError: false,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },

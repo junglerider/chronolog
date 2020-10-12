@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form">
+  <v-form ref="form" v-if="loggedInUser.hasRole('admin')">
     <v-container>
       <v-row>
         <v-col md="12">
@@ -92,6 +92,7 @@ export default {
     data() {
 
     return {
+      loggedInUser: api.user,
       user: { id: 'new', is_active: 1 },
       previousUser: { id: 'new' },
       persons: [],

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user.hasRole('invoicing')">
     <v-alert v-model="deletionError" text outlined dismissible type="error">
       {{ 'Some customers have tasks assigned. Customers with tasks cannot be deleted.' | i18n }}
     </v-alert>
@@ -25,6 +25,7 @@
     },
     data() {
       return {
+        user: api.user,
         deletionError: false,
         headers: [
           { text: this.$i18n('ID'), value: 'id', align: 'start' },

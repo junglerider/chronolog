@@ -57,7 +57,7 @@ export default class DateCalc {
 
   static getTimeZoneString(d) {
     const date = d || new Date()
-    return date.toLocaleString('en', {timeZoneName: 'long', hour12: false}).substr(19)
+    return date.toLocaleString('en', {timeZoneName: 'long', year: 'numeric'}).substr(6)
   }
 
   static hhmmssToSec(timeString) {

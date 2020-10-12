@@ -4,7 +4,6 @@
       <v-col md="12">
         <div class="page-title">{{ 'Welcome back' | i18n }}{{ getUserName() }}!</div>
         {{ todaysDate }}
-
       </v-col>
     </v-row>
     <v-row>
@@ -101,7 +100,6 @@ export default {
   components: {
     AnalogueClock
   },
-
   data() {
     return {
       today: DateCalc.isoDate(),
@@ -121,26 +119,22 @@ export default {
     }
   },
   methods: {
-
     async punchTheClock() {
       const timeClockStatus = await TimeClock.punch(this.user.id)
       console.log(timeClockStatus)
       this.updatePunchClock(timeClockStatus)
     },
-
     updatePunchClock(timeClockStatus) {
       this.isPresent = timeClockStatus.arrival_time && !timeClockStatus.departure_time
       this.arrivalTime = timeClockStatus.arrival_time || '-'
       this.departureTime = timeClockStatus.departure_time || '-'
       this.workingTime = timeClockStatus.work_duration || 0
     },
-
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
       this.message = true
     },
-
     getUserName() {
       if (this.user.name) {
         return ', ' + (this.user.name.split(' '))[0]
@@ -148,7 +142,6 @@ export default {
       return ''
     }
   },
-
   computed: {
     todaysDate() {
       const date = new Date()
@@ -157,7 +150,6 @@ export default {
         DateCalc.getTimeZoneString(date)
     }
   },
-
   async mounted() {
     try {
       const startOfWeek = DateCalc.isoDate(DateCalc.firstDayOfWeek(new Date()))
@@ -174,7 +166,6 @@ export default {
       this.showMessage('Record could not be loaded.', 'error')
     }
   }
-
 }
 </script>
 

@@ -22,7 +22,9 @@ api.interceptors.response.use(response => {
     window.location.href = '/login'
   }
   return Promise.reject(error)
-});
+})
+
+const hasRole = role => userApi.user.roles.includes('admin') || userApi.user.roles.includes(role)
 
 const userApi = {
 
@@ -60,7 +62,7 @@ const userApi = {
     return nulledObject
   },
 
-  user: {}, // <--- user session data is stored here
+  user: { roles: [], hasRole: () => false }, // <--- user session data is stored here
 
   login: async credentials => {
     try {
@@ -74,6 +76,7 @@ const userApi = {
       })
       window.localStorage.setItem('token', response.data.token)
       userApi.user = response.data
+      userApi.user.hasRole = hasRole
       return response
     } catch (err) {
       return Promise.reject(err)
@@ -102,6 +105,7 @@ const userApi = {
           }
         })
         userApi.user = response.data
+        userApi.user.hasRole = hasRole
       } catch (err) {
         if (err.response.status == 401) {
           window.location.href = '/login'

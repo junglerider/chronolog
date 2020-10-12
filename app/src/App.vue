@@ -31,28 +31,30 @@
         <nav-link link="/todo" :tooltip="'See/edit todo list, add tasks' | i18n">
           {{ 'Todo List' | i18n }}
         </nav-link>
-        <nav-link>{{ 'Contacts' | i18n }}</nav-link>
-        <nav-link link="/contacts" :tooltip="'Look up people and edit contact data' | i18n ">
-          {{ 'Contacts' | i18n }}
-        </nav-link>
-        <nav-link link="/organisations" :tooltip="'Look up organisations and edit contact data' | i18n ">
-          {{ 'Organisations' | i18n }}
-        </nav-link>
+        <template v-if="user.hasRole('contacts')">
+          <nav-link>{{ 'Contacts' | i18n }}</nav-link>
+          <nav-link link="/contacts" :tooltip="'Look up people and edit contact data' | i18n ">
+            {{ 'Contacts' | i18n }}
+          </nav-link>
+          <nav-link link="/organisations" :tooltip="'Look up organisations and edit contact data' | i18n ">
+            {{ 'Organisations' | i18n }}
+          </nav-link>
+        </template>
         <nav-link>{{ 'Reporting' | i18n }}</nav-link>
         <nav-link link="/reporting" :tooltip="'Select report to view/print from a list of reports' | i18n ">
           {{ 'Reports' | i18n }}
         </nav-link>
-        <nav-link link="/invoices" :tooltip="'View, edit, create and print invoices' | i18n ">
+        <nav-link v-if="user.hasRole('invoicing')" link="/invoices" :tooltip="'View, edit, create and print invoices' | i18n ">
           {{ 'Invoices' | i18n }}
         </nav-link>
-        <nav-link>{{ 'Admin' | i18n }}</nav-link>
-        <nav-link link="/customers" :tooltip="'View/edit customers' | i18n ">
+        <nav-link v-if="user.hasRole('invoicing')" >{{ 'Admin' | i18n }}</nav-link>
+        <nav-link v-if="user.hasRole('invoicing')" link="/customers" :tooltip="'View/edit customers' | i18n ">
           {{ 'Customers' | i18n }}
         </nav-link>
-        <nav-link link="/users" :tooltip="'View/edit users and access privileges' | i18n ">
+        <nav-link v-if="user.hasRole('admin')" link="/users" :tooltip="'View/edit users and access privileges' | i18n ">
           {{ 'Users' | i18n }}
         </nav-link>
-        <nav-link link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
+        <nav-link v-if="user.hasRole('admin')" link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
           {{ 'Projects & Tasks' | i18n }}
         </nav-link>
         <nav-link v-if="false" link="/time-logs" :tooltip="'Amend time log entries of employees' | i18n ">
@@ -150,6 +152,10 @@ export default {
       user: api.user,
   }},
   methods: {
+    hasRole(role) {
+      return api.hasRole(role)
+    },
+
     isBlankPage() {
       return this.$route.path.startsWith('/reports') || this.$route.path.startsWith('/login')
     }

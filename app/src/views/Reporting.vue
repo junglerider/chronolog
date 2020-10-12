@@ -11,7 +11,7 @@
           <v-autocomplete :label="'Report' | i18n" :items="reports" v-model="report.name"></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-show="user.hasRole('reporting')">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'User' | i18n"
@@ -75,6 +75,7 @@ export default {
 
   data() {
     return {
+      user: api.user,
       reports: reports.map(report => { return { ...report, text: this.$i18n(report.text)}} ),
       periods: [
         { value: 'today', text: this.$i18n('Today') },

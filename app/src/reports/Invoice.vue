@@ -1,5 +1,5 @@
 <template>
-  <div id="invoice">
+  <div id="invoice" v-if="user.hasRole('invoicing')">
     <div id="page">
       <!-- invoice header: logo/address -->
       <div id="header" v-html="settings.get('inv:header')"></div>
@@ -254,6 +254,7 @@ export default {
   },
   data() {
     return {
+      user: api.user,
       invoice: {},
       items: [],
       formatter: new NumberFormat(this.$getLanguage()),
