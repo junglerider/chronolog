@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <settings v-if="settings" :keys="settings" style="margin-left: -12px"></settings>
+      <settings v-if="settings && user.hasRole('admin')" :keys="settings" style="margin-left: -12px"></settings>
       <div class="page-title">{{ title }}</div>
       <v-spacer></v-spacer>
       <v-text-field
@@ -123,6 +123,7 @@ export default {
 
   data() {
     return {
+      user: api.user,
       data: [],
       count: 0,
       page: 1,
