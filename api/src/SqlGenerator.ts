@@ -249,6 +249,8 @@ export class SqlGenerator {
                 value = value.split(',')
                 value = '(' + value.map(v => "'" + v.replace(/\'/g,"''") + "'").join(',') + ')'
                 terms.push (`${this.schema[columnName]} ${operator} ${value}`)
+              } else if (value === 'NULL' && (operator === '=' || operator === '<>>')) {
+                terms.push (`${this.schema[columnName]} IS ${operator === '='? 'NULL' : 'NOT NULL'}`)
               } else {
                 terms.push (`${this.schema[columnName]} ${operator} ?`)
                 params.push (value)
