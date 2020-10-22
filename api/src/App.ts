@@ -198,6 +198,7 @@ class App {
     api.get ('/task/:id(\\d+)', task.read.bind (task))
     api.put ('/task/:id(\\d+)', task.update.bind (task))
     api.delete ('/task/:id(\\d+)', task.delete.bind (task))
+    api.get ('/task/projects', task.projects.bind (task))
     api.get ('/todo/:userId(\\d+)', task.todoList.bind (task))
     api.get ('/todo/:userId(\\d+)/count', task.todoCount.bind (task))
     api.get ('/todo/:userId(\\d+)/projects', task.projectList.bind (task))

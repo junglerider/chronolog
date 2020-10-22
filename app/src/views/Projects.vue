@@ -1,0 +1,316 @@
+<template>
+  <div v-if="user.hasRole('admin')">
+    <v-container>
+      <v-row>
+        <v-col md="12">
+          <div class="page-title">{{ 'Projects & Tasks' | i18n }}</div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="col-12 col-sm-6 col-xs-12 form-col">
+          <v-treeview
+            :key="treeversion"
+            :items="items"
+            :active.sync="active"
+            :load-children="fetchProjects"
+            :open.sync="open"
+            activatable
+            color="info"
+            transition
+            @update:active="showProjectDetails"
+          >
+            <template v-slot:prepend="{ item, open }">
+              <v-icon v-if="item.is_leaf" :style="itemStyle(item, false)" @contextmenu="e => showMenu(item, e)">
+                {{ 'mdi-hammer-wrench' }}
+              </v-icon>
+              <v-icon v-else :style="itemStyle(item)" @contextmenu="e => showMenu(item, e)">
+                {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+              </v-icon>
+            </template>
+            <template v-slot:label="{ item }">
+              <draggable :list="items" group="projects" :id="item.id" @end="dragEnd">
+                <span :style="itemStyle(item)" @contextmenu="e => showMenu(item, e)">{{ item.name }}</span>
+              </draggable>
+            </template>
+          </v-treeview>
+        </v-col>
+        <v-col class="col-12 col-sm-6 col-xs-12 form-col">
+          <div class="active-project" v-if="active.length">
+            <div>
+              <v-icon v-if="activated.is_leaf" :style="itemStyle(activated, false)" class="mr-2">
+                mdi-hammer-wrench
+              </v-icon>
+              <v-icon v-else :style="itemStyle(activated)" class="mr-2">
+                mdi-folder
+              </v-icon>
+              <span :style="itemStyle(activated)">{{ itemType(activated) | i18n }}</span>
+              <v-btn icon @click="e => showMenu(activated, e)" class="ml-1">
+                <v-icon>mdi-dots-horizontal</v-icon>
+              </v-btn>
+            </div>
+            <div>{{ 'Name' | i18n }}: {{ activated.name }}</div>
+            <div v-if="activated.description">{{ 'Description' | i18n }}: {{ activated.description }}</div>
+            <div>{{ 'Parent project' | i18n }}: {{ activated.parent_name ? activated.parent_name : 'Projects' | i18n }}</div>
+            <div>{{ 'Assigned to' | i18n }}: {{ activated.user_name ? activated.user_name : 'all' | i18n }}</div>
+            <div>{{ 'Customer' | i18n }}: {{ activated.customer_name }}</div>
+            <div>{{ 'Total hours' | i18n }}: {{ $i18nDecToHrs(activated.duration) }}</div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+      <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
+      {{ messageText }}
+    </v-snackbar>
+    <v-menu v-model="menuOpen" :position-x="menuCoord[0]" :position-y="menuCoord[1]" offset-y absolute>
+      <v-list>
+        <v-list-item class="squeeze">
+          <v-list-item-content>
+            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ 'Edit' }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Insert child task' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="activated.is_leaf" class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Delete' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="!activated.is_closed" class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Close' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="activated.is_closed" class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Reopen' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="!activated.is_closed && activated.is_active" class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Deactivate' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="!activated.is_closed && !activated.is_active" class="squeeze">
+          <v-list-item-content>
+              <v-list-item-title>{{ 'Activate' | i18n }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    <v-dialog v-model="dialog" max-width="70%">
+      <v-card>
+        <v-card-text>
+          <task-edit :task="activated" mode="admin" @task-edit-event="onTaskEdit"></task-edit>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<style scoped>
+.active-project > div {
+  margin-bottom: 6px;
+}
+.squeeze {
+  margin: -12px 0 -1px 0;
+  cursor: pointer;
+}
+</style>
+
+<script>
+import api from '../services/api'
+import draggable from 'vuedraggable'
+import TaskEdit from '../components/TaskEdit'
+
+export default {
+  components: {
+    draggable,
+    TaskEdit
+  },
+
+  data() {
+    return {
+      user: api.user,
+      projects: [],
+      active: [],
+      activated: {},
+      open: [],
+      treeversion: 1,
+      message: false,
+      messageColor: 'success',
+      messageText: '',
+      menuOpen: false,
+      menuCoord: [0, 0],
+      dialog: false,
+    }
+  },
+
+  computed: {
+    items () {
+      return [
+        {
+          id: 'NULL',
+          name: this.$i18n('Projects'),
+          is_active: 1,
+          is_closed: 0,
+          children: this.projects,
+        },
+      ]
+    },
+  },
+
+  methods: {
+    showMessage(text, color='success') {
+      this.messageText = this.$i18n(text)
+      this.messageColor = color
+      this.message = true
+    },
+    async showMenu(item, event) {
+      event.preventDefault()
+      this.menuOpen = false
+      this.menuCoord = [event.clientX, event.clientY]
+      this.active = [item.id]
+      await this.showProjectDetails()
+      this.menuOpen = true
+    },
+    fetchProjects(project) {
+      return api.get(`/task/projects?filter[parent_id][eq]=${project.id}`)
+        .then(response => {
+          return response.data.map(item => {
+            if (!item.is_leaf) {
+              item.children = []
+            }
+            project.children.push(item)
+          })
+        })
+      .catch(e => {
+        console.error(e)
+        this.showMessage('Record could not be loaded.', 'error')
+      })
+    },
+    itemStyle(item, dimInactive = true) {
+      if (item.is_closed || (dimInactive && !item.is_active)) {
+        return 'color: #aaa; cursor: default'
+      } else {
+        return 'cursor: default;'
+      }
+    },
+    itemType(item) {
+      let type = item.is_closed ? 'Closed ' : (item.is_active ? 'Active ' : 'Inactive ')
+      type += item.is_leaf ? 'task' : 'project'
+      return type
+    },
+    onTaskEdit(event) {
+      if (event == 'canceled') {
+        this.dialog = false
+      } else if (event == 'saveOK') {
+        this.dialog = false
+        this.showMessage('OK - Saved!')
+        this.updateProjectInTree()
+      } else if (event == 'noChanges') {
+        this.dialog = false
+        this.showMessage('No changes were made.', 'info')
+      } else if (event == 'customerChanged') {
+        this.showMessage('The customer has been changed.', 'info')
+      } else if (event == 'saveError') {
+        this.showMessage('Saving did not succeed.', 'error')
+      } else if (event == 'loadError') {
+        this.showMessage('Record could not be loaded.', 'error')
+      }
+    },
+    updateProjectInTree() {
+      const project = this.findProject(this.activated.id, this.items[0])
+      project.name = this.activated.name
+      project.is_leaf = this.activated.is_leaf
+      project.is_active = this.activated.is_active
+      project.is_closed = this.activated.is_closed
+    },
+    async dragEnd(event) {
+      const rootProject = this.items[0]
+      const draggedProjectId = event.srcElement.id
+      const targetProjectId = event.to.id
+      console.log(`draged project id#${draggedProjectId} to id#${targetProjectId}`)
+      // dragged root or invalid drop?
+      if (draggedProjectId == 'NULL' || draggedProjectId == targetProjectId) {
+        return
+      }
+      const draggedProject = this.findProject(draggedProjectId, rootProject)
+      // target is already parent?
+      if (draggedProject.parent_id == targetProjectId || draggedProject.parent_id == null && targetProjectId == 'NULL') {
+        return
+      }
+      // cyclical?
+      if (this.findProject(targetProjectId, draggedProject)) {
+        alert(this.$i18n('Cannot move project to descendant project'))
+        return
+      }
+      const oldParentProject = draggedProject.parent_id ?
+        this.findProject(draggedProject.parent_id, rootProject) :
+        rootProject
+      const newParentProject = this.findProject(targetProjectId, rootProject)
+      if (newParentProject.customer_id !== draggedProject.customer_id) {
+        if (!confirm(this.$i18n('The customers are different. Move anyway?'))) {
+          return
+        }
+      }
+      oldParentProject.children = oldParentProject.children.filter(p => p.id != draggedProjectId)
+      if (oldParentProject.children.length == 0) {
+        oldParentProject.is_leaf = true
+        delete oldParentProject.children
+        this.saveProject(oldParentProject)
+      }
+      if (newParentProject.is_leaf) {
+        newParentProject.children = []
+        newParentProject.is_leaf = false
+        this.saveProject(newParentProject)
+      } else  if (this.open.indexOf(newParentProject.id) < 0) {
+        await this.fetchProjects(newParentProject)
+      }
+      draggedProject.parent_id = newParentProject.id
+      newParentProject.children.push(draggedProject)
+      this.saveProject(draggedProject)
+      this.treeversion += 1
+    },
+    async saveProject(project) {
+      try {
+        await api.put(`/task/${project.id}`, api.nullIt(project))
+      } catch (err) {
+        console.error(err)
+        this.showMessage('Saving did not succeed.', 'error')
+      }
+    },
+    findProject(id, project) {
+      if (project.id == id) {
+        return project
+      }
+      if (project.children) {
+        for (let childProject of project.children) {
+          let foundProject = this.findProject(id, childProject)
+          if (foundProject) {
+            return foundProject
+          }
+        }
+      }
+      return undefined
+    },
+    async showProjectDetails() {
+      if (!this.active.length) {
+        this.activated = undefined
+      }
+      let response = await api.get(`/task/${this.active[0]}`)
+      const activated = response.data
+      response = await api.get(`/timelog/sum?filter[task_id]=${this.active[0]}`)
+      activated.duration = response.data.duration
+      this.activated = activated
+    },
+  },
+
+  async mounted() {
+    this.open.push('NULL')
+  }
+}
+</script>

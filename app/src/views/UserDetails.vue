@@ -89,8 +89,7 @@ import DateCalc from '../services/DateCalc'
 
 export default {
 
-    data() {
-
+  data() {
     return {
       loggedInUser: api.user,
       user: { id: 'new', is_active: 1 },
@@ -110,9 +109,7 @@ export default {
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
-
   computed: {
-
     updatedAt() {
       return this.user.updated_at ? this.$i18nDate(this.user.updated_at) : null
     },
@@ -123,9 +120,7 @@ export default {
       return this.user.last_visit ? this.$i18nDate(this.user.last_visit) : null
     }
   },
-
   methods: {
-
     async onSave() {
       if (!this.$refs.form.validate()) {
         return
@@ -157,18 +152,15 @@ export default {
         this.showMessage('No changes were made.', 'info')
       }
     },
-
     onChangeRoles(val) {
       this.user.roles = val && val.length ? val.join(',') : null
     },
-
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
       this.message = true
     },
   },
-
   async mounted() {
     if (this.$route.params.id !== 'new') {
       try {

@@ -54,7 +54,7 @@
         <nav-link v-if="user.hasRole('admin')" link="/users" :tooltip="'View/edit users and access privileges' | i18n ">
           {{ 'Users' | i18n }}
         </nav-link>
-        <nav-link v-if="user.hasRole('admin')" link="/tasks" :tooltip="'View project tree and maintain tasks' | i18n ">
+        <nav-link v-if="user.hasRole('admin')" link="/projects" :tooltip="'View project tree and maintain tasks' | i18n ">
           {{ 'Projects & Tasks' | i18n }}
         </nav-link>
         <nav-link v-if="false" link="/time-logs" :tooltip="'Amend time log entries of employees' | i18n ">

@@ -68,6 +68,9 @@ Vue.use(VueRouter)
   }, {
     path: '/users/:id(new|\\d+)',
     component: () => import('../views/UserDetails.vue')
+  }, {
+    path: '/projects',
+    component: () => import('../views/Projects.vue')
   },
   ...reportRoutes, {
     path: '/reports/invoice/:id(new|\\d+)',

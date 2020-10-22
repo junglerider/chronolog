@@ -16,6 +16,7 @@
     "n2words": "^1.7.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vuedraggable": "^2.24.2",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {
