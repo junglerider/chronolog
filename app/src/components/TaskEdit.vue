@@ -157,17 +157,6 @@ export default {
       this.task.customer_name = parentTask.customer_name
       this.task.parent_id = parentTask.id
     },
-    isActiveProject(id) {
-      if (!id) {
-        return true
-      }
-      for (let task of this.projects) {
-        if (task.id == id) {
-          return true
-        }
-      }
-      return false
-    },
     isInList(id, list) {
       if (!id || id === 'new') return true
       return list.find(element => element.id == id)
@@ -185,6 +174,7 @@ export default {
             if (response.status === 201) {
               this.task.id = response.data.id
             }
+            this.$emit('task-edit-event', 'insertOK')
           } else {
             this.task.updated_at = DateCalc.isoDateTime()
             await api.put(`/task/${this.task.id}`, api.nullIt(this.task))
