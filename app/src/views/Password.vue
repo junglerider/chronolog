@@ -120,11 +120,11 @@ export default {
         this.errorMessage = this.$i18n('Your password has been updated.')
         this.errorType = 'success'
         this.error = true
-      } catch (e) {
+      } catch (err) {
         this.errorMessage = this.$i18n('The server could not update the password.')
         this.errorType = 'error'
         this.error = true
-        console.log(e)
+        console.error(err)
       }
     },
     // https://github.com/elboletaire/password-strength-meter

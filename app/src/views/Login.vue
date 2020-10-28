@@ -95,7 +95,7 @@ export default {
         if (err.response && (err.response.status == 401 || err.response.status == 404)) {
           this.authError = true
         } else {
-          console.log(err)
+          console.error(err)
         }
       }
     },

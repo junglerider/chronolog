@@ -88,7 +88,7 @@ export default {
         this.value = response.data.value
         this.dialog = true
       } catch (err) {
-        console.log(err)
+        console.errorlog(err)
         if (err.request.status === 404) {
           this.value = ''
           this.dialog = true
@@ -103,7 +103,7 @@ export default {
         }))
         this.dialog = false
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     }
   },

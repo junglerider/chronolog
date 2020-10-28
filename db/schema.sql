@@ -154,7 +154,6 @@ CREATE TABLE `invoice` (
     `tax_amount` NUMERIC DEFAULT 0,
     `grand_total` NUMERIC DEFAULT 0,
     `payment_terms` TEXT DEFAULT NULL,
-    `template` TEXT DEFAULT NULL,
     `created_at` TEXT DEFAULT (DATETIME('NOW', 'LOCALTIME')),
     `updated_at` TEXT DEFAULT NULL,
     FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)

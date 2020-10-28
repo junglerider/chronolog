@@ -121,7 +121,6 @@ export default {
   methods: {
     async punchTheClock() {
       const timeClockStatus = await TimeClock.punch(this.user.id)
-      console.log(timeClockStatus)
       this.updatePunchClock(timeClockStatus)
     },
     updatePunchClock(timeClockStatus) {

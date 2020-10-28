@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"james\",\n    \"password\": \"chronolog\"\n}",
+							"raw": "{\n    \"username\": \"mehmed\",\n    \"password\": \"chronolog\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1211,15 +1211,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\n        \"person_id\": 10326,\n        \"login\": \"root\",\n        \"is_active\": 1\n    }"
+							"raw": "{\n    \"name\": \"Müller DataCom\",\n    \"organisation_id\": 46,\n    \"is_retired\": 0,\n    \"notes\": \"New client\",\n    \"created_at\": \"2020-11-11 12:00:00\"\n}"
 						},
 						"url": {
-							"raw": "{{baseURL}}/user",
+							"raw": "{{baseURL}}/customer",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
-								"user"
+								"customer"
 							]
 						}
 					},
@@ -1295,13 +1295,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/customer/5",
+							"raw": "{{baseURL}}/customer/2",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"customer",
-								"5"
+								"2"
 							]
 						}
 					},
@@ -1420,7 +1420,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/task?filter[is_active][eq]=0&filter[is_closed][eq]=0&filter[is_leaf][eq]=1",
+							"raw": "{{baseURL}}/task?filter[parent_id][eq]=1",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1429,15 +1429,37 @@
 							],
 							"query": [
 								{
-									"key": "filter[is_active][eq]",
-									"value": "0"
-								},
+									"key": "filter[parent_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task PROJECTS",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/projects?filter[parent_id][eq]=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"projects"
+							],
+							"query": [
 								{
-									"key": "filter[is_closed][eq]",
-									"value": "0"
-								},
-								{
-									"key": "filter[is_leaf][eq]",
+									"key": "filter[parent_id][eq]",
 									"value": "1"
 								}
 							]
@@ -1520,13 +1542,38 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/task/1370",
+							"raw": "{{baseURL}}/task/12",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"task",
-								"1370"
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task LIST DESCENDANTS",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/1/descendants",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"1",
+								"descendants"
 							]
 						}
 					},
@@ -1554,13 +1601,48 @@
 							"raw": "    {\n        \"name\": \"Something very difficult\",\n        \"description\": \"Find the mathematical proof that PHP sucks.\"\n    }"
 						},
 						"url": {
-							"raw": "{{baseURL}}/task/1370",
+							"raw": "{{baseURL}}/task/46",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"task",
-								"1370"
+								"46"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task UPDATE DESCENDANTS",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"is_closed\": 1\n    }"
+						},
+						"url": {
+							"raw": "{{baseURL}}/task/5/descendants",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								"5",
+								"descendants"
 							]
 						}
 					},
@@ -1578,13 +1660,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/task/1370",
+							"raw": "{{baseURL}}/task/46",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"task",
-								"1370"
+								"46"
 							]
 						}
 					},
@@ -1835,13 +1917,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timelog/9785",
+							"raw": "{{baseURL}}/timelog/14",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"timelog",
-								"9785"
+								"14"
 							]
 						}
 					},
@@ -1869,13 +1951,13 @@
 							"raw": "    {\n        \"description\": \"Worked hard on finding a cure for PHP legacy code.\"\n    }"
 						},
 						"url": {
-							"raw": "{{baseURL}}/timelog/9887",
+							"raw": "{{baseURL}}/timelog/14",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"timelog",
-								"9887"
+								"14"
 							]
 						}
 					},
@@ -1893,13 +1975,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timelog/9887",
+							"raw": "{{baseURL}}/timelog/14",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"timelog",
-								"9887"
+								"14"
 							]
 						}
 					},
@@ -2036,14 +2118,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timeclock/1/2020-08-26",
+							"raw": "{{baseURL}}/timeclock/1/2020-10-01",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"timeclock",
 								"1",
-								"2020-08-26"
+								"2020-10-01"
 							]
 						}
 					},
@@ -2699,12 +2781,12 @@
 	],
 	"variable": [
 		{
-			"id": "99ef2ecc-c3bf-4b5e-9ae4-75796f30f71a",
+			"id": "bb5fab55-9e52-4ee1-8bdf-ad3513ff155a",
 			"key": "domain",
 			"value": "http://localhost:8888"
 		},
 		{
-			"id": "78ff13c5-0f74-4c7b-9b23-06ea52c5a5c0",
+			"id": "93a6b1d6-e49a-41bf-b4f8-6cd3e4a3242c",
 			"key": "baseURL",
 			"value": "http://localhost:8888/api"
 		}

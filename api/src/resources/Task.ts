@@ -99,6 +99,55 @@ export class Task extends SingleTable {
     }
   }
 
+  private async findDescendants (id: string | number) {
+    const result = []
+    const findChildren = async (id: string | number) => {
+      const sql = 'SELECT t.id, t.is_leaf FROM task t WHERE t.parent_id = ?'
+      const rows: any = await this.db.all (sql, [id])
+      if (rows) {
+        for (let row of rows) {
+          result.push(row.id)
+          if (row.is_leaf == 0) {
+            await findChildren (row.id)
+          }
+        }
+      }
+    }
+    await findChildren (id)
+    return result
+  }
+
+  public async descendants (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace ('task.descendants()')
+    try {
+      const descendantIds = await this.findDescendants (req.params.id)
+      res.json (descendantIds)
+      next ()
+    } catch (err) {
+      next (err)
+    }
+  }
+
+  public async updateDescendants (req: Request, res: Response, next: NextFunction) {
+    this.logger.trace ('task.updateDescendants()')
+    try {
+      let status = 400
+      const [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
+      if (names.length > 0) {
+        const descendantIds = await this.findDescendants (req.params.id)
+        descendantIds.unshift (req.params.id)
+        const sql = `UPDATE task AS t SET ` + this.getUpdateList(names) + ` WHERE t.id IN (${descendantIds.join(',')})`
+        const result: any = await this.db.run (sql, values)
+        status = result.changes ? 204 : 404
+      }
+      res.status (status).json()
+      next ()
+    }
+    catch (err) {
+      next (err)
+    }
+  }
+
   public validateCreate (req: Request) {
     if (!req.body.name) {
       throw new Error ('400:Create new task: name is required')

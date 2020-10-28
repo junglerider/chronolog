@@ -18,6 +18,7 @@ export default {
   },
   data() {
     return {
+      user: api.user,
       task: { id: 'new' },
       message: false,
       messageColor: 'success',

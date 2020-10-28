@@ -66,7 +66,7 @@
       <v-list>
         <v-list-item v-if="activated.id !== 'NULL'" class="squeeze">
           <v-list-item-content>
-            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ 'Edit' }}</v-list-item-title>
+            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ 'Edit' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item class="squeeze">
@@ -79,22 +79,22 @@
               <v-list-item-title @click.stop="deleteProject()">{{ 'Delete' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="!activated.is_closed && activated.id !== 'NULL'" class="squeeze">
+        <v-list-item v-if="!activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 1})" class="squeeze">
           <v-list-item-content>
               <v-list-item-title>{{ 'Close' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="activated.is_closed && activated.id !== 'NULL'" class="squeeze">
+        <v-list-item v-if="activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 0})" class="squeeze">
           <v-list-item-content>
               <v-list-item-title>{{ 'Reopen' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="!activated.is_closed && activated.is_active && activated.id !== 'NULL'" class="squeeze">
+        <v-list-item v-if="!activated.is_closed && activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 0})" class="squeeze">
           <v-list-item-content>
               <v-list-item-title>{{ 'Deactivate' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="!activated.is_closed && !activated.is_active && activated.id !== 'NULL'" class="squeeze">
+        <v-list-item v-if="!activated.is_closed && !activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 1})" class="squeeze">
           <v-list-item-content>
               <v-list-item-title>{{ 'Activate' | i18n }}</v-list-item-title>
           </v-list-item-content>
@@ -122,7 +122,6 @@
 </style>
 
 <script>
-//import _ from 'lodash'
 import api from '../services/api'
 import draggable from 'vuedraggable'
 import TaskEdit from '../components/TaskEdit'
@@ -194,6 +193,8 @@ export default {
     onTaskEdit(event) {
       if (event == 'canceled') {
         this.dialog = false
+        this.active = []
+        this.activated = {}
       } else if (event == 'saveOK') {
         this.dialog = false
         this.showMessage('OK - Saved!')
@@ -236,7 +237,7 @@ export default {
         parent_id: this.activated.id == 'NULL' ? null : this.activated.id,
         customer_id: this.activated.customer_id,
         customer_name: this.activated.customer_name,
-        user_id: null,
+        user_id: this.activated.user_id,
         duration: 0,
         _parent_object: parentProject
       }
@@ -250,6 +251,32 @@ export default {
         console.error(err)
         this.showMessage('Saving did not succeed.', 'error')
       }
+    },
+    async updateTree(data) {
+      const project = this.findProjectInTree(this.activated.id, this.items[0])
+      const treeUpdate = project => {
+        if (data.is_closed !== undefined) {
+          project.is_closed = data.is_closed
+        }
+        if (data.is_active !== undefined) {
+          project.is_active = data.is_active
+        }
+        if (project.children) {
+          for (const child of project.children) {
+            treeUpdate(child)
+          }
+        }
+      }
+      try {
+        await api.put(`/task/${project.id}/descendants`, api.nullIt(data))
+        treeUpdate(project)
+        this.treeversion += 1
+        this.showMessage('OK - Saved!')
+      } catch (err) {
+        console.error(err)
+        this.showMessage('Saving did not succeed.', 'error')
+      }
+      this.menuOpen = false
     },
     async deleteProject() {
       const project = this.activated
@@ -266,6 +293,7 @@ export default {
           console.error(err)
         }
       }
+      this.menuOpen = false
     },
     // reflect changes to active project in tree
     updateProjectInTree() {
@@ -333,7 +361,7 @@ export default {
       }
       // cyclical?
       if (this.findProjectInTree(targetProjectId, draggedProject)) {
-        alert(this.$i18n('Cannot move project to descendant project'))
+        alert(this.$i18n('Cannot move project to descendant.'))
         return
       }
       const oldParentProject = draggedProject.parent_id ?
