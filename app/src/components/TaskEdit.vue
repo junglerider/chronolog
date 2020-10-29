@@ -9,7 +9,7 @@
       </v-row>
     <v-row>
       <v-col class="col-12 col-md-6 form-col">
-        <v-text-field :label="'Name' | i18n" v-model="task.name" :rules="requiredRule"></v-text-field>
+        <v-text-field :label="'Name' | i18n" v-model="task.name" :rules="requiredRule" ref="nameInput"></v-text-field>
       </v-col>
       <v-col class="col-12 col-md-6 form-col" style="display: flex">
         <v-checkbox :label="'Active' | i18n" class="mx-2" v-model="task.is_active" :true-value="1" :false-value="0"></v-checkbox>
@@ -173,8 +173,8 @@ export default {
             const response = await api.post('/task', api.nullIt(this.task))
             if (response.status === 201) {
               this.task.id = response.data.id
+              this.$emit('task-edit-event', 'insertOK')
             }
-            this.$emit('task-edit-event', 'insertOK')
           } else {
             this.task.updated_at = DateCalc.isoDateTime()
             await api.put(`/task/${this.task.id}`, api.nullIt(this.task))
@@ -205,6 +205,7 @@ export default {
         this.users = response.data
         this.users.unshift({id: null, name: this.$i18n('all')})
       }
+      this.$nextTick(() => this.$refs.nameInput.focus())
     } catch(e) {
       this.$emit('task-edit-event', 'loadError')
     }

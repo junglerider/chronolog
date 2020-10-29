@@ -9,6 +9,7 @@
       <v-row>
         <v-col class="col-12 col-sm-6 col-xs-12 form-col">
           <v-treeview
+            ref="treeview"
             :key="treeversion"
             :items="items"
             :active.sync="active"
@@ -71,7 +72,7 @@
         </v-list-item>
         <v-list-item class="squeeze">
           <v-list-item-content>
-              <v-list-item-title @click.stop="insertProject">{{ 'Insert child task' | i18n }}</v-list-item-title>
+              <v-list-item-title @click="beginInsert()">{{ 'Insert child task' | i18n }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="activated.is_leaf && activated.duration == 0 && activated.id !== 'NULL'" class="squeeze">
@@ -104,7 +105,7 @@
     <v-dialog v-model="dialog" max-width="70%">
       <v-card>
         <v-card-text>
-          <task-edit :task="activated" mode="admin" @task-edit-event="onTaskEdit"></task-edit>
+          <task-edit :task="activated" mode="admin" @task-edit-event="onTaskEdit" ref="taskEditor"></task-edit>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -213,22 +214,7 @@ export default {
         delete this.activated._parent_object
       }
     },
-    fetchProjects(project) {
-      return api.get(`/task/projects?filter[parent_id][eq]=${project.id}`)
-        .then(response => {
-          return response.data.map(task => {
-            if (!task.is_leaf) {
-              task.children = []
-            }
-            project.children.push(task)
-          })
-        })
-      .catch(e => {
-        console.error(e)
-        this.showMessage('Record could not be loaded.', 'error')
-      })
-    },
-    insertProject() {
+    beginInsert() {
       const parentProject = this.findProjectInTree(this.activated.id, this.items[0])
       this.activated = {
         id: 'new',
@@ -243,6 +229,27 @@ export default {
       }
       this.menuOpen = false
       this.dialog = true
+      setTimeout(() => this.$refs.taskEditor.$refs.nameInput.focus(), 500)
+    },
+    fetchProjects(project) {
+      return api.get(`/task/projects?filter[parent_id][eq]=${project.id}`)
+        .then(response => {
+          return response.data.map(task => {
+            if (!task.is_leaf) {
+              task.children = []
+            }
+            // --- treeview component bug workaround
+            const pNode = this.$refs.treeview.nodes[task.id]
+            const childNode = {...pNode, item: task, vnode: null}
+            this.$refs.treeview.nodes[task.id] = childNode
+            project.children.push(task)
+            // --- treeview component bug workaround
+          })
+        })
+      .catch(e => {
+        console.error(e)
+        this.showMessage('Record could not be loaded.', 'error')
+      })
     },
     async updateProject(project) {
       try {
@@ -290,6 +297,7 @@ export default {
           this.menuOpen = false
           this.treeversion += 1
         } catch (err) {
+          this.showMessage('Deletion did not succeed.', 'error')
           console.error(err)
         }
       }
@@ -306,23 +314,23 @@ export default {
       }
     },
     async insertIntoTree(project, parentProject, update = true) {
+      if (update) {
+        project.parent_id = parentProject.id
+        await this.updateProject(project)
+      }
       if (parentProject.is_leaf) {
-        parentProject.children = []
         parentProject.is_leaf = 0
-        this.updateProject(parentProject)
-      } else  if (this.open.indexOf(parentProject.id) < 0) {
+        parentProject.children = []
+        await this.updateProject(parentProject)
+      } /*else  if (this.open.indexOf(parentProject.id) < 0) {
         try {
           await this.fetchProjects(parentProject)
         } catch (err) {
           console.error(err)
         }
-      }
-      if (!parentProject.children.find(p => p.id == project.id)) {
+      }*/
+      if (this.open.indexOf(parentProject.id) >= 0 && !parentProject.children.find(p => p.id == project.id)) {
         parentProject.children.push(project)
-      }
-      if (update) {
-        project.parent_id = parentProject.id
-        this.updateProject(project)
       }
       this.treeversion += 1
     },

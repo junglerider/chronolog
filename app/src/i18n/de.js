@@ -272,6 +272,7 @@ export default new Map([
   ['Close', 'Schließen'],
   ['Reopen', 'Wieder öffnen'],
   ['Activate', 'Aktivieren'],
+  ['Deactivate', 'Deaktivieren'],
   ['Cannot move project to descendant.', 'Das Projekt kann nicht in einen Unterzweig verschoben werden.'],
   ['The customers are different. Move anyway?', 'Die Kunden sind verschieden. Trotzdem verschieben?'],
 ])
