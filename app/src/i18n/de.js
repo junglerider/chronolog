@@ -219,6 +219,11 @@ export default new Map([
   ['Last six months', 'Die letzten sechs Monate'],
   ['This year', 'Dieses Jahr'],
   ['Last year', 'Letztes Jahr'],
+  ['From', 'Von'],
+  ['to', 'bis'],
+  ['Day', 'Tag'],
+  ['Arrival', 'Arbeitsbeginn'],
+  ['Working time', 'Arbeitszeit'],
   // invoices ---------------------------------------------
   ['Invoices', 'Rechnungen'],
   ['Invoice', 'Rechnung'],

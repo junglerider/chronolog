@@ -322,13 +322,7 @@ export default {
         parentProject.is_leaf = 0
         parentProject.children = []
         await this.updateProject(parentProject)
-      } /*else  if (this.open.indexOf(parentProject.id) < 0) {
-        try {
-          await this.fetchProjects(parentProject)
-        } catch (err) {
-          console.error(err)
-        }
-      }*/
+      }
       if (this.open.indexOf(parentProject.id) >= 0 && !parentProject.children.find(p => p.id == project.id)) {
         parentProject.children.push(project)
       }
