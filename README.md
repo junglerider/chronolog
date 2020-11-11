@@ -4,7 +4,18 @@ Time sheet application with TypeScript/Node.js backend and Vue/JavaScript fronte
 
 ![screenshot](screenshot.png "Chronolog Application")
 
-Disclaimer: This application is currently in alpha stage and not ready for production.
+Disclaimer: This application is currently in beta stage.
+
+## Features
+
+- Time sheet input
+- Daily, weekly and monthly time sheet views
+- Working time recording
+- Todo lists
+- Invoicing
+- Printable reports
+- Address administration (organisations and contacts)
+- Multi-user and multi-customer
 
 ## Install
 
@@ -32,11 +43,11 @@ This creates a new docker image called chronolog.latest which exposes internal p
 docker run -d --name chronolog -p 5000:8888 -v /your/db/directory:/home/db chronolog
 ```
 
-This makes the application available at localhost:5000 and it will look for the chronolog.db file in /your/db/directory.
+This makes the application available at localhost:5000 and looks for the chronolog.db file in /your/db/directory. If you want to start with an empty database instead, copy `db/empty.db` into the mounted database directory and rename it to `chronolog.db`.
 
 ## Run
 
 ```
 http://localhost:5000
 ```
-The Chronolog web application at this URL should display a login dialogue. Sample data includes four configured users with the following user names: `enzo`, `james`, `gabriella` and `mehmed`. The passwords are left empty.
+The Chronolog web application at this URL should display a login dialogue. Sample data includes four configured users with the following user names: `enzo`, `james`, `gabriella` and `mehmed`. The `empty.db` database file only contains one user named `admin`. The passwords for all preconfigured users are left empty, so they can login without providing a password. Make sure to add a password later.

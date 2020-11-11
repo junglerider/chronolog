@@ -220,7 +220,6 @@ describe ('SingleTable', () => {
     const next = (error?: any) => {
       expect (error).toBeUndefined ()
       expect (logger.trace).toBeCalled ()
-      console.log ()
       expect (db.run).toBeCalledWith (expect.stringContaining('UPDATE single_table SET name = ?'), ['name', 123])
       const data = response.json.mock.calls[0][0]
       expect (data).toBeUndefined ()

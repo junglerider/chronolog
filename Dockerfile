@@ -1,4 +1,4 @@
-FROM node:12.18.3-alpine
+FROM node:fermium-alpine
 ENV NODE_ENV=production
 RUN mkdir -p /home/node
 WORKDIR /home/node
