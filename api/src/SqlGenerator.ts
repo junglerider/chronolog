@@ -89,7 +89,7 @@ export class SqlGenerator {
    */
   private validate (query: RequestQuery): boolean {
     Object.keys (query).forEach ((key: string) => {
-      if (!['filter', 'order', 'offset', 'page', 'limit', 'combine'].includes (key)) {
+      if (!['filter', 'order', 'offset', 'page', 'limit', 'combine', 'format'].includes (key)) {
         throw new Error (`400:'${key}' is not a recognized query parameter.`)
       }
     })

@@ -1438,6 +1438,44 @@
 					"response": []
 				},
 				{
+					"name": "task LIST (extended)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/task/?filter[is_closed][eq]=0&filter[is_leaf][eq]=1&format=extended",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"task",
+								""
+							],
+							"query": [
+								{
+									"key": "filter[is_closed][eq]",
+									"value": "0"
+								},
+								{
+									"key": "filter[is_leaf][eq]",
+									"value": "1"
+								},
+								{
+									"key": "format",
+									"value": "extended"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "task PROJECTS",
 					"request": {
 						"method": "GET",
@@ -2781,12 +2819,12 @@
 	],
 	"variable": [
 		{
-			"id": "bb5fab55-9e52-4ee1-8bdf-ad3513ff155a",
+			"id": "7f8c3807-d156-4ca4-a4b8-c451d354a27c",
 			"key": "domain",
 			"value": "http://localhost:8888"
 		},
 		{
-			"id": "93a6b1d6-e49a-41bf-b4f8-6cd3e4a3242c",
+			"id": "a7113755-304a-4fe0-b529-fe736fc50751",
 			"key": "baseURL",
 			"value": "http://localhost:8888/api"
 		}

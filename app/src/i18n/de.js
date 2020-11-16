@@ -271,6 +271,8 @@ export default new Map([
   ['Closed task', 'Abgeschlossene Aufgabe'],
   ['Inactive project', 'Inaktives Projekt'],
   ['Inactive task', 'Inaktive Aufgabe'],
+  ['active', 'aktiv'],
+  ['inactive', 'inaktiv'],
   ['Parent project', 'Übergeordnetes Projekt'],
   ['Assigned to', 'Zugewiesen an'],
   ['Insert child task', 'Unteraufgabe einfügen'],

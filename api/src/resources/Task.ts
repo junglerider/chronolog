@@ -25,8 +25,15 @@ export class Task extends SingleTable {
   public async list (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('task.list()')
     try {
-      const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT t.id, t.parent_id, t.name, t.customer_id, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) ${whereClause}`
+      let sql, params, whereClause
+      if(req.query.format === 'extended') {
+        [whereClause, params] = this.sqlGenerator.generateWhereClause (req.query)
+        const orderClause = this.sqlGenerator.generateOrderClause (req.query)
+        sql = `SELECT t.id, t.parent_id, pt.name AS parent_name, t.name, t.customer_id, c.name AS customer_name, t.is_active, t.created_at, t.is_leaf, t.user_id, SUM(l.duration) AS duration FROM task t LEFT JOIN task pt ON (t.parent_id = pt.id) LEFT JOIN customer c ON (c.id = t.customer_id) LEFT JOIN time_log l ON (l.task_id = t.id) ${whereClause} GROUP BY t.id ${orderClause}`
+      } else {
+        [whereClause, params] = this.sqlGenerator.generate (req.query)
+        sql = `SELECT t.id, t.parent_id, t.name, t.customer_id, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) ${whereClause}`
+      }
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()
