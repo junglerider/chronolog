@@ -7,20 +7,22 @@ on:
     branches: master
 
 jobs:
-
   test_and_build:
+    needs: test
+
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-          - run: npm ci --prefix ./api
-          - run: npm test --prefix ./api
-          - run: npm run build --prefix ./api
-          - run: npm ci --prefix ./app
-          - run: npm run build --prefix ./app
+      - run: npm ci --prefix ./api
+      - run: npm test --prefix ./api
+      - run: npm run build --prefix ./api
+      - run: npm ci --prefix ./app
+      - run: npm run build --prefix ./app
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
