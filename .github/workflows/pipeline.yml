@@ -4,7 +4,7 @@ env:
 
 on:
   push:
-    branches: [master, develop]
+    branches: master
 
 jobs:
   test:
@@ -21,8 +21,6 @@ jobs:
       - run: npm run build --prefix ./app
 
   push:
-    branches:
-      - master
     needs: test
 
     runs-on: ubuntu-latest
