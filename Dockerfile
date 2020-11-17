@@ -1,5 +1,10 @@
 FROM node:fermium-alpine
 ENV NODE_ENV=production
+ENV TERM=xterm
+RUN apk add --no-cache --virtual .gyp \
+        build-base \
+        python \
+    && apk del .gyp
 RUN mkdir -p /home/node
 WORKDIR /home/node
 COPY api/package*.json /home/node/
