@@ -8,8 +8,6 @@ on:
 
 jobs:
   test_and_build:
-    needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
