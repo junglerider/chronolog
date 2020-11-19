@@ -11,7 +11,7 @@
           <v-autocomplete :label="'Report' | i18n" :items="reports" v-model="report.name"></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row v-show="user.hasRole('reporting')">
+      <v-row v-show="user.hasRole('reporting') && report.name != 'project-time-sheet'">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'User' | i18n"
@@ -22,12 +22,23 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-show="report.name !== 'working-time'">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'Customer' | i18n"
             :items="customers"
             v-model="report.customerId"
+            item-value="id"
+            item-text="name"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+      <v-row v-show="report.name == 'project-time-sheet'">
+        <v-col class="col-12 col-md-6 form-col">
+          <v-autocomplete
+            :label="'Project' | i18n"
+            :items="projects"
+            v-model="report.projectId"
             item-value="id"
             item-text="name"
           ></v-autocomplete>
@@ -76,7 +87,9 @@ export default {
   data() {
     return {
       user: api.user,
-      reports: reports.map(report => { return { ...report, text: this.$i18n(report.text)}} ),
+      reports: reports
+        .filter(report => !report.access || api.user.hasRole(report.access))
+        .map(report => { return { ...report, text: this.$i18n(report.text)}} ),
       periods: [
         { value: 'today', text: this.$i18n('Today') },
         { value: 'thisWeek', text: this.$i18n('This week') },
@@ -90,6 +103,7 @@ export default {
       ],
       users: [],
       customers: [],
+      projects: [],
       report: {
         name: 'time-sheet',
         period: 'lastMonth',
@@ -97,6 +111,7 @@ export default {
         end: null,
         userId: api.user.id,
         customerId: 0,
+        projectId: 0,
       }
     }
   },
@@ -168,6 +183,11 @@ export default {
       response = await api.get('/customer?filter[is_retired][eq]=0')
       this.customers = response.data
       this.customers.unshift({id: 0, name: this.$i18n('All customers')})
+      response = await api.get('/task/projects?filter[is_leaf][eq]=0&filter[is_closed][eq]=0&order=id:desc')
+      this.projects = response.data
+      if (this.projects.length) {
+        this.report.projectId = this.projects[0].id
+      }
     } catch(e) {
       console.error(e)
     }
