@@ -97,7 +97,7 @@ export class Task extends SingleTable {
     this.logger.trace ('task.projectList()')
     try {
       const orderClause = this.sqlGenerator.generateOrderClause (req.query)
-      const sql = `SELECT t.id, t.name, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) WHERE (t.user_id IS NULL OR t.user_id = ?) AND t.is_leaf = 0 AND t.is_active = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
+      const sql = `SELECT t.id, t.name, t.customer_id, c.name AS customer_name FROM task t LEFT JOIN customer c ON (c.id = t.customer_id) WHERE (t.user_id IS NULL OR t.user_id = ?) AND t.is_leaf = 0 AND t.is_active = 1 AND t.is_closed = 0 GROUP BY t.id ${orderClause}`
       const rows = await this.db.all (sql, [req.params.userId])
       rows ? res.json (rows) : res.status (404).json ()
       next ()
