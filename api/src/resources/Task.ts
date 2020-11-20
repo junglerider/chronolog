@@ -106,14 +106,17 @@ export class Task extends SingleTable {
     }
   }
 
-  private async findDescendants (id: string | number) {
+  private async findDescendants (id: string | number, type: string | undefined = undefined) {
     const result = []
     const findChildren = async (id: string | number) => {
       const sql = 'SELECT t.id, t.is_leaf FROM task t WHERE t.parent_id = ?'
+        + (type == 'project' ? ' AND t.is_leaf = 0' : '')
       const rows: any = await this.db.all (sql, [id])
       if (rows) {
         for (let row of rows) {
-          result.push(row.id)
+          if (!(type == 'task' && row.is_leaf == 0)) {
+            result.push(row.id)
+          }
           if (row.is_leaf == 0) {
             await findChildren (row.id)
           }
@@ -127,7 +130,8 @@ export class Task extends SingleTable {
   public async descendants (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('task.descendants()')
     try {
-      const descendantIds = await this.findDescendants (req.params.id)
+      const type = req.query.type ? String(req.query.type) : undefined
+      const descendantIds = await this.findDescendants (req.params.id, type)
       res.json (descendantIds)
       next ()
     } catch (err) {

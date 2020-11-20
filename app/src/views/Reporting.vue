@@ -11,7 +11,7 @@
           <v-autocomplete :label="'Report' | i18n" :items="reports" v-model="report.name"></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row v-show="user.hasRole('reporting') && report.name != 'project-time-sheet'">
+      <v-row v-show="user.hasRole('reporting') && !isProjectSheet()">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'User' | i18n"
@@ -33,7 +33,7 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row v-show="report.name == 'project-time-sheet'">
+      <v-row v-show="isProjectSheet()">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'Project' | i18n"
@@ -44,31 +44,33 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col class="col-12 col-md-6 form-col">
-          <v-select
-            :label="'Period' | i18n"
-            :items="periods"
-            v-model="report.period"
-            @change="onSelectPeriod"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="col-12 col-md-6 form-col">
-          <date-input :label="'Start date' | i18n" v-model="report.start"></date-input>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="col-12 col-md-6 form-col">
-          <date-input :label="'End date' | i18n" v-model="report.end"></date-input>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="col-12 col-md-12 form-col pt-3">
-          <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
-        </v-col>
-      </v-row>
+      <div v-show="report.name !== 'todo-list'">
+        <v-row>
+          <v-col class="col-12 col-md-6 form-col">
+            <v-select
+              :label="'Period' | i18n"
+              :items="periods"
+              v-model="report.period"
+              @change="onSelectPeriod"
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="col-12 col-md-6 form-col">
+            <date-input :label="'Start date' | i18n" v-model="report.start"></date-input>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="col-12 col-md-6 form-col">
+            <date-input :label="'End date' | i18n" v-model="report.end"></date-input>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="col-12 col-md-12 form-col pt-3">
+            <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
+          </v-col>
+        </v-row>
+     </div>
     </v-container>
   </v-form>
 </template>
@@ -118,7 +120,13 @@ export default {
 
   methods: {
     onGenerate() {
-      window.open(`/reports/${this.report.name}?user=${this.report.userId}&customer=${this.report.customerId}&start=${this.report.start}&end=${this.report.end}`, '_blank')
+      let url = `/reports/${this.report.name}?customer=${this.report.customerId}&start=${this.report.start}&end=${this.report.end}`
+      if (this.isProjectSheet()) {
+        url += `&project=${this.report.projectId}`
+      } else {
+        url += `&user=${this.report.userId}`
+      }
+      window.open(url, '_blank')
     },
 
     onSelectPeriod(period) {
@@ -170,6 +178,14 @@ export default {
       }
       this.report.start = DateCalc.isoDate(startDate)
       this.report.end = DateCalc.isoDate(endDate)
+    },
+
+    isProjectSheet() {
+      return [
+        'project-time-sheet',
+        'project-time-sheet-by-task',
+        'project-time-sheet-by-contributor',
+      ].includes(this.report.name)
     }
   },
 

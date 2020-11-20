@@ -2,16 +2,11 @@
   <div class="report-container">
     <div class="report-title">{{ "Chronological time sheet" | i18n }}</div>
     <div>
-      {{ "From" | i18n }} {{ from | i18nDate }} {{ "to" | i18n }}
-      {{ to | i18nDate }}
+      {{ "From" | i18n }} {{ from | i18nDate }} {{ "to" | i18n }} {{ to | i18nDate }}
     </div>
     <div class="report-subtitle">
-      <span v-if="userId > 0 && data.length"
-        >{{ "Name" | i18n }}: {{ data[0].user_name }}</span
-      >
-      <span v-if="customerId > 0 && data.length"
-        >{{ "Customer" | i18n }}: {{ data[0].customer_name }}</span
-      >
+      <span v-if="userId > 0 && data.length">{{ "Name" | i18n }}: {{ data[0].user_name }}</span>
+      <span v-if="customerId > 0 && data.length">{{ "Customer" | i18n }}: {{ data[0].customer_name }}</span>
     </div>
     <table class="report-body">
       <tr>
