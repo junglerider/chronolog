@@ -36,7 +36,7 @@
           </v-treeview>
         </v-col>
         <v-col class="col-12 col-sm-6 col-xs-12 form-col">
-          <div class="active-project" v-if="active.length">
+          <div class="active-project" v-if="active.length" style="position: fixed">
             <div>
               <v-icon v-if="activated.is_leaf" :style="itemStyle(activated, false)" class="mr-2">
                 mdi-hammer-wrench
@@ -50,11 +50,21 @@
               </v-btn>
             </div>
             <div>{{ 'Name' | i18n }}: {{ activated.name }}</div>
+            <div>{{ 'ID' | i18n }}: {{ activated.id }}</div>
             <div v-if="activated.description">{{ 'Description' | i18n }}: {{ activated.description }}</div>
             <div>{{ 'Parent project' | i18n }}: {{ activated.parent_name ? activated.parent_name : 'Projects' | i18n }}</div>
             <div>{{ 'Assigned to' | i18n }}: {{ activated.user_name ? activated.user_name : 'all' | i18n }}</div>
             <div>{{ 'Customer' | i18n }}: {{ activated.customer_name }}</div>
-            <div>{{ 'Total hours' | i18n }}: {{ $i18nDecToHrs(activated.duration) }}</div>
+            <div v-if="activated.is_leaf">{{ 'Total hours' | i18n }}: {{ $i18nDecToHrs(activated.duration) }}</div>
+            <div v-else-if="activated.id != 'NULL'">
+              {{ 'Total hours' | i18n }}:
+              <span v-if="activated.duration">
+                {{ $i18nDecToHrs(activated.duration) }}
+              </span>
+              <span v-else>
+                <a @click="calculateHours">{{ 'Calculate' | i18n }}</a>
+              </span>
+              </div>
           </div>
         </v-col>
       </v-row>
@@ -220,6 +230,7 @@ export default {
         id: 'new',
         is_active: 1,
         is_leaf: 1,
+        is_closed: 0,
         parent_id: this.activated.id == 'NULL' ? null : this.activated.id,
         customer_id: this.activated.customer_id,
         customer_name: this.activated.customer_name,
@@ -315,13 +326,19 @@ export default {
     },
     async insertIntoTree(project, parentProject, update = true) {
       if (update) {
-        project.parent_id = parentProject.id
+        project.parent_id = parentProject.id == 'NULL' ? null : parentProject.id
         await this.updateProject(project)
       }
       if (parentProject.is_leaf) {
         parentProject.is_leaf = 0
         parentProject.children = []
         await this.updateProject(parentProject)
+        parentProject.children.push(project)
+        if (this.open.indexOf(parentProject.id) < 0) {
+          this.open.push(parentProject.id)
+        }
+        this.treeversion += 1
+        return
       }
       if (this.open.indexOf(parentProject.id) >= 0 && !parentProject.children.find(p => p.id == project.id)) {
         parentProject.children.push(project)
@@ -399,6 +416,17 @@ export default {
         this.activated = {}
       }
     },
+    async calculateHours() {
+      try {
+        let response = await api.get(`/task/${this.activated.id}/descendants`)
+        const projectIds = response.data
+        projectIds.unshift(Number(this.activated.id))
+        response = await api.get(`/timelog/sum?filter[task_id][in]=${projectIds.join(',')}`)
+        this.activated.duration = Number(response.data.duration)
+      } catch(err) {
+        console.error(err)
+      }
+    }
   },
 
   async mounted() {

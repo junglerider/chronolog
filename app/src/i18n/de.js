@@ -213,6 +213,8 @@ export default new Map([
   ['Project time sheet by contributor', 'Projektstunden nach Mitarbeiter'],
   ['Project/Task', 'Projekt/Aufgabe'],
   ['Generate', 'Generieren'],
+  ['Calculate', 'Berechnen'],
+  ['all', 'alle'],
   ['All customers', 'Alle Kunden'],
   ['All users', 'Alle Benutzer'],
   ['This week', 'Diese Woche'],
