@@ -208,6 +208,7 @@ export default new Map([
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Informe cronológico horario'],
   ['Time sheet by task', 'Informe horario según tareas'],
+  ['Project summary', 'Resumen del proyecto'],
   ['Project time sheet', 'Horario del proyecto'],
   ['Project time sheet by task', 'Horario del proyecto según tareas'],
   ['Project time sheet by contributor', 'Horario del proyecto según colaboradores'],

@@ -33,7 +33,7 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <v-row v-show="isProjectSheet()">
+      <v-row v-show="isProjectSheet() || isProjectSummary()">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             :label="'Project' | i18n"
@@ -44,7 +44,7 @@
           ></v-autocomplete>
         </v-col>
       </v-row>
-      <div v-show="report.name !== 'todo-list'">
+      <div v-show="isTimeSheet()">
         <v-row>
           <v-col class="col-12 col-md-6 form-col">
             <v-select
@@ -65,12 +65,12 @@
             <date-input :label="'End date' | i18n" v-model="report.end"></date-input>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="col-12 col-md-12 form-col pt-3">
-            <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
-          </v-col>
-        </v-row>
-     </div>
+      </div>
+      <v-row>
+        <v-col class="col-12 col-md-12 form-col pt-3">
+          <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
+        </v-col>
+    </v-row>
     </v-container>
   </v-form>
 </template>
@@ -120,11 +120,15 @@ export default {
 
   methods: {
     onGenerate() {
-      let url = `/reports/${this.report.name}?customer=${this.report.customerId}&start=${this.report.start}&end=${this.report.end}`
-      if (this.isProjectSheet()) {
+      let url = `/reports/${this.report.name}?customer=${this.report.customerId}`
+      if (this.isProjectSheet() || this.isProjectSummary()) {
         url += `&project=${this.report.projectId}`
-      } else {
+      }
+      if (!this.isProjectSheet()) {
         url += `&user=${this.report.userId}`
+      }
+      if (this.isTimeSheet()) {
+        url += `&start=${this.report.start}&end=${this.report.end}`
       }
       window.open(url, '_blank')
     },
@@ -180,11 +184,26 @@ export default {
       this.report.end = DateCalc.isoDate(endDate)
     },
 
+    isTimeSheet() {
+      return ![
+        'project-summary',
+        'project-summary-tasks',
+        'todo-list',
+      ].includes(this.report.name)
+    },
+
     isProjectSheet() {
       return [
         'project-time-sheet',
         'project-time-sheet-by-task',
         'project-time-sheet-by-contributor',
+      ].includes(this.report.name)
+    },
+
+    isProjectSummary() {
+      return [
+        'project-summary',
+        'project-summary-tasks'
       ].includes(this.report.name)
     }
   },

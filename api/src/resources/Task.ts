@@ -106,24 +106,24 @@ export class Task extends SingleTable {
     }
   }
 
-  private async findDescendants (id: string | number, type: string | undefined = undefined) {
+  private async findDescendants (id: string | number, name: string, type: string | undefined = undefined) {
     const result = []
-    const findChildren = async (id: string | number) => {
-      const sql = 'SELECT t.id, t.is_leaf FROM task t WHERE t.parent_id = ?'
+    const findChildren = async (id: string | number, name: string) => {
+      const sql = 'SELECT t.id, t.name, t.is_leaf FROM task t WHERE t.parent_id = ?'
         + (type == 'project' ? ' AND t.is_leaf = 0' : '')
       const rows: any = await this.db.all (sql, [id])
       if (rows) {
         for (let row of rows) {
           if (!(type == 'task' && row.is_leaf == 0)) {
-            result.push(row.id)
+            result.push({id: row.id, parent_id: id, is_leaf: row.is_leaf, path: `${name}/${row.name}`})
           }
           if (row.is_leaf == 0) {
-            await findChildren (row.id)
+            await findChildren (row.id, `${name}/${row.name}`)
           }
         }
       }
     }
-    await findChildren (id)
+    await findChildren (id, name)
     return result
   }
 
@@ -131,8 +131,20 @@ export class Task extends SingleTable {
     this.logger.trace ('task.descendants()')
     try {
       const type = req.query.type ? String(req.query.type) : undefined
-      const descendantIds = await this.findDescendants (req.params.id, type)
-      res.json (descendantIds)
+      const extendedFormat = req.query.format === 'extended'
+      let projectName = ''
+      if (extendedFormat) {
+        const rows: any = await this.db.get (`SELECT t.name FROM task t WHERE t.id = ?`, [req.params.id])
+        console.log('ROWS:', rows)
+        if (rows && rows.name) {
+          projectName = rows.name
+        }
+      }
+      let descendants = await this.findDescendants (req.params.id, projectName, type)
+      if (!extendedFormat) {
+        descendants = descendants.map (desc => desc.id)
+      }
+      res.json (descendants)
       next ()
     } catch (err) {
       next (err)
@@ -145,13 +157,14 @@ export class Task extends SingleTable {
       let status = 400
       const [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
-        const descendantIds = await this.findDescendants (req.params.id)
-        descendantIds.unshift (req.params.id)
-        const sql = `UPDATE task AS t SET ` + this.getUpdateList(names) + ` WHERE t.id IN (${descendantIds.join(',')})`
+        let descendants = await this.findDescendants (req.params.id, '')
+        descendants = descendants.map (desc => desc.id)
+        descendants.unshift (req.params.id)
+        const sql = `UPDATE task AS t SET ` + this.getUpdateList(names) + ` WHERE t.id IN (${descendants.join (',')})`
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404
       }
-      res.status (status).json()
+      res.status (status).json ()
       next ()
     }
     catch (err) {
