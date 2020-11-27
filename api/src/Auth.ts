@@ -44,8 +44,8 @@ export class Auth {
    * @param password Clear text password
    * @returns hexadecimal hash
    */
-  private hash (password: string): string {
-    return crypto.createHash ('sha256').update (password).digest ('hex')
+  private hash (password: string, salt: string): string {
+    return crypto.createHmac ('sha256', salt).update (password).digest ('hex')
   }
 
   /**
@@ -59,7 +59,7 @@ export class Auth {
     if (!storedPwd) {
       return true
     }
-    const hashedPwd = this.hash (givenPwd)
+    const hashedPwd = this.hash (givenPwd, this.config.app_name)
     return hashedPwd === storedPwd
   }
 
@@ -249,7 +249,7 @@ export class Auth {
       if (!this.compare (req.body.oldPassword || '', result.password)) {
         throw new Error (`400:Old password of user ${req.params.id} does not match`)
       }
-      const password = this.hash (req.body.password)
+      const password = this.hash (req.body.password, this.config.app_name)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
       result = await this.db.run (sql, [password, req.params.id])
       res.status (result.changes ? 204 : 500).json ()
