@@ -3,7 +3,7 @@ import { Application, Request, Response, NextFunction } from 'express'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as history from 'connect-history-api-fallback'
-
+import * as rateLimit from 'express-rate-limit'
 import * as config from './config.json'
 import * as Logger from 'bunyan'
 
@@ -129,6 +129,12 @@ class App {
     // health status
     this.app.get ('/health', this.health)
 
+    // rate limit login
+    this.app.use ('/auth/login', rateLimit({
+      windowMs: 60 * 1000,
+      max: config.login_rate_limit || 5
+    }))
+
     // authentication
     this.app.post ('/auth/login', auth.login.bind (auth))
     this.app.post ('/auth/logout', auth.logout.bind (auth))
@@ -243,6 +249,12 @@ class App {
     api.get ('/settings/:key', setting.readMany.bind (setting))
     api.put ('/setting/:key', setting.update.bind (setting))
     api.delete ('/setting/:key', setting.delete.bind (setting))
+
+    // rate limit API calls
+    this.app.use ('/api', rateLimit({
+      windowMs: 60 * 1000,
+      max: config.api_rate_limit || 100
+    }))
 
     this.app.use ('/api', api)
     this.app.use (this.notFoundHandler)

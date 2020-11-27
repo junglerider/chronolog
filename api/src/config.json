@@ -4,5 +4,7 @@
     "sqlite_db": "../db/chronolog.db",
     "db_connection_timeout": 180000,
     "session_timeout": 3600000,
-    "log_level": "trace"
+    "log_level": "trace",
+    "api_rate_limit": 100,
+    "login_rate_limit": 5
 }

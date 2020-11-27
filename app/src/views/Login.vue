@@ -92,7 +92,7 @@ export default {
         })
         this.$router.push('/')
       } catch (err) {
-        if (err.response && (err.response.status == 401 || err.response.status == 404)) {
+        if (err.response && ([401, 404, 429].includes(err.response.status))) {
           this.authError = true
         } else {
           console.error(err)
