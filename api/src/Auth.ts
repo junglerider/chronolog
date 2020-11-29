@@ -39,13 +39,21 @@ export class Auth {
   }
 
   /**
-   * Hashes a string using the SHA256 algorithm
+   * Hashes a string using the scrypt algorithm
    *
    * @param password Clear text password
    * @returns hexadecimal hash
    */
-  private hash (password: string, salt: string): string {
-    return crypto.createHmac ('sha256', salt).update (password).digest ('hex')
+  async hash (password: string, salt: string = '') {
+    return new Promise ((resolve, reject) => {
+      if (salt.length === 0) {
+        salt = crypto.randomBytes (16).toString ('hex')
+      }
+      crypto.scrypt (password, salt, 64, (err, hashedPassword) => {
+          if (err) reject (err)
+          resolve (`${salt}:${hashedPassword.toString ('hex')}`)
+      });
+    })
   }
 
   /**
@@ -55,11 +63,12 @@ export class Auth {
    * @param storedPwd Stored hash
    * @returns true if passwords match
    */
-  private compare (givenPwd: string, storedPwd: string): boolean {
+  private async compare (givenPwd: string, storedPwd: string): Promise<boolean> {
     if (!storedPwd) {
       return true
     }
-    const hashedPwd = this.hash (givenPwd, this.config.app_name)
+    const parts = storedPwd.split (':')
+    const hashedPwd = await this.hash (givenPwd, parts[0])
     return hashedPwd === storedPwd
   }
 
@@ -77,7 +86,7 @@ export class Auth {
       const sql = `SELECT u.*, first_name || ' ' || last_name AS name FROM user u JOIN person p ON (u.person_id = p.id) WHERE u.is_active > 0 AND u.login = ?`
       const row: any = await this.db.get (sql, [req.body.username || ''])
       if (row) {
-        const isVerified = this.compare (req.body.password || '', row.password)
+        const isVerified = await this.compare (req.body.password || '', row.password)
         if (isVerified) {
           res.status (200).json ({
             user_id: row.id,
@@ -249,7 +258,7 @@ export class Auth {
       if (!this.compare (req.body.oldPassword || '', result.password)) {
         throw new Error (`400:Old password of user ${req.params.id} does not match`)
       }
-      const password = this.hash (req.body.password, this.config.app_name)
+      const password = await this.hash (req.body.password)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
       result = await this.db.run (sql, [password, req.params.id])
       res.status (result.changes ? 204 : 500).json ()
