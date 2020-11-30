@@ -44,6 +44,9 @@
         ></v-select>
         </v-col>
         <v-col class="col-12 col-sm-6 form-col">
+          <v-alert v-if="user.password == 0" text outlined type="warning">
+            {{ 'This account is not password-protected.' | i18n }}
+          </v-alert>
         </v-col>
       </v-row>
       <v-row v-if="user.id !== 'new'">
@@ -72,6 +75,7 @@
         <v-col class="col-12 col-sm-12 form-col" align="right">
           <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn v-if="user.password != 0" class="ml-2 mt-4" @click="onResetPassword">{{ 'Reset password' | i18n }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -109,6 +113,7 @@ export default {
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
+
   computed: {
     updatedAt() {
       return this.user.updated_at ? this.$i18nDate(this.user.updated_at) : null
@@ -120,6 +125,7 @@ export default {
       return this.user.last_visit ? this.$i18nDate(this.user.last_visit) : null
     }
   },
+
   methods: {
     async onSave() {
       if (!this.$refs.form.validate()) {
@@ -160,7 +166,19 @@ export default {
       this.messageColor = color
       this.message = true
     },
+    async onResetPassword() {
+      if (confirm(this.$i18n(`Delete the user's password and allow access without password?`))) {
+        try {
+          await api.delete(`/user/${this.user.id}/password`)
+          this.user.password = 0
+          this.showMessage('OK - Deleted!')
+        } catch (err) {
+          this.showMessage('Deletion did not succeed.', 'error')
+        }
+      }
+    }
   },
+
   async mounted() {
     if (this.$route.params.id !== 'new') {
       try {

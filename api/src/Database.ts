@@ -37,7 +37,7 @@ export class Database {
     }
     this.timeout = setTimeout (() => {
       this.closeConnection ()
-    }, this.config.db_connection_timeout || 180000 )
+    }, this.config.db_connection_timeout)
   }
 
   /**
@@ -78,7 +78,7 @@ export class Database {
       callback ()
     } else {
       const sqlite = sqlite3.verbose ()
-      const dbname = this.config.sqlite_db || '../db/chronolog.db'
+      const dbname = this.config.sqlite_db
       this.db = new sqlite3.Database (dbname, sqlite.OPEN_READWRITE, (err) => {
         if (err) {
           this.logger.error (OPEN_ERR)

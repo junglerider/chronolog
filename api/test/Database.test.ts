@@ -60,6 +60,28 @@ describe ('Database', () => {
     })
   })
 
+  it ('should reject Promise if sqlite3 connection fails on open()', async () => {
+    instance = new Database (config, logger)
+    Object.defineProperty (instance, 'resetTimeout', { value: timeoutFunction })
+    const verboseFunction = jest.fn().mockReturnValue ({ OPEN_READWRITE: 222 })
+    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction })
+    const databaseMock = jest.fn((param1, param2, callback) => {
+      setTimeout(() => { callback(new Error('Error')) }, 20)
+      db.run = jest.fn ((param1, callbackFunction) => { callbackFunction() })
+      return db
+    })
+    Object.defineProperty(sqlite3, 'Database', { value: databaseMock })
+    expect.assertions (4)
+    try {
+      await instance.open ()
+    } catch (err) {
+      expect (timeoutFunction).toHaveBeenCalled ()
+      expect (verboseFunction).toHaveBeenCalled ()
+      expect (databaseMock).toHaveBeenCalled ()
+      expect (db.run).toHaveBeenCalledTimes (0)
+    }
+  })
+
   it ('should close the database connection automatically after the timeout period has elapsed', done => {
     const testConfig = {
       sqlite_db: '/path/to/database/file',
@@ -89,10 +111,15 @@ describe ('Database', () => {
   })
 
   it ('should reset timeout and return immediately when open() is called on an already open connection', async () => {
+    instance = new Database (config, logger)
+    Object.defineProperty (instance, 'db', { value: db })
+    const timeout = setTimeout(() => {}, 100)
+    Object.defineProperty (instance, 'timeout', { value: timeout })
     Object.defineProperty (sqlite3, 'verbose', { value: jest.fn() })
     return instance.open ().then (() => {
-      expect (timeoutFunction).toHaveBeenCalled ()
       expect (sqlite3.verbose).not.toHaveBeenCalled ()
+      const timeout2 = Object.getOwnPropertyDescriptor (instance, 'timeout')
+      expect (timeout).not.toEqual (timeout2)
     })
   })
 
@@ -138,6 +165,7 @@ describe ('Database', () => {
   it ('should run a command or update/insert query against database and reject the promise on DB error', async () => {
     const sql = 'PRAGMA invalid'
     db.run = jest.fn ((param1, param2, callback) => { callback ('error') })
+    expect.assertions (5)
     try {
       const row = await instance.run (sql)
     } catch (e) {
@@ -179,6 +207,7 @@ describe ('Database', () => {
     const sql = 'SELECT * FROM table WHERE field = 1'
     const result = { field: 1 }
     db.get = jest.fn ((param1, param2, callback) => { callback ('error') })
+    expect.assertions (5)
     try {
       const row = await instance.get (sql)
     } catch (e) {
@@ -187,6 +216,18 @@ describe ('Database', () => {
       expect (db.get.mock.calls[0][0]).toEqual (sql)
       expect (logger.debug).toHaveBeenCalledTimes (1)
       expect (logger.debug.mock.calls[0][0]).toContain (sql)
+    }
+  })
+
+  it ('should reject Promise if get() query fails ', async () => {
+    const errMessage = 'Errare humanum est'
+    Object.defineProperty (instance, 'implicitOpen', { value: callback => callback(new Error(errMessage)) })
+    expect.assertions (2)
+    try {
+      await instance.get ('SELECT 1')
+    } catch (err) {
+      expect (err.message).toEqual (errMessage)
+      expect (db.get).not.toHaveBeenCalled ()
     }
   })
 
@@ -202,24 +243,35 @@ describe ('Database', () => {
     expect (logger.debug.mock.calls[0][0]).toContain (sql)
   })
 
-  it ('should run single row query with params against database and log output when get() is called', async () => {
-    const sql = 'SELECT * FROM user WHERE name = ?'
-    const params = ['Bill']
-    const result = [{ id: 101, name: 'Bill' }, { id: 202, name: 'Bill' }]
-    db.all = jest.fn ((param1, param2, callback) => { callback (null, result) })
-    const row = await instance.all (sql, params)
-    expect (db.all).toHaveBeenCalledTimes (1)
-    expect (db.all.mock.calls[0][0]).toBe (sql)
-    expect (db.all.mock.calls[0][1]).toBe (params)
-    expect (row).toEqual (result)
-    expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain ('SELECT * FROM user WHERE name = Bill')
+  it ('should reject Promise if all() query fails ', async () => {
+    const errMessage = 'Errare humanum est'
+    Object.defineProperty (instance, 'implicitOpen', { value: callback => callback(new Error(errMessage)) })
+    expect.assertions (2)
+    try {
+      await instance.all ('SELECT 1')
+    } catch (err) {
+      expect (err.message).toEqual (errMessage)
+      expect (db.all).not.toHaveBeenCalled ()
+    }
+  })
+
+  it ('should reject Promise if run() query fails ', async () => {
+    const errMessage = 'Errare humanum est'
+    Object.defineProperty (instance, 'implicitOpen', { value: callback => callback(new Error(errMessage)) })
+    expect.assertions (2)
+    try {
+      await instance.run ('SELECT 1')
+    } catch (err) {
+      expect (err.message).toEqual (errMessage)
+      expect (db.run).not.toHaveBeenCalled ()
+    }
   })
 
   it ('should run single row query against database and reject the promise on DB error', async () => {
     const sql = 'SELECT * FROM table WHERE field < 10'
     const result = [{ field: 1 }, { field: 5 }, { field: 9 }]
     db.all = jest.fn ((param1, param2, callback) => { callback ('error') })
+    expect.assertions (5)
     try {
       const row = await instance.all (sql)
     } catch (e) {
@@ -230,4 +282,30 @@ describe ('Database', () => {
       expect (logger.debug.mock.calls[0][0]).toContain (sql)
     }
   })
+
+  it ('should run a query against database and execute a callback on each row', async () => {
+    const row = { field: 1 }
+    const callback = jest.fn ()
+    db.serialize = jest.fn ((callback) => { callback () })
+    db.each = jest.fn ((param1, param2, callback) => { callback (undefined, row) })
+    const sql = 'SELECT * FROM table WHERE field < 10'
+    await instance.each (sql, [], callback)
+    expect (callback).toHaveBeenCalled ()
+    expect (callback).toHaveBeenCalledWith (row)
+  })
+
+  it ('should reject Promise if each() query fails ', async () => {
+    const errMessage = 'Errare humanum est'
+    const callback = jest.fn ()
+    Object.defineProperty (instance, 'implicitOpen', { value: callback => callback(new Error(errMessage)) })
+    expect.assertions (3)
+    try {
+      await instance.each ('SELECT 1', [], callback)
+    } catch (err) {
+      expect (err.message).toEqual (errMessage)
+      expect (db.each).not.toHaveBeenCalled ()
+      expect (callback).not.toHaveBeenCalled ()
+    }
+  })
+
 })

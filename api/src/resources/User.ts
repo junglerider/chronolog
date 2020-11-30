@@ -43,7 +43,7 @@ export class User extends SingleTable {
       const sql = `SELECT u.*, p.first_name, p.last_name, p.nick_name from user u JOIN person p on p.id = u.person_id WHERE u.id = ?`
       let row: any = await this.db.get (sql, [req.params.id])
       if (row) {
-        delete row.password
+        row.password = row.password ? 1 : 0
         res.status (200).json (row)
       } else {
         res.status (404).json ()

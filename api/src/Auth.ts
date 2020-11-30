@@ -247,10 +247,10 @@ export class Auth {
    * @param res Express response object
    * @param next Express next function
    */
-  public async updatePassword (req: Request, res: Response, next: NextFunction) {
+  public async updatePassword (req: IRequest, res: Response, next: NextFunction) {
     this.logger.trace ('Auth.updatePassword()')
     try {
-      if (!this.userIdMatchesLoggedInUser (req, Number(req.params.id))) {
+      if (! (this.userIdMatchesLoggedInUser (req, Number(req.params.id)) || req.session.hasAdmin ())) {
         throw new Error (`403:User ${req.params.id} cannot change password of another user`)
       }
       let sql = 'SELECT password FROM user WHERE id = ?'
@@ -261,6 +261,28 @@ export class Auth {
       const password = await this.hash (req.body.password)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
       result = await this.db.run (sql, [password, req.params.id])
+      res.status (result.changes ? 204 : 500).json ()
+      next ()
+    } catch (err) {
+      next (err)
+    }
+  }
+
+  /**
+   * Resets the password of a user.
+   *
+   * @param req Express request object
+   * @param res Express response object
+   * @param next Express next function
+   */
+  public async resetPassword (req: IRequest, res: Response, next: NextFunction) {
+    this.logger.trace ('Auth.resetPassword()')
+    try {
+      if (! req.session.hasAdmin ()) {
+        throw new Error (`403:User ${req.params.id} cannot reset password of another user`)
+      }
+      const sql = 'UPDATE user SET password = NULL WHERE id = ?'
+      const result: any = await this.db.run (sql, [req.params.id])
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {

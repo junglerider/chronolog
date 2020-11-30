@@ -195,6 +195,9 @@ export default new Map([
   ['Number of time sheet entries', 'Numero de tarjetas de hojas'],
   ['This user name already exists.', 'Este nombre de usuario ya existe.'],
   ['Access control', 'Derechos de acceso'],
+  ['Reset password', 'Borrar la contraseña'],
+  ['This account is not password-protected.', 'Esta cuenta de usuario no está protegida por contraseña.'],
+  [`Delete the user's password and allow access without password?`, '¿Borrar la contraseña del usuario y permitir el acceso sin contraseña?'],
   // login/password ---- ----------------------------------
   ['Old password', 'Contraseña anterior'],
   ['New password', 'Nueva contraseña'],

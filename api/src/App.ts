@@ -189,6 +189,7 @@ class App {
     api.put ('/user/:id(\\d+)', user.update.bind (user))
     api.delete ('/user/:id(\\d+)', user.delete.bind (user))
     api.put ('/user/:id(\\d+)/password', auth.updatePassword.bind (auth))
+    api.delete ('/user/:id(\\d+)/password', auth.resetPassword.bind (auth))
 
     api.get ('/customer', customer.list.bind (customer))
     api.get ('/customer/count', customer.count.bind (customer))
