@@ -14,9 +14,11 @@
   import api from '../services/api'
 
   export default {
+
     components: {
       DataList
     },
+
     data() {
       return {
         user: api.user,

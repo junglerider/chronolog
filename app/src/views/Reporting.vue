@@ -82,6 +82,7 @@ import reports from '../reports'
 import api from '../services/api'
 
 export default {
+
   components: {
     DateInput,
   },
@@ -183,7 +184,6 @@ export default {
       this.report.start = DateCalc.isoDate(startDate)
       this.report.end = DateCalc.isoDate(endDate)
     },
-
     isTimeSheet() {
       return ![
         'project-summary',
@@ -191,7 +191,6 @@ export default {
         'todo-list',
       ].includes(this.report.name)
     },
-
     isProjectSheet() {
       return [
         'project-time-sheet',
@@ -199,7 +198,6 @@ export default {
         'project-time-sheet-by-contributor',
       ].includes(this.report.name)
     },
-
     isProjectSummary() {
       return [
         'project-summary',

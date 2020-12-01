@@ -145,10 +145,12 @@ import CalendarLeaflet from '../components/CalendarLeaflet'
 import TimeInput from '../components/TimeInput'
 
 export default {
+
   components: {
     CalendarLeaflet,
     TimeInput,
   },
+
   data() {
     return {
       date: this.$route.params.date || DateCalc.isoDate(),
@@ -165,12 +167,14 @@ export default {
       requiredRule: [ v => (Boolean(v) || this.$i18n('Required')) ],
     }
   },
+
   watch: {
     $route() {
       this.date = this.$route.params.date || DateCalc.isoDate()
       this.getData()
     }
   },
+
   methods: {
     navigate(days) {
       const newDate = (new Date(this.date))
@@ -288,6 +292,7 @@ export default {
       }
     }
   },
+
   async mounted() {
     this.getData()
     try {

@@ -81,7 +81,6 @@ export default {
   },
 
   computed: {
-
     updatedAt() {
       if (!this.customer.updated_at) {
         return null
@@ -98,7 +97,6 @@ export default {
   },
 
   methods: {
-
     async onSave() {
       if (!this.$refs.form.validate()) {
         return

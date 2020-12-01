@@ -106,6 +106,7 @@
   ]
 
   export default {
+
     data: () => ({
       calendarDate: dateCalc.firstDayOfWeek(new Date()),
       user: api.user,
@@ -114,6 +115,7 @@
       taskColours: new Map(),
       colourPool: [...colourPool]
     }),
+
     methods: {
       setToday () {
         this.calendarDate = dateCalc.firstDayOfWeek(new Date())

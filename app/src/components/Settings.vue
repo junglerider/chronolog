@@ -54,10 +54,13 @@ const allSettings = {
 }
 
 export default {
+
   name: 'Settings',
+
   props: {
     keys: String,
   },
+
   data() {
     return {
       dialog: false,
@@ -75,6 +78,7 @@ export default {
         })
     }
   },
+
   methods: {
     async onClick(key) {
       this.key = key

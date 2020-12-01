@@ -17,6 +17,7 @@
     components: {
       DataList
     },
+
     data() {
       return {
         user: api.user,

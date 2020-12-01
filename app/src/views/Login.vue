@@ -67,9 +67,11 @@ import LanguageMenu from '../components/LanguageMenu'
 import api from '../services/api'
 
 export default {
+
   components: {
     LanguageMenu
   },
+
   data() {
     return {
       username: '',
@@ -79,6 +81,7 @@ export default {
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
+
   methods: {
     async login() {
       if (!this.$refs.form.validate()) {
@@ -105,6 +108,7 @@ export default {
       }
     }
   },
+
   mounted() {
     this.$refs.username.focus()
   }

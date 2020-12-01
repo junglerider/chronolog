@@ -289,6 +289,8 @@ export default new Map([
   ['Reopen', 'Riaprire'],
   ['Activate', 'Attivare'],
   ['Deactivate', 'Disattivare'],
+  ['Reassign', 'Riassegnare'],
+  ['Reassign this task to', 'Riassegna quest compito a'],
   ['Cannot move project to descendant.', 'Il progetto non può essere spostato in un ramo secondario.'],
   ['The customers are different. Move anyway?', 'I clienti sono diversi. Spostarlo comunque?'],
 ])

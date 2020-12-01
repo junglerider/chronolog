@@ -97,9 +97,11 @@ import DateCalc from '../services/DateCalc'
 import api from '../services/api'
 
 export default {
+
   components: {
     AnalogueClock
   },
+
   data() {
     return {
       today: DateCalc.isoDate(),
@@ -118,6 +120,7 @@ export default {
       messageText: '',
     }
   },
+
   methods: {
     async punchTheClock() {
       const timeClockStatus = await TimeClock.punch(this.user.id)
@@ -149,6 +152,7 @@ export default {
         DateCalc.getTimeZoneString(date)
     }
   },
+
   async mounted() {
     try {
       const startOfWeek = DateCalc.isoDate(DateCalc.firstDayOfWeek(new Date()))

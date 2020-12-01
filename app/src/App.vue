@@ -139,27 +139,31 @@ import UserMenu from './components/UserMenu'
 import api from './services/api'
 
 export default {
+
   name: 'App',
+
   components: {
     SimpleClock,
     NavLink,
     LanguageMenu,
     UserMenu
   },
+
   data() {
     return {
       drawer: null,
       user: api.user,
   }},
+
   methods: {
     hasRole(role) {
       return api.hasRole(role)
     },
-
     isBlankPage() {
       return this.$route.path.startsWith('/reports') || this.$route.path.startsWith('/login')
     }
   },
+
   async beforeUpdate() {
     if (!this.user.id) {
       await api.reloadSession()

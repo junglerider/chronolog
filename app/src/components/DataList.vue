@@ -140,7 +140,6 @@ export default {
   },
 
   watch: {
-
     async search() {
       this.options.page = 1
       this.data = await this.getData()
@@ -152,24 +151,20 @@ export default {
         this.data = await this.getData()
       }
     },
-
   },
 
   methods: {
-
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
       this.message = true
     },
-
     buildFilter() {
       if (this.searchFilter && this.search && this.search.length) {
         return this.searchFilter.replace(/{search}/g, encodeURIComponent(this.search))
       }
       return ''
     },
-
     async getData() {
       this.loading = true
       let data = []
@@ -190,7 +185,6 @@ export default {
       this.loading = false
       return data
     },
-
     async onDelete() {
       this.deleteDialog = false
       try {
@@ -208,7 +202,6 @@ export default {
         this.showMessage('Deletion did not succeed.', 'error')
       }
     },
-
     rowClick(row) {
       if (row && row.id) {
         this.$router.push(`${this.uiBaseUrl}/${row.id}`)

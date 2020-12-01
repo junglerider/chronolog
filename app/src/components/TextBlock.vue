@@ -8,13 +8,16 @@
 
 <script>
 export default {
+
   name: 'TextBlock',
+
   props: {
     value: {
       type: String,
       default: '',
     },
   },
+
   methods: {
     split(value) {
       return String(value).split(/[\r|\n]/)

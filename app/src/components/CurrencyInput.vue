@@ -14,11 +14,13 @@
 import NumberFormat from '../services/NumberFormat'
 
 export default {
+
   name: 'CurrencyInput',
   model: {
     prop: 'value',
     event: 'change'
   },
+
   props: {
     value: {
       type: [Number, String],
@@ -36,6 +38,7 @@ export default {
       default: true,
     }
   },
+
   data() {
     return {
       isFocused: false,
@@ -44,6 +47,7 @@ export default {
       formatter: new NumberFormat(this.locale, this.currency),
     }
   },
+
   methods: {
     format(val) {
       if (val === null) {
@@ -71,6 +75,7 @@ export default {
       this.formatter = new NumberFormat(this.locale, this.currency)
     }
   },
+
   computed: {
     formattedValue: {
       get: function() {
@@ -83,6 +88,7 @@ export default {
       }
     }
   },
+
   watch: {
     currency() {
       this.updateFormat()

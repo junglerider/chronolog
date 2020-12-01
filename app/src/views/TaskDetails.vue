@@ -13,9 +13,11 @@ import api from '../services/api'
 import TaskEdit from '../components/TaskEdit'
 
 export default {
+
   components: {
     TaskEdit
   },
+
   data() {
     return {
       user: api.user,
@@ -25,6 +27,7 @@ export default {
       messageText: '',
     }
   },
+
   methods: {
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
@@ -47,6 +50,7 @@ export default {
       }
     }
   },
+
   async mounted() {
     let response
     try {

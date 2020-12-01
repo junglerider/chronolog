@@ -42,11 +42,13 @@
 
 <script>
   export default {
+
     name: 'DateInput',
     model: {
       prop: 'value',
       event: 'change'
     },
+
     props: {
       value: String,
       label: String,
@@ -54,11 +56,13 @@
       min: String,
       disabled: Boolean
     },
+
     data() {
       return {
         menu: false
       }
     },
+
     computed: {
       formattedDate() {
         if (!this.value) {

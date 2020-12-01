@@ -92,6 +92,7 @@
 import api from '../services/api'
 
   export default {
+
     data: () => ({
       focus: '',
       height: 600,
@@ -99,9 +100,11 @@ import api from '../services/api'
       totalHours: 0,
       records: new Map(),
     }),
+
     mounted () {
       this.$refs.calendar.checkChange()
     },
+
     methods: {
       setToday () {
         this.focus = ''

@@ -32,11 +32,14 @@ const hrsToNum = hrs => {
 }
 
 export default {
+
   name: 'TimeInput',
+
   model: {
     prop: 'value',
     event: 'change'
   },
+
   props: {
     value: {
       type: Number,
@@ -51,6 +54,7 @@ export default {
       default: Number.MAX_SAFE_INTEGER,
     }
   },
+
   data() {
     return {
       number: this.value,
@@ -58,6 +62,7 @@ export default {
       inputRules: [ val => this.validate(val) ],
     }
   },
+
   methods: {
     onChange() {
       this.number = Math.round(this.number * 100) / 100
@@ -82,6 +87,7 @@ export default {
       return true
     }
   },
+
   computed: {
     formattedValue: {
       get: function() {

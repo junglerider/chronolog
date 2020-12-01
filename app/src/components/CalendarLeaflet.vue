@@ -48,13 +48,17 @@ td.month {
 
 <script>
 export default {
+
   name: 'CalendarLeaflet',
+
   props: [ 'date', 'colour' ],
+
   data() {
     return {
       today: this.date ? new Date(this.date) : new Date()
     }
   },
+
   watch: {
     date() {
       this.today = this.date ? new Date(this.date) : new Date()

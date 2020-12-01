@@ -51,6 +51,7 @@ export default {
       user: api.user,
     }
   },
+
   methods: {
     changePassword() {
       this.$router.push('/password')

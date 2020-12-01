@@ -16,11 +16,14 @@
 <script>
 
 export default {
+
   name: 'AutoComplete',
+
   model: {
     prop: 'value',
     event: 'change'
   },
+
   props: {
     item: {
       type: Object,

@@ -9,16 +9,20 @@
 
 <script>
   export default {
+
     name: 'SimpleClock',
+
     data() {
       return {
         localTimeDate: new Date(),
         clock: null
       }
     },
+
     created() {
       this.clock = setInterval(() => { this.localTimeDate = new Date() }, 1000)
     },
+
     destroyed() {
       clearInterval(this.clock)
     }

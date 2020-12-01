@@ -20,9 +20,11 @@
   import api from '../services/api'
 
   export default {
+
     components: {
       DataList
     },
+
     data() {
       return {
         loggedInUser: api.user,
@@ -45,7 +47,6 @@
           }
         })
       },
-
       async onDelete(selected) {
         const ids = selected.map(s => s.id).join(',')
         let response = await api.get(`/task/count?filter[user_id][in]=${ids}`)

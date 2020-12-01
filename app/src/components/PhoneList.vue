@@ -39,7 +39,9 @@ import _ from 'lodash'
 import api from '../services/api'
 
 export default {
+
   name: 'PhoneList',
+
   props: {
     entityId: String,
   },

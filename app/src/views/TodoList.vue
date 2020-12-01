@@ -19,6 +19,7 @@
   import api from '../services/api'
 
   export default {
+
     components: {
       DataList
     },
@@ -40,7 +41,6 @@
     },
 
     methods: {
-
       async getData(options) {
         const sortDirection = options.sortDesc[0] ? 'desc' : 'asc'
         const sortClause = options.sortBy[0] ? `?order=${options.sortBy[0]}:${sortDirection}` : ''
@@ -55,7 +55,6 @@
           }
         })
       },
-
       onDelete(selected) {
         for (let task of selected) {
           if (task.duration) {

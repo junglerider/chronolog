@@ -104,6 +104,38 @@
         <v-col class="col-12 col-md-12 form-col" align="right">
           <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2" @click="$emit('task-edit-event', 'canceled')">{{ 'Cancel' | i18n }}</v-btn>
+
+          <v-dialog v-model="reassignDialog" persistent max-width="500">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="attrs" v-on="on">{{ 'Reassign' | i18n }}</v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline" primary-title>
+                {{ 'Reassign' | i18n }}
+              </v-card-title>
+              <v-card-text>
+                <div>{{ 'Reassign this task to' | i18n }}:</div>
+                <v-autocomplete
+                  :label="'Name' | i18n"
+                  v-model="task.user_id"
+                  :items="users"
+                  item-value="id"
+                  item-text="name"
+                ></v-autocomplete>
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="onReassign(true)">
+                  {{ "OK" | i18n }}
+                </v-btn>
+                <v-btn text @click="onReassign(false)">
+                  {{ "Cancel" | i18n }}
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
         </v-col>
       </v-row>
     </v-container>
@@ -111,9 +143,9 @@
 </template>
 
 <script>
-import _ from 'lodash'
 import api from '../services/api'
 import DateCalc from '../services/DateCalc'
+import _ from 'lodash'
 
 export default {
   name: 'TaskEdit',
@@ -127,6 +159,7 @@ export default {
       customers: [],
       users: [],
       isSaving: false,
+      reassignDialog: false,
       requiredRule: [
         (v) => Boolean(v) || this.$i18n('Required')
       ]
@@ -190,25 +223,42 @@ export default {
         this.$emit('task-edit-event', 'noChanges')
       }
     },
+    isReassignable() {
+      let isReassignable = this.mode == 'normal' && this.task.id != 'new'
+      if (!this.user.hasRole('admin')) {
+         isReassignable = isReassignable && this.task.user_id && this.task.is_closed == 0
+      }
+      return isReassignable
+    },
+    async onReassign(doPersist) {
+      if (doPersist) {
+        await this.onSave()
+      } else {
+        this.task.user_id = this.previousTask.user_id
+      }
+      this.reassignDialog = false
+    }
   },
 
   async mounted() {
     try {
-      this.previousTask = _.clone(this.task)
+      let response = await api.get(`/user?filter[is_active][eq]=1`)
+      this.users = response.data
       if (this.mode == 'normal') {
-        const response = await api.get(`/todo/${this.user.id}/projects`)
+        response = await api.get(`/todo/${this.user.id}/projects`)
         this.projects = response.data
       } else if (this.mode == 'admin') {
-        let response = await api.get(`/customer?filter[is_retired][eq]=0&order=name:ASC`)
+        response = await api.get(`/customer?filter[is_retired][eq]=0&order=name:ASC`)
         this.customers = response.data
-        response = await api.get(`/user?filter[is_active][eq]=1`)
-        this.users = response.data
+      }
+      if (this.user.hasRole('admin')) {
         this.users.unshift({id: null, name: this.$i18n('all')})
       }
       this.$nextTick(() => this.$refs.nameInput.focus())
     } catch(e) {
       this.$emit('task-edit-event', 'loadError')
     }
+    this.previousTask = _.clone(this.task)
   }
 }
 </script>

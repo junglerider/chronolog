@@ -92,6 +92,7 @@ import DateCalc from '../services/DateCalc'
 import countries from '../i18n/countries.json'
 
 export default {
+
   components: {
     DateInput,
     PhoneList,
@@ -121,7 +122,6 @@ export default {
   },
 
   computed: {
-
     updatedAt() {
       if (!this.organisation.updated_at) {
         return null
@@ -131,13 +131,11 @@ export default {
   },
 
   methods: {
-
     showMessage(text, color='success') {
       this.messageText = this.$i18n(text)
       this.messageColor = color
       this.message = true
     },
-
     async onSave() {
       let isDataWritten = false
       if (!this.$refs.form.validate()) {

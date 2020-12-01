@@ -81,6 +81,7 @@
 import api from '../services/api'
 
 export default {
+
   data() {
     return {
       user: api.user,
@@ -106,6 +107,7 @@ export default {
       ]
     }
   },
+
   methods: {
     async updatePassword() {
       this.updateError = false
@@ -211,6 +213,7 @@ export default {
       return res
     }
   },
+
   computed: {
     passwordStrength () {
       return this.calculateStrength()

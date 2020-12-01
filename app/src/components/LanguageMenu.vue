@@ -21,10 +21,13 @@
 import LangMenuItem from './LangMenuItem'
 
 export default {
+
   name: 'LanguageMenu',
+
   components: {
     LangMenuItem
   },
+
   data() {
     return {
       selectedLanguage: this.$getLanguage(),

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import UnderConstruction from '../views/UnderConstruction'
 import reports from '../reports'
 import _ from 'lodash'
 
@@ -77,7 +76,7 @@ Vue.use(VueRouter)
     component: () => import('../reports/Invoice.vue')
   }, {
     path: '/*',
-    component: UnderConstruction
+    component: Vue.component('empty')
   }
 ]
 

@@ -135,7 +135,6 @@ export class Task extends SingleTable {
       let projectName = ''
       if (extendedFormat) {
         const rows: any = await this.db.get (`SELECT t.name FROM task t WHERE t.id = ?`, [req.params.id])
-        console.log('ROWS:', rows)
         if (rows && rows.name) {
           projectName = rows.name
         }
