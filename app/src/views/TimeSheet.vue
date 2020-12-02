@@ -57,9 +57,14 @@
         <v-row v-for="item in log" :key="item.id">
           <v-col class="col-12 col-sm-2 form-col" style="display: flex">
             <div style="flex: 50%; max-width: 50px">
-              <v-btn v-if="isNew(item)" icon @click="remove(item.id)" style="margin-top: 12px; margin-left: -5px">
-                <v-icon>mdi-minus-circle-outline</v-icon>
-              </v-btn>
+              <v-tooltip v-if="isNew(item)" bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon @click="remove(item.id)" v-bind="attrs" v-on="on" style="margin-top: 12px; margin-left: -5px">
+                    <v-icon>mdi-minus-circle-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ 'Delete' | i18n }}</span>
+              </v-tooltip>
               <v-checkbox v-else v-model="selected" :value="item.id"></v-checkbox>
             </div>
             <div style="flex: 80%">

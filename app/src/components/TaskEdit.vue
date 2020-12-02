@@ -101,11 +101,20 @@
       </v-col>
     </v-row>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col" align="right">
+        <v-col class="col-12 col-sm-1 form-col">
+          <v-tooltip v-if="taskid  != 'new'" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on" @click="onExpand">
+                <v-icon>{{ isExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ 'Time sheet entries for this task' | i18n }}</span>
+          </v-tooltip>
+        </v-col>
+        <v-col class="col-12 col-sm-11 form-col" align="right">
           <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
           <v-btn class="ml-2" @click="$emit('task-edit-event', 'canceled')">{{ 'Cancel' | i18n }}</v-btn>
-
-          <v-dialog v-model="reassignDialog" persistent max-width="500">
+          <v-dialog v-if="this.mode == 'normal' && this.task.id != 'new'" v-model="reassignDialog" persistent max-width="500">
             <template v-slot:activator="{ on, attrs }">
               <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="attrs" v-on="on">{{ 'Reassign' | i18n }}</v-btn>
             </template>
@@ -135,9 +144,39 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
         </v-col>
       </v-row>
+      <v-expand-transition>
+        <v-row v-if="isExpanded">
+          <v-col class="col-12 col-md-12 form-col mt-8">
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <th class="text-left pl-4">{{ 'Name' | i18n }}</th>
+                  <th class="text-left pl-4">{{ 'Date' | i18n }}</th>
+                  <th class="text-left pl-4">{{ 'Description' | i18n }}</th>
+                  <th class="text-right pr-4">{{ 'Hours' | i18n }}</th>
+                </thead>
+                <tbody v-if="timelog.length == 0">
+                  <tr><td colspan="4" style="text-align: center">{{ 'No data to display' | i18n }}</td></tr>
+                </tbody>
+                <tbody v-else>
+                  <tr v-for="rec in timelog" :key="rec.id">
+                    <td class="text-left pl-4">{{ rec.user_name }}</td>
+                    <td class="text-left pl-4">{{ rec.date | i18nDate }}</td>
+                    <td class="text-left pl-4">{{ rec.description }}</td>
+                    <td class="text-right pr-4">{{ $i18nDecToHrs(rec.duration) }}</td>
+                  </tr>
+                  <tr>
+                    <th colspan="3" class="text-left pl-4">{{ 'Total hours' | i18n }}</th>
+                    <th class="text-right pr-4">{{ $i18nDecToHrs(timelogTotal) }}</th>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-col>
+        </v-row>
+      </v-expand-transition>
     </v-container>
   </v-form>
 </template>
@@ -162,7 +201,10 @@ export default {
       reassignDialog: false,
       requiredRule: [
         (v) => Boolean(v) || this.$i18n('Required')
-      ]
+      ],
+      isExpanded: false,
+      timelog: [],
+      timelogTotal: 0,
     }
   },
 
@@ -224,9 +266,9 @@ export default {
       }
     },
     isReassignable() {
-      let isReassignable = this.mode == 'normal' && this.task.id != 'new'
+      let isReassignable = this.mode == 'normal' && this.task.id != 'new' && this.task.is_closed == 0
       if (!this.user.hasRole('admin')) {
-         isReassignable = isReassignable && this.task.user_id && this.task.is_closed == 0
+         isReassignable = isReassignable && this.task.user_id
       }
       return isReassignable
     },
@@ -237,6 +279,18 @@ export default {
         this.task.user_id = this.previousTask.user_id
       }
       this.reassignDialog = false
+    },
+    async onExpand() {
+      this.isExpanded = !this.isExpanded
+      if (this.isExpanded && this.timelog.length == 0) {
+        try {
+          const response = await api.get(`/timelog/report?filter[task_id][eq]=${this.task.id}&order=date`)
+          this.timelog = response.data
+          this.timelogTotal = response.data.reduce((sum, rec) => sum + Number(rec.duration), 0)
+        } catch (err) {
+          this.$emit('task-edit-event', 'loadError')
+        }
+      }
     }
   },
 

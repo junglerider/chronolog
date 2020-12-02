@@ -249,9 +249,11 @@ import TextBlock from '../components/TextBlock'
 import n2words  from 'n2words'
 
 export default {
+
   components: {
     TextBlock,
   },
+
   data() {
     return {
       user: api.user,

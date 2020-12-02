@@ -181,6 +181,9 @@ export default new Map([
   ['Invalid time', 'Ungültige Eingabe'],
   ['Must not be zero', 'Darf nicht 0 sein'],
   ['May not execed {1} hrs', 'Darf nicht mehr als {1} Std. sein'],
+  ['Reassign', 'Neu zuweisen'],
+  ['Reassign this task to', 'Diese Aufgabe zuweisen an'],
+  ['Time sheet entries for this task', 'Zeiteinträge für diese Aufgabe'],
   // customers and users ----------------------------------
   ['Is Retired', 'Inaktiv'],
   ['Customer Details', 'Kundendetails'],
@@ -290,8 +293,6 @@ export default new Map([
   ['Reopen', 'Wieder öffnen'],
   ['Activate', 'Aktivieren'],
   ['Deactivate', 'Deaktivieren'],
-  ['Reassign', 'Neu zuweisen'],
-  ['Reassign this task to', 'Diese Aufgabe zuweisen an'],
   ['Cannot move project to descendant.', 'Das Projekt kann nicht in einen Unterzweig verschoben werden.'],
   ['The customers are different. Move anyway?', 'Die Kunden sind verschieden. Trotzdem verschieben?'],
 ])

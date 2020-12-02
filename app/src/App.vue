@@ -120,6 +120,9 @@
   .v-data-table tbody td {
     font-size: 1em !important;
   }
+  .v-data-table tbody th {
+    font-size: 1em !important;
+  }
   .v-card__text {
     font-size: 1em !important;
   }
