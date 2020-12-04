@@ -183,6 +183,8 @@ export default new Map([
   ['Reassign', 'Riassegnare'],
   ['Reassign this task to', 'Riassegna quest compito a'],
   ['Time sheet entries for this task', 'Voci della scheda attività per questo compito'],
+  ['Move', 'Spostare'],
+  ['Move selected entries to a different date', 'Sposta le voci selezionate in una data diversa'],
   // customers and users ----------------------------------
   ['Is Retired', 'Inattivo'],
   ['Customer Details', 'Dettagli cliente'],

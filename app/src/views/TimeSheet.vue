@@ -42,10 +42,51 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="onDelete">
-              {{ "OK" || i18n }}
+              {{ "OK" | i18n }}
             </v-btn>
             <v-btn text @click="deleteDialog = false">
-              {{ "Cancel" || i18n }}
+              {{ "Cancel" | i18n }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="moveDialog" max-width="320">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            outlined
+            :disabled="!selected || !selected.length"
+            color="primary"
+            class="ml-2"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon left>mdi-arrow-right-box</v-icon>
+            {{ 'Move' | i18n }}
+          </v-btn>
+        </template>
+        <v-card style="overflow: hidden">
+          <v-card-title class="headline" primary-title>
+            {{ 'Move' | i18n }}
+          </v-card-title>
+          <v-card-text>
+            {{ 'Move selected entries to a different date' | i18n }}:
+          </v-card-text>
+          <v-row justify="center">
+            <v-date-picker
+              v-model="targetDate"
+              :locale="$getLanguage()"
+              first-day-of-week="1"
+              year-icon="mdi-dots-vertical"
+            ></v-date-picker>
+          </v-row>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click="onMove">
+              {{ "OK" | i18n }}
+            </v-btn>
+            <v-btn text @click="moveDialog = false">
+              {{ "Cancel" | i18n }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -166,6 +207,8 @@ export default {
       taskIds: [],
       totalHours: 0,
       deleteDialog: false,
+      moveDialog: false,
+      targetDate: this.$route.params.date || DateCalc.isoDate(),
       message: false,
       messageColor: 'success',
       messageText: '',
@@ -191,6 +234,9 @@ export default {
         const response = await api.get(`/timelog?filter[date][eq]=${this.date}&filter[user_id][eq]=${this.user.id}`)
         this.log = response.data
         this.previousLog = _.cloneDeep(this.log)
+        if (this.log.length == 0) {
+          this.onAdd()
+        }
         this.onChangeHours()
       } catch(e) {
         console.error(e)
@@ -221,6 +267,20 @@ export default {
       }
       this.getData()
       this.deleteDialog = false
+    },
+    async onMove() {
+      try {
+        for (let id of this.selected) {
+          await api.put(`/timelog/${id}`, { date: this.targetDate })
+        }
+        this.showMessage('OK - Saved!')
+        this.selected = []
+      } catch (e) {
+        console.error(e)
+        this.showMessage('Saving did not succeed.', 'error')
+      }
+      this.getData()
+      this.moveDialog = false
     },
     onTaskSelect(taskId, logItem) {
       for (let task of this.tasks) {

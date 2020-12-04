@@ -54,6 +54,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <slot name="buttons" :selected="selected"></slot>
 
     </v-toolbar>
     <v-data-table

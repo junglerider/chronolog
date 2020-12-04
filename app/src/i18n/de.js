@@ -184,6 +184,8 @@ export default new Map([
   ['Reassign', 'Neu zuweisen'],
   ['Reassign this task to', 'Diese Aufgabe zuweisen an'],
   ['Time sheet entries for this task', 'Zeiteinträge für diese Aufgabe'],
+  ['Move', 'Verschieben'],
+  ['Move selected entries to a different date', 'Ausgewählte Einträge auf ein anderes Datum verschieben'],
   // customers and users ----------------------------------
   ['Is Retired', 'Inaktiv'],
   ['Customer Details', 'Kundendetails'],
