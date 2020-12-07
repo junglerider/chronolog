@@ -82,7 +82,7 @@ export default {
         return this.$i18n('Must not be zero')
       }
       if (this.number > this.max) {
-        return this.$i18n('May not execed {1} hrs', this.max)
+        return this.$i18n('May not exceed {1} hrs', this.max)
       }
       return true
     }
