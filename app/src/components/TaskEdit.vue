@@ -210,16 +210,10 @@ export default {
 
   computed: {
     updatedAt() {
-      if (!this.task.updated_at) {
-        return null
-      }
-      return this.$i18nDate(this.task.updated_at)
+      return this.task.updated_at ? this.$i18nDate(this.task.updated_at) : null
     },
     createdAt() {
-      if (!this.task.created_at) {
-        return null
-      }
-      return this.$i18nDate(this.task.created_at)
+      return this.task.created_at ? this.$i18nDate(this.task.created_at) : null
     }
   },
 

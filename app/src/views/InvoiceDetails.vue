@@ -287,13 +287,14 @@ export default {
       this.isSaving = true
       if (!_.isEqual(this.invoice, this.previousInvoice)) {
         try {
-          this.invoice.updated_at = DateCalc.isoDateTime()
           if (this.invoice.id === 'new') {
+            this.invoice.created_at = DateCalc.isoDateTime()
             const response = await api.post(`/invoice`, api.nullIt(this.invoice))
             if (response.status === 201) {
               this.invoice.id = response.data.id
             }
           } else {
+            this.invoice.updated_at = DateCalc.isoDateTime()
             await api.put(`/invoice/${this.invoice.id}`, api.nullIt(this.invoice))
           }
           isDataWritten = true

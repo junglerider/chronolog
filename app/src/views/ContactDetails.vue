@@ -63,7 +63,7 @@
           <date-input :label="'Last Contact' | i18n" v-model="person.last_contact"></date-input>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'Updated at' | i18n" disabled v-model="updatedAt"></v-text-field>
+          <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row>

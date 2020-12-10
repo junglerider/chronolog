@@ -1604,7 +1604,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/task/1/descendants",
+							"raw": "{{baseURL}}/task/1/descendants?type=task&format=extended",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1612,6 +1612,16 @@
 								"task",
 								"1",
 								"descendants"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "task"
+								},
+								{
+									"key": "format",
+									"value": "extended"
+								}
 							]
 						}
 					},
@@ -1749,7 +1759,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timelog?filter[date][gte]=2020-09-07",
+							"raw": "{{baseURL}}/timelog?filter[task_id][eq]=38",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1758,8 +1768,8 @@
 							],
 							"query": [
 								{
-									"key": "filter[date][gte]",
-									"value": "2020-09-07"
+									"key": "filter[task_id][eq]",
+									"value": "38"
 								}
 							]
 						}
@@ -1778,7 +1788,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timelog/report?filter[date][gte]=2020-08-01&filter[date][lte]=2020-08-31&filter[user_id][eq]=1",
+							"raw": "{{baseURL}}/timelog/report?filter[user_id][eq]=1&filter[customer_id][eq]=1",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1788,15 +1798,11 @@
 							],
 							"query": [
 								{
-									"key": "filter[date][gte]",
-									"value": "2020-08-01"
-								},
-								{
-									"key": "filter[date][lte]",
-									"value": "2020-08-31"
-								},
-								{
 									"key": "filter[user_id][eq]",
+									"value": "1"
+								},
+								{
+									"key": "filter[customer_id][eq]",
 									"value": "1"
 								}
 							]
@@ -1884,7 +1890,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseURL}}/timelog/sum?filter[date][gte]=2020-08-17&filter[date][lte]=2020-08-23&filter[user_id][eq]=2",
+							"raw": "{{baseURL}}/timelog/sum?filter[task_id][in]=8,9,10,11&filter[customer_id][eq]=2",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -1894,15 +1900,11 @@
 							],
 							"query": [
 								{
-									"key": "filter[date][gte]",
-									"value": "2020-08-17"
+									"key": "filter[task_id][in]",
+									"value": "8,9,10,11"
 								},
 								{
-									"key": "filter[date][lte]",
-									"value": "2020-08-23"
-								},
-								{
-									"key": "filter[user_id][eq]",
+									"key": "filter[customer_id][eq]",
 									"value": "2"
 								}
 							]
@@ -2819,12 +2821,12 @@
 	],
 	"variable": [
 		{
-			"id": "7f8c3807-d156-4ca4-a4b8-c451d354a27c",
+			"id": "19b53730-ea83-4eeb-ad50-aa7db352a688",
 			"key": "domain",
 			"value": "http://localhost:8888"
 		},
 		{
-			"id": "a7113755-304a-4fe0-b529-fe736fc50751",
+			"id": "17f41f1f-3279-4301-bec9-e9e84443416d",
 			"key": "baseURL",
 			"value": "http://localhost:8888/api"
 		}

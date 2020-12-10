@@ -24,16 +24,16 @@ export class Auth {
     this.logger = logger
     this.sessions = new Map <string, IUserSession> ()
     // create default session if in dev mode
-    if (process.env.NODE_ENV === 'development') {
-      this.logger.debug ('--> creating default session')
-      this.sessions.set ('8460439ae320b1aea23112bae232750b40b111481bf05fb9e98b7135fde1b8a5', {
-        time: Date.now (),
-        id: 1,
-        username: 'enzo',
-        name: 'Lorenzo Regio',
-        roles: ['admin']
-      })
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   this.logger.debug ('--> creating default session')
+    //   this.sessions.set ('8460439ae320b1aea23112bae232750b40b111481bf05fb9e98b7135fde1b8a5', {
+    //     time: Date.now (),
+    //     id: 1,
+    //     username: 'enzo',
+    //     name: 'Lorenzo Regio',
+    //     roles: ['admin']
+    //   })
+    // }
     // invalidate sessions periodically
     setInterval (this.sessionTimeout.bind (this), 30000)
   }
@@ -169,8 +169,9 @@ export class Auth {
 
   private async updateUserStats (user: any) {
     try {
+      const visits = isNaN(user.visits) || user.visits < 0 ? 1 : user.visits + 1
       const sql = 'UPDATE user SET visits = ?, last_visit = ? WHERE id = ?'
-      await this.db.run (sql, [user.visits + 1, this.isoDate (), user.id])
+      await this.db.run (sql, [visits, this.isoDate (), user.id])
     } catch (err) {
       this.logger.warn ('failed to update user stats: ' + err.message)
     }

@@ -115,7 +115,7 @@
     <v-dialog v-model="dialog" max-width="70%">
       <v-card>
         <v-card-text>
-          <task-edit :task="activated" mode="admin" @task-edit-event="onTaskEdit" ref="taskEditor"></task-edit>
+          <task-edit :task="activated" mode="admin" @task-edit-event="onTaskEdit" ref="taskEditor" :key="'taskedit' + taskversion"></task-edit>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -151,6 +151,7 @@ export default {
       activated: {},
       open: [],
       treeversion: 1,
+      taskversion: 1,
       message: false,
       messageColor: 'success',
       messageText: '',
@@ -208,6 +209,7 @@ export default {
         this.activated = {}
       } else if (event == 'saveOK') {
         this.dialog = false
+        this.taskversion++
         this.showMessage('OK - Saved!')
         this.updateProjectInTree()
       } else if (event == 'noChanges') {

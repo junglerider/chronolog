@@ -1,6 +1,6 @@
 <template>
   <div>
-    <task-edit :task="task" mode="normal" @task-edit-event="onTaskEdit"></task-edit>
+    <task-edit :task="task" mode="normal" @task-edit-event="onTaskEdit" :key="'taskedit' + version"></task-edit>
     <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
@@ -25,6 +25,7 @@ export default {
       message: false,
       messageColor: 'success',
       messageText: '',
+      version: 0
     }
   },
 
@@ -38,6 +39,7 @@ export default {
       if (event == 'canceled') {
         this.$router.back()
       } else if (event == 'saveOK') {
+        this.version++
         this.showMessage('OK - Saved!')
       } else if (event == 'noChanges') {
         this.showMessage('No changes were made.', 'info')
