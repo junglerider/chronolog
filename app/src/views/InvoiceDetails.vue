@@ -195,8 +195,9 @@
       <v-row>
         <v-col class="col-12 col-md-12 form-col" align="right">
           <v-btn class="ml-2 mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
-          <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn class="ml-2 mt-4" @click="$router.push('/invoices')">{{ 'Cancel' | i18n }}</v-btn>
           <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onPrint">{{ 'Print' | i18n }}</v-btn>
+          <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onDuplicate">{{ 'Duplicate' | i18n }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -278,6 +279,10 @@ export default {
     },
     onPrint() {
       window.open(`/reports/invoice/${this.invoice.id}`, '_blank')
+    },
+    onDuplicate() {
+      this.$router.push(`/invoices/new?duplicate=${this.invoice.id}`)
+      this.$router.go()
     },
     async onSave() {
       let isDataWritten = false
@@ -400,6 +405,24 @@ export default {
         response = await api.get(`/invoice/${id}/items`)
         this.items = response.data
         this.previousItems = _.cloneDeep(this.items)
+      } catch(e) {
+        console.error(e)
+        this.showMessage('Record could not be loaded.', 'error')
+      }
+    } else if (this.$route.query.duplicate) {
+      try {
+        const id = this.$route.query.duplicate
+        let response = await api.get(`/invoice/${id}`)
+        this.invoice = response.data
+        this.invoice.id = 'new'
+        response = await api.get(`/invoice/${id}/items`)
+        this.items = response.data.map(item => {
+          if (item) {
+            item.id = _.uniqueId('new'),
+            item.invoice_id = 'new'
+          }
+          return item
+        })
       } catch(e) {
         console.error(e)
         this.showMessage('Record could not be loaded.', 'error')

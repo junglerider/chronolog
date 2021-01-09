@@ -65,6 +65,7 @@ export default new Map([
   ['Update', 'Aggiorna'],
   ['Reset', 'Ripristina'],
   ['Print', 'Stampa'],
+  ['Duplicate', 'Duplica'],
   ['Password', 'Password'],
   ['Login', 'Accedere'],
   ['Next month', 'Prossimo mese'],
