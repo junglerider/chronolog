@@ -18,7 +18,7 @@
             <v-select :label="'Type' | i18n" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
           </v-col>
           <v-col class="col-12 col-sm-12 col-md-8 form-col">
-            <v-text-field :label="dynamicLabel(item.type)" v-model="item.entry" :rules="requiredRule"></v-text-field>
+            <v-text-field :label="dynamicLabel(item.type)" v-model="item.entry" :rules="rules"></v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -51,7 +51,17 @@ export default {
       phoneList: [],
       previousPhoneList: [],
       deleteList: [],
-      requiredRule: [ (v) => (Boolean(v) || this.$i18n('Required')) ],
+      requiredRule: [ value => (Boolean(value) || this.$i18n('Required')) ],
+      rules: [ value => {
+        const item = this.phoneList.filter(item => item.entry == value)[0]
+        if (item && item.type === 'EML') {
+          return /.+@.+\..+/.test(value) || this.$i18n('Invalid e-mail address')
+        } else if (item && ['PHO', 'MOB', 'FAX', 'WRK', 'HOM'].includes(item.type)) {
+          // eslint-disable-next-line
+          return /^\+?[0-9| |\/|\(|\)|\-]+$/.test(value) || this.$i18n('Invalid phone number')
+        }
+        return (Boolean(value ? value.trim() : value) || this.$i18n('Required'))
+      }],
       types: [
         { value: 'PHO', text: this.$i18n('Phone') },
         { value: 'MOB', text: this.$i18n('Mobile') },

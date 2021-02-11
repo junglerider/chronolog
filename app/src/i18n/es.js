@@ -132,6 +132,8 @@ export default new Map([
   ['Home', 'Casa'],
   ['Website', 'Sitio web'],
   ['Members/Employees', 'Miembros/empleados'],
+  ['Invalid e-mail address', 'Email inválido'],
+  ['Invalid phone number', 'No de teléfono inválido'],
   // time sheets + todo list ------------------------------
   ['Mon', 'lun'],
   ['Tue', 'mar'],

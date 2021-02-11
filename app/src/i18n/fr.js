@@ -132,6 +132,8 @@ export default new Map([
   ['Home', 'Téléphone résidentiel'],
   ['Website', 'Site Internet'],
   ['Members/Employees', 'Membres/employés'],
+  ['Invalid e-mail address', 'Email invalide'],
+  ['Invalid phone number', 'Numéro de téléphone non valide'],
   // time sheets + todo list ------------------------------
   ['Mon', 'Lun'],
   ['Tue', 'Mar'],
