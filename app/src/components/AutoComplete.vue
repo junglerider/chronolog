@@ -10,7 +10,9 @@
     :item-value="itemValue"
     return-object
     @change="onChange"
-  ></v-autocomplete>
+  >
+    <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
+  </v-autocomplete>
 </template>
 
 <script>

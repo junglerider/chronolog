@@ -16,7 +16,7 @@
     <div v-for="employee in employeeList" :key="employee.employee_id" style="display: flex">
       <v-container style="padding:0">
         <v-row>
-          <v-col class="col-12 col-sm-12 col-md-6 form-col">
+          <v-col class="col-12 col-sm-12 col-md-7 form-col">
             <auto-complete
               :label="'Name' | i18n"
               :item="{ id: (entityType === 'person' ? employee.organisation_id : employee.person_id), name: employee.name }"
@@ -25,9 +25,25 @@
               :rules="requiredRule"
               @change="(item) => onChange(item, employee)"
               clearable
-            />
+            >
+              <template v-slot:prepend>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-bind="attrs" v-on="on"
+                      @click="jumpTo(employee)"
+                      style="margin-left: -0.5em; margin-top: -0.7em; margin-right: -0.5em"
+                    >
+                      <v-icon>mdi-arrow-right-circle-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ entityType === 'person' ? 'Organisation Details' : 'Contact Details' | i18n }}</span>
+                </v-tooltip>
+              </template>
+            </auto-complete>
           </v-col>
-          <v-col class="col-12 col-sm-12 col-md-6 form-col">
+          <v-col class="col-12 col-sm-12 col-md-5 form-col">
             <v-text-field :label="'Position' | i18n" v-model="employee.position"></v-text-field>
           </v-col>
         </v-row>
@@ -166,6 +182,14 @@ export default {
       }
       this.employeeList = this.employeeList.filter(employee => employee.employee_id != id)
     },
+
+    jumpTo(employee) {
+      if (this.entityType === 'person' && employee.organisation_id) {
+        this.$router.push(`/organisations/${employee.organisation_id}`)
+      } else if (this.entityType === 'organisation' && employee.person_id) {
+        this.$router.push(`/contacts/${employee.person_id}`)
+      }
+    }
 
   },
 
