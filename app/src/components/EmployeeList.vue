@@ -33,7 +33,7 @@
                       icon
                       v-bind="attrs" v-on="on"
                       @click="jumpTo(employee)"
-                      style="margin-left: -0.5em; margin-top: -0.7em; margin-right: -0.5em"
+                      style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
                     >
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>

@@ -65,10 +65,10 @@
         </v-col>
       </v-row>
         <div style="display: flex; margin-bottom: 16px">
-          <div style="margin-left: -10px; margin-right: 5px">
+          <div style="margin-left: -10px; margin-right: 5px;">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on" @click="addItem()">
+                <v-btn icon v-bind="attrs" v-on="on" @click="addItem()" style="padding-bottom: 4px">
                   <v-icon>mdi-plus-circle-outline</v-icon>
                 </v-btn>
               </template>

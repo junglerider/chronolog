@@ -31,6 +31,8 @@ export default new Map([
   ['Reports', 'Berichte'],
   ['Report', 'Bericht'],
   ['Select report to view/print from a list of reports', 'Bericht aus einer Liste auswählen und drucken'],
+  ['Invoices', 'Rechnungen'],
+  ['View, edit, create and print invoices', 'Rechnungen ansehen, editieren, erstellen und drucken'],
   ['Admin', 'Verwaltung'],
   ['Administrator', 'Administrator'],
   ['Projects & Tasks', 'Projekte & Aufgaben'],
@@ -134,6 +136,7 @@ export default new Map([
   ['Members/Employees', 'Mitglieder/Beschäftigte'],
   ['Invalid e-mail address', 'Ungültige Email Adresse'],
   ['Invalid phone number', 'Ungültige Telefonnummer'],
+  ['Open', 'Öffnen'],
   // time sheets + todo list ------------------------------
   ['Mon', 'Mo'],
   ['Tue', 'Di'],
@@ -243,7 +246,6 @@ export default new Map([
   ['Arrival', 'Arbeitsbeginn'],
   ['Working time', 'Arbeitszeit'],
   // invoices ---------------------------------------------
-  ['Invoices', 'Rechnungen'],
   ['Invoice', 'Rechnung'],
   ['Invoicing', 'Fakturierung'],
   ['Invoice Details', 'Rechnungsdetails'],

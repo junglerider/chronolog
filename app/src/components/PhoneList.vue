@@ -18,7 +18,27 @@
             <v-select :label="'Type' | i18n" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
           </v-col>
           <v-col class="col-12 col-sm-12 col-md-8 form-col">
-            <v-text-field :label="dynamicLabel(item.type)" v-model="item.entry" :rules="rules"></v-text-field>
+            <v-text-field
+              :label="dynamicLabel(item.type)"
+              v-model="item.entry"
+              :rules="rules"
+            >
+              <template v-if="item.type == 'EML' || item.type == 'WEB'" v-slot:prepend-inner>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-bind="attrs" v-on="on"
+                      @click="jumpTo(item)"
+                      style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
+                    >
+                      <v-icon>mdi-arrow-right-circle-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>{{ 'Open' | i18n }}</span>
+                </v-tooltip>
+              </template>
+            </v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -148,6 +168,19 @@ export default {
         }
       }
       return ''
+    },
+
+    jumpTo(item) {
+      // open email or website
+      if (item.entry && item.entry.trim()) {
+        let url = '#'
+        if (item.type === 'EML') {
+          url = 'mailto:' + item.entry
+        } else if (item.type === 'WEB') {
+          url = item.entry.startsWith('http') ? item.entry : 'http://' + item.entry
+        }
+        window.open(url, '_blank')
+      }
     }
   },
 
