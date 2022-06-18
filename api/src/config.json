@@ -1,6 +1,6 @@
 {
     "app_name": "chronolog",
-    "port": 8888,
+    "port": 8080,
     "sqlite_db": "../db/chronolog.db",
     "db_connection_timeout": 180000,
     "session_timeout": 3600000,

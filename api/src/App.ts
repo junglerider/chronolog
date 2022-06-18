@@ -3,7 +3,7 @@ import { Application, Request, Response, NextFunction } from 'express'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as history from 'connect-history-api-fallback'
-import * as rateLimit from 'express-rate-limit'
+import rateLimit from 'express-rate-limit'
 import * as config from './config.json'
 import * as Logger from 'bunyan'
 
