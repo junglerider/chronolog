@@ -1,4 +1,4 @@
-FROM node:fermium-alpine
+FROM node:18-alpine
 ENV NODE_ENV=production
 ENV TERM=xterm
 RUN mkdir -p /home/node
