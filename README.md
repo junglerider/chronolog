@@ -17,10 +17,12 @@ Time sheet application with TypeScript/Node.js backend and Vue/JavaScript fronte
 
 ## Try out
 
-Pull the docker image from GitHub and follow the `Deploy` and `Run` instructions below.
+Pull the docker image from GitHub (or Docker Hub) and follow the `Deploy` and `Run` instructions below.
 
 ```
-$ docker pull docker.pkg.github.com/junglerider/chronolog/chronolog:latest
+$ docker pull ghcr.io/junglerider/chronolog/chronolog:1.1.0
+  or
+$ docker pull junglerider/chronolog:1.1.0
 ```
 
 ## Install (development)
