@@ -18,7 +18,7 @@
     "vue": "^2.6.14",
     "vue-router": "^3.5.4",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^2.6.6"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.2",
