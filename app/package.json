@@ -15,7 +15,7 @@
     "lodash": "^4.17.21",
     "n2words": "^1.11.1",
     "process": "^0.11.10",
-    "vue": "^2.6.14",
+    "vue": "^3.0.0",
     "vue-router": "^3.5.4",
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.6.10"
