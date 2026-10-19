@@ -5,30 +5,56 @@ env:
 on:
   push:
     branches: master
+  pull_request:
+    branches: master
 
 jobs:
   test_and_build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 24
       - run: npm ci --prefix ./api
       - run: npm test --prefix ./api
       - run: npm run build --prefix ./api
       - run: npm ci --prefix ./app
+      - run: npm run lint --prefix ./app -- --no-fix
       - run: npm run build --prefix ./app
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
+      - name: Smoke test container
+        run: |
+          container_name=chronolog-smoke
+          docker run --detach --name "$container_name" --publish 127.0.0.1::8888 "$IMAGE_NAME"
+          trap 'docker rm --force "$container_name" >/dev/null' EXIT
+          port=$(docker port "$container_name" 8888/tcp | sed 's/.*://')
+          base_url="http://127.0.0.1:$port"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent "$base_url/health" | grep -q '"status":"ready"'; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent "$base_url/health" | grep -q '"status":"ready"'
+          curl --fail --silent "$base_url/" | grep -q '<div id="app"></div>'
+          curl --fail --silent "$base_url/time-sheet" | grep -q '<div id="app"></div>'
+          status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"username":"__ci_smoke_unknown__","password":"invalid"}' \
+            "$base_url/auth/login")
+          test "$status" = 404
+
       - name: Log into registry
+        if: github.event_name == 'push'
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Push image
+        if: github.event_name == 'push'
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
 

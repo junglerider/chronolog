@@ -119,15 +119,15 @@ class App {
     // enable CORS requests
     this.app.use (cors ())
 
+    // health status
+    this.app.get ('/health', this.health)
+
     // serve static files of SPA web application
     const webApp = express.static ('app')
     this.app.use (webApp)
     this.app.use (history())
     // 2nd call for redirection
     this.app.use (webApp)
-
-    // health status
-    this.app.get ('/health', this.health)
 
     // rate limit login
     this.app.use ('/auth/login', rateLimit({

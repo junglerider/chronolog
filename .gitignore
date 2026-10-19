@@ -20,6 +20,7 @@ app/dist
 .env.test.local
 .env.production.local
 .vscode
+MODERNIZATION_PLAN.md
 
 npm-debug.log*
 yarn-debug.log*
