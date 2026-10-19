@@ -3,6 +3,12 @@ module.exports = {
   env: {
     node: true
   },
+  overrides: [{
+    files: ['tests/unit/**/*.spec.js'],
+    env: {
+      jest: true
+    }
+  }],
   'extends': [
     'plugin:vue/essential',
     'eslint:recommended'
