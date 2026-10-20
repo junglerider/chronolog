@@ -3,49 +3,49 @@
     <div id="page">
       <!-- invoice header: logo/address -->
       <div id="header" v-html="settings.get('inv:header')"></div>
-      <div id="title">{{ 'Invoice' | i18n }}</div>
+      <div id="title">{{ $i18n('Invoice') }}</div>
       <table id="invoicedata">
         <!-- invoice head data -->
         <tbody>
           <tr>
             <td style="width: 10%; padding-right: 10px;">
-              <b>{{'Cust. no.' | i18n }}:</b>
+              <b>{{ $i18n('Cust. no.') }}:</b>
             </td>
             <td style="width: 30%; padding-right: 10px;">{{ organisationNo }}</td>
             <td style="width: 10%;">
               <br/>
             </td>
             <td style="width: 20%; padding-right: 10px;">
-              <b>{{ 'Invoice no.' | i18n }}:</b>
+              <b>{{ $i18n('Invoice no.') }}:</b>
             </td>
             <td style="width: 20%;">{{ invoice.invoice_no }}</td>
           </tr>
           <tr>
             <td>
-              <b>{{ 'Customer' | i18n }}:</b>
+              <b>{{ $i18n('Customer') }}:</b>
             </td>
             <td rowspan="3">
               <text-block :value="invoice.address"></text-block>
             </td>
             <td><br/></td>
             <td>
-              <b>{{ 'Date' | i18n }}:</b>
+              <b>{{ $i18n('Date') }}:</b>
             </td>
-            <td>{{ invoice.date | i18nDate }}</td>
+            <td>{{ $i18nDate(invoice.date) }}</td>
           </tr>
           <tr>
             <td><br/></td>
             <td><br/></td>
             <td>
-              <b>{{ 'Due date' | i18n }}:</b>
+              <b>{{ $i18n('Due date') }}:</b>
             </td>
-            <td>{{ invoice.due_date | i18nDate }}</td>
+            <td>{{ $i18nDate(invoice.due_date) }}</td>
           </tr>
           <tr>
             <td><br/></td>
             <td><br/></td>
             <td>
-              <b>{{ 'Issued by' | i18n }}:</b>
+              <b>{{ $i18n('Issued by') }}:</b>
             </td>
             <td>{{ invoice.issuer }}</td>
           </tr>
@@ -56,19 +56,19 @@
         <tbody>
           <tr style="border-bottom: 1px solid rgb(0, 0, 0);">
             <td style="width: 5%; padding-bottom: 8px;">
-              <b>{{ 'No.' | i18n }}</b>
+              <b>{{ $i18n('No.') }}</b>
             </td>
             <td style="width: 45%; padding-bottom: 8px;">
-              <b>{{ 'Description' | i18n }}</b>
+              <b>{{ $i18n('Description') }}</b>
             </td>
             <td style="width: 10%; padding-bottom: 8px; text-align: right;">
-              <b>{{ 'Quantity' | i18n }}</b>
+              <b>{{ $i18n('Quantity') }}</b>
             </td>
             <td style="width: 15%; padding-bottom: 8px; text-align: right;">
-              <b>{{ 'Unit price' | i18n }}</b>
+              <b>{{ $i18n('Unit price') }}</b>
             </td>
             <td style="width: 20%; padding-bottom: 8px; text-align: right;">
-              <b>{{ 'Amount'  | i18n }}</b>
+              <b>{{ $i18n('Amount') }}</b>
             </td>
           </tr>
           <!-- invoice items -->
@@ -104,36 +104,36 @@
       <tbody>
         <tr style="border-top: 1px solid rgb(0, 0, 0);">
           <td style="width: 60%; padding-top: 8px;">
-            <b>{{ 'Payment terms' | i18n }}:</b> {{ invoice.payment_terms }}
+            <b>{{ $i18n('Payment terms') }}:</b> {{ invoice.payment_terms }}
           </td>
           <td style="width: 15%; padding-top: 8px; text-align: right;">
-            <b>{{ 'Subtotal' | i18n }}</b>
+            <b>{{ $i18n('Subtotal') }}</b>
           </td>
           <td style="width: 20%; padding-top: 8px; text-align: right;">{{ formatAmount(invoice.net_total) }}</td>
         </tr>
         <tr>
-          <td>{{ 'All prices in' | i18n }} {{ invoice.currency }}</td>
+          <td>{{ $i18n('All prices in') }} {{ invoice.currency }}</td>
           <td><br/></td>
           <td><br/></td>
         </tr>
         <tr>
           <td><br/></td>
           <td style="text-align: right;">
-            <b>{{ 'Net total' | i18n }}</b>
+            <b>{{ $i18n('Net total') }}</b>
           </td>
           <td style="text-align: right;">{{ formatAmount(invoice.net_total) }}</td>
         </tr>
         <tr>
           <td><br/></td>
           <td style="text-align: right;">
-            <b v-if="invoice.show_tax">{{ 'Sales tax' | i18n }} {{ invoice.tax_rate }}%</b>
+            <b v-if="invoice.show_tax">{{ $i18n('Sales tax') }} {{ invoice.tax_rate }}%</b>
           </td>
           <td v-if="invoice.show_tax" style="text-align: right;">{{ formatAmount(invoice.tax_amount) }}</td>
         </tr>
         <tr>
           <td><br/></td>
           <td style="text-align: right;">
-            <b>{{ 'Grand total' | i18n }}</b>
+            <b>{{ $i18n('Grand total') }}</b>
           </td>
           <td style="text-align: right;">
             <b>{{ formatAmount(invoice.grand_total) }}</b>
@@ -142,7 +142,7 @@
         <tr>
           <td style>
             <div style="border-top: 1px solid rgb(0, 0, 0); text-align: center;">
-              {{ 'Authorised signature' | i18n }}
+              {{ $i18n('Authorised signature') }}
             </div>
           </td>
           <td><br/></td>

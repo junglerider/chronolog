@@ -17,13 +17,13 @@
         <div class="login-title">chronolog</div>
         <v-text-field
           v-model="username"
-          :label="'User name' | i18n"
+          :label="$i18n('User name')"
           :rules="requiredRule"
           ref="username"
         ></v-text-field>
         <v-text-field
           v-model="password"
-          :label="'Password' | i18n"
+          :label="$i18n('Password')"
           :type="showPassword ? 'text' : 'password'"
         >
         <v-btn
@@ -37,9 +37,9 @@
         </v-btn>
         </v-text-field>
         <v-alert v-model="authError" text outlined type="error">
-          {{ 'The server did not accept the credentials.' | i18n }}
+          {{ $i18n('The server did not accept the credentials.') }}
         </v-alert>
-        <v-btn color="primary" @click="login" class="mt-2">{{ 'Login' | i18n }} </v-btn>
+        <v-btn color="primary" @click="login" class="mt-2">{{ $i18n('Login') }} </v-btn>
       </v-card>
     </v-form>
   </v-app>

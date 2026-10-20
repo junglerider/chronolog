@@ -3,62 +3,62 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Organisation Details' | i18n }}</div>
-          <span>{{ 'ID' | i18n }}: {{ organisation.id }}</span>
+          <div class="page-title">{{ $i18n('Organisation Details') }}</div>
+          <span>{{ $i18n('ID') }}: {{ organisation.id }}</span>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'Name' | i18n" :rules="requiredRule" v-model="organisation.name"></v-text-field>
+          <v-text-field :label="$i18n('Name')" :rules="requiredRule" v-model="organisation.name"></v-text-field>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-select :label="'Type' | i18n" :items="types" clearable v-model="organisation.type"></v-select>
+          <v-select :label="$i18n('Type')" :items="types" clearable v-model="organisation.type"></v-select>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'Industry' | i18n" v-model="organisation.industry"></v-text-field>
+          <v-text-field :label="$i18n('Industry')" v-model="organisation.industry"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-sm-8 form-col">
-          <v-textarea :label="'Street Address' | i18n" auto-grow rows="1" v-model="organisation.street_address"></v-textarea>
+          <v-textarea :label="$i18n('Street Address')" auto-grow rows="1" v-model="organisation.street_address"></v-textarea>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'Postal Code' | i18n" v-model="organisation.postcode"></v-text-field>
+          <v-text-field :label="$i18n('Postal Code')" v-model="organisation.postcode"></v-text-field>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'City' | i18n" v-model="organisation.city"></v-text-field>
-        </v-col>
-        <v-col class="col-12 col-sm-6 col-md-4 form-col">
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'State/Province' | i18n" v-model="organisation.state_province"></v-text-field>
-        </v-col>
-        <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-autocomplete :label="'Country' | i18n" :items="countries" v-model="organisation.country"></v-autocomplete>
+          <v-text-field :label="$i18n('City')" v-model="organisation.city"></v-text-field>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <date-input :label="'First Contact' | i18n" v-model="organisation.first_contact"></date-input>
+          <v-text-field :label="$i18n('State/Province')" v-model="organisation.state_province"></v-text-field>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <date-input :label="'Last Contact' | i18n" v-model="organisation.last_contact"></date-input>
+          <v-autocomplete :label="$i18n('Country')" :items="countries" v-model="organisation.country"></v-autocomplete>
         </v-col>
         <v-col class="col-12 col-sm-6 col-md-4 form-col">
-          <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="col-12 col-sm-6 col-md-4 form-col">
+          <date-input :label="$i18n('First Contact')" v-model="organisation.first_contact"></date-input>
+        </v-col>
+        <v-col class="col-12 col-sm-6 col-md-4 form-col">
+          <date-input :label="$i18n('Last Contact')" v-model="organisation.last_contact"></date-input>
+        </v-col>
+        <v-col class="col-12 col-sm-6 col-md-4 form-col">
+          <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-12 form-col">
-          <v-textarea :label="'Notes' | i18n" auto-grow rows="1" v-model="organisation.comment"></v-textarea>
+          <v-textarea :label="$i18n('Notes')" auto-grow rows="1" v-model="organisation.comment"></v-textarea>
         </v-col>
       </v-row>
       <v-row v-if="organisation.id !== 'new'">
@@ -71,8 +71,8 @@
       </v-row>
       <v-row style="padding-top: 15px">
         <v-col class="col-12 col-md-12 form-col" align="end">
-          <v-btn primary color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
-          <v-btn class="ml-2" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn primary color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
+          <v-btn class="ml-2" @click="$router.back()">{{ $i18n('Cancel') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>

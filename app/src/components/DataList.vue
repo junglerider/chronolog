@@ -11,13 +11,13 @@
         v-model="search"
         clearable
         append-icon="mdi-magnify"
-        :label="'Search' | i18n"
+        :label="$i18n('Search')"
         single-line
         hide-details
       ></v-text-field>
       <v-btn color="primary" @click="$router.push(`${uiBaseUrl}/new`)">
         <v-icon left>mdi-plus-circle-outline</v-icon>
-        {{ 'Add' | i18n }}
+        {{ $i18n('Add') }}
       </v-btn>
 
       <v-dialog v-model="deleteDialog" max-width="500">
@@ -31,25 +31,25 @@
           v-on="on"
         >
           <v-icon left>mdi-delete</v-icon>
-          {{ 'Delete' | i18n }}
+          {{ $i18n('Delete') }}
         </v-btn>
         </template>
         <v-card>
           <v-card-title class="headline" primary-title>
-            {{ 'Delete' | i18n }}
+            {{ $i18n('Delete') }}
           </v-card-title>
           <v-card-text>
-            <span v-if="selected.length > 1">{{ 'Are you sure you want to delete {1} records?' | i18n(selected.length) }}</span>
-            <span v-else>{{ 'Are you sure you want to delete this record?' | i18n }}</span>
+            <span v-if="selected.length > 1">{{ $i18n('Are you sure you want to delete {1} records?', selected.length) }}</span>
+            <span v-else>{{ $i18n('Are you sure you want to delete this record?') }}</span>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="onDelete">
-              {{ "OK" | i18n }}
+              {{ $i18n("OK") }}
             </v-btn>
             <v-btn text @click="deleteDialog = false">
-              {{ "Cancel" | i18n }}
+              {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -77,7 +77,7 @@
       class="elevation-0"
     >
       <template v-slot:no-data>
-        {{ 'No data to display' | i18n }}
+        {{ $i18n('No data to display') }}
       </template>
     </v-data-table>
     <div style="margin-top: 20px">

@@ -1,16 +1,16 @@
 <template>
     <div class="report-container">
-      <div class="report-title">{{ 'Project summary' | i18n }}</div>
+      <div class="report-title">{{ $i18n('Project summary') }}</div>
       <div>
-        {{ "Project" | i18n }}: {{ project.name }}
+        {{ $i18n("Project") }}: {{ project.name }}
       </div>
       <div class="report-subtitle">
-        <span v-if="userId > 0">{{ 'Name' | i18n }}: {{ user.first_name }} {{ user.last_name }}</span>
+        <span v-if="userId > 0">{{ $i18n('Name') }}: {{ user.first_name }} {{ user.last_name }}</span>
       </div>
       <table class="report-body">
         <tr>
-          <th>{{ 'Project/Task' | i18n }}</th>
-          <th class="report-right">{{ 'Hours' | i18n }}</th>
+          <th>{{ $i18n('Project/Task') }}</th>
+          <th class="report-right">{{ $i18n('Hours') }}</th>
         </tr>
         <tr v-for="rec of data" :key="rec.id">
           <td :class="{highlight: rec.is_leaf == 0}">{{ rec.path }}</td>
@@ -19,7 +19,7 @@
           </td>
         </tr>
       <tr>
-        <th>{{ "Total" | i18n }}</th>
+        <th>{{ $i18n("Total") }}</th>
         <th class="report-right">{{ $i18nDecToHrs(total.hours) }}</th>
       </tr>
       </table>

@@ -1,10 +1,10 @@
 <template>
   <div v-if="loggedInUser.hasRole('admin')">
     <v-alert v-model="deletionError" text outlined dismissible type="error">
-      {{ 'Some users have tasks or time sheets assigned. Users with tasks or time sheets cannot be deleted.' | i18n }}
+      {{ $i18n('Some users have tasks or time sheets assigned. Users with tasks or time sheets cannot be deleted.') }}
     </v-alert>
     <data-list
-      :title="'Users' | i18n"
+      :title="$i18n('Users')"
       :headers="headers"
       apiBaseUrl="/user"
       uiBaseUrl="/users"

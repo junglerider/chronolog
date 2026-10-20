@@ -3,24 +3,24 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Task Details' | i18n }}</div>
-          <span>{{ 'ID' | i18n }}: {{ task.id }}</span>
+          <div class="page-title">{{ $i18n('Task Details') }}</div>
+          <span>{{ $i18n('ID') }}: {{ task.id }}</span>
         </v-col>
       </v-row>
     <v-row>
       <v-col class="col-12 col-md-6 form-col">
-        <v-text-field :label="'Name' | i18n" v-model="task.name" :rules="requiredRule" ref="nameInput"></v-text-field>
+        <v-text-field :label="$i18n('Name')" v-model="task.name" :rules="requiredRule" ref="nameInput"></v-text-field>
       </v-col>
       <v-col class="col-12 col-md-6 form-col" style="display: flex">
-        <v-checkbox :label="'Active' | i18n" class="mx-2" v-model="task.is_active" :true-value="1" :false-value="0"></v-checkbox>
-        <v-checkbox :label="'Closed' | i18n" class="mx-2" v-model="task.is_closed" :true-value="1" :false-value="0" v-if="user.hasRole('admin')"></v-checkbox>
+        <v-checkbox :label="$i18n('Active')" class="mx-2" v-model="task.is_active" :true-value="1" :false-value="0"></v-checkbox>
+        <v-checkbox :label="$i18n('Closed')" class="mx-2" v-model="task.is_closed" :true-value="1" :false-value="0" v-if="user.hasRole('admin')"></v-checkbox>
       </v-col>
     </v-row>
     <v-row v-if="mode == 'normal'">
       <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             v-if="isInList(task.parent_id, projects)"
-            :label="'Project' | i18n"
+            :label="$i18n('Project')"
             v-model="task.parent_id"
             :items="projects"
             item-value="id"
@@ -43,20 +43,20 @@
           </v-autocomplete>
           <v-text-field
             v-else
-            :label="'Project' | i18n"
+            :label="$i18n('Project')"
             v-model="task.parent_name"
             readonly tabindex="-1"
           ></v-text-field>
       </v-col>
       <v-col class="col-12 col-md-6 form-col">
-        <v-text-field :label="'Customer' | i18n" v-model="task.customer_name" readonly tabindex="-1"></v-text-field>
+        <v-text-field :label="$i18n('Customer')" v-model="task.customer_name" readonly tabindex="-1"></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="mode == 'admin'">
       <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             v-if="isInList(task.customer_id, customers)"
-            :label="'Customer' | i18n"
+            :label="$i18n('Customer')"
             v-model="task.customer_id"
             :items="customers"
             item-value="id"
@@ -65,7 +65,7 @@
           ></v-autocomplete>
           <v-text-field
             v-else
-            :label="'Customer' | i18n"
+            :label="$i18n('Customer')"
             v-model="task.customer_name"
             readonly tabindex="-1"
           ></v-text-field>
@@ -73,7 +73,7 @@
       <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
             v-if="isInList(task.user_id, users)"
-            :label="'Assigned to' | i18n"
+            :label="$i18n('Assigned to')"
             v-model="task.user_id"
             :items="users"
             item-value="id"
@@ -81,7 +81,7 @@
           ></v-autocomplete>
           <v-text-field
             v-else
-            :label="'Assigned to' | i18n"
+            :label="$i18n('Assigned to')"
             v-model="task.user_name"
             readonly tabindex="-1"
           ></v-text-field>
@@ -89,15 +89,15 @@
     </v-row>
     <v-row>
       <v-col class="col-12 col-md-12 form-col">
-        <v-textarea :label="'Description' | i18n" v-model="task.description" auto-grow rows="1"></v-textarea>
+        <v-textarea :label="$i18n('Description')" v-model="task.description" auto-grow rows="1"></v-textarea>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="col-12 col-md-6 form-col">
-        <v-text-field :label="'Created at' | i18n" v-model="createdAt" readonly tabindex="-1"></v-text-field>
+        <v-text-field :label="$i18n('Created at')" v-model="createdAt" readonly tabindex="-1"></v-text-field>
       </v-col>
       <v-col class="col-12 col-md-6 form-col">
-        <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
+        <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
       </v-col>
     </v-row>
       <v-row>
@@ -108,24 +108,24 @@
                 <v-icon>{{ isExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
               </v-btn>
             </template>
-            <span>{{ 'Time sheet entries for this task' | i18n }}</span>
+            <span>{{ $i18n('Time sheet entries for this task') }}</span>
           </v-tooltip>
         </v-col>
         <v-col class="col-12 col-sm-11 form-col" align="right">
-          <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
-          <v-btn class="ml-2" @click="$emit('task-edit-event', 'canceled')">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
+          <v-btn class="ml-2" @click="$emit('task-edit-event', 'canceled')">{{ $i18n('Cancel') }}</v-btn>
           <v-dialog v-if="this.mode == 'normal' && this.task.id != 'new'" v-model="reassignDialog" persistent max-width="500">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="attrs" v-on="on">{{ 'Reassign' | i18n }}</v-btn>
+              <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="attrs" v-on="on">{{ $i18n('Reassign') }}</v-btn>
             </template>
             <v-card>
               <v-card-title class="headline" primary-title>
-                {{ 'Reassign' | i18n }}
+                {{ $i18n('Reassign') }}
               </v-card-title>
               <v-card-text>
-                <div>{{ 'Reassign this task to' | i18n }}:</div>
+                <div>{{ $i18n('Reassign this task to') }}:</div>
                 <v-autocomplete
-                  :label="'Name' | i18n"
+                  :label="$i18n('Name')"
                   v-model="task.user_id"
                   :items="users"
                   item-value="id"
@@ -136,10 +136,10 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="onReassign(true)">
-                  {{ "OK" | i18n }}
+                  {{ $i18n("OK") }}
                 </v-btn>
                 <v-btn text @click="onReassign(false)">
-                  {{ "Cancel" | i18n }}
+                  {{ $i18n("Cancel") }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -152,23 +152,23 @@
             <v-simple-table>
               <template v-slot:default>
                 <thead>
-                  <th class="text-left pl-4">{{ 'Name' | i18n }}</th>
-                  <th class="text-left pl-4">{{ 'Date' | i18n }}</th>
-                  <th class="text-left pl-4">{{ 'Description' | i18n }}</th>
-                  <th class="text-right pr-4">{{ 'Hours' | i18n }}</th>
+                  <th class="text-left pl-4">{{ $i18n('Name') }}</th>
+                  <th class="text-left pl-4">{{ $i18n('Date') }}</th>
+                  <th class="text-left pl-4">{{ $i18n('Description') }}</th>
+                  <th class="text-right pr-4">{{ $i18n('Hours') }}</th>
                 </thead>
                 <tbody v-if="timelog.length == 0">
-                  <tr><td colspan="4" style="text-align: center">{{ 'No data to display' | i18n }}</td></tr>
+                  <tr><td colspan="4" style="text-align: center">{{ $i18n('No data to display') }}</td></tr>
                 </tbody>
                 <tbody v-else>
                   <tr v-for="rec in timelog" :key="rec.id">
                     <td class="text-left pl-4">{{ rec.user_name }}</td>
-                    <td class="text-left pl-4">{{ rec.date | i18nDate }}</td>
+                    <td class="text-left pl-4">{{ $i18nDate(rec.date) }}</td>
                     <td class="text-left pl-4">{{ rec.description }}</td>
                     <td class="text-right pr-4">{{ $i18nDecToHrs(rec.duration) }}</td>
                   </tr>
                   <tr>
-                    <th colspan="3" class="text-left pl-4">{{ 'Total hours' | i18n }}</th>
+                    <th colspan="3" class="text-left pl-4">{{ $i18n('Total hours') }}</th>
                     <th class="text-right pr-4">{{ $i18nDecToHrs(timelogTotal) }}</th>
                   </tr>
                 </tbody>

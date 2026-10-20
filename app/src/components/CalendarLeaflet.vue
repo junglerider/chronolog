@@ -2,13 +2,13 @@
 <v-card :elevation="4" height="100px" width="100px">
   <table class="calendar">
     <tr><td class="weekday" :style="{backgroundColor: colour || '#003086'}">
-      {{ today.toLocaleString('en', { weekday: 'long' }) | i18n }}
+      {{ $i18n(today.toLocaleString('en', { weekday: 'long' })) }}
     </td></tr>
     <tr><td class="day" :style="{color: [0, 6].includes(today.getDay())? 'crimson' : 'black' }">
       {{ today.getDate() }}
     </td></tr>
     <tr><td class="month" :style="{color: colour || '#003086'}">
-      {{ today.toLocaleString('en', { month: 'long' }) | i18n }}
+      {{ $i18n(today.toLocaleString('en', { month: 'long' })) }}
     </td></tr>
   </table>
 </v-card>

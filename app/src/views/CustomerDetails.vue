@@ -3,17 +3,17 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Customer Details' | i18n }}</div>
-          <span>{{ 'ID' | i18n }}: {{ customer.id }}</span>
+          <div class="page-title">{{ $i18n('Customer Details') }}</div>
+          <span>{{ $i18n('ID') }}: {{ customer.id }}</span>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-6 form-col">
-          <v-text-field :label="'Name' | i18n" v-model="customer.name" :rules="requiredRule"></v-text-field>
+          <v-text-field :label="$i18n('Name')" v-model="customer.name" :rules="requiredRule"></v-text-field>
         </v-col>
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
-            :label="'Organisation' | i18n"
+            :label="$i18n('Organisation')"
             :items="organisations"
             v-model="customer.organisation_id"
             item-value="id"
@@ -25,30 +25,30 @@
       <v-row>
         <v-col class="col-12 col-md-12 form-col" style="display: flex;">
           <div style="flex: 80%;">
-            <v-textarea :label="'Notes' | i18n" v-model="customer.notes" auto-grow rows="1"></v-textarea>
+            <v-textarea :label="$i18n('Notes')" v-model="customer.notes" auto-grow rows="1"></v-textarea>
           </div>
           <div style="max-width: 180px; margin-left: auto; text-align: right">
-            <v-checkbox :label="'Is Retired' | i18n" class="mx-2" v-model="customer.is_retired" :true-value="1" :false-value="0"></v-checkbox>
+            <v-checkbox :label="$i18n('Is Retired')" class="mx-2" v-model="customer.is_retired" :true-value="1" :false-value="0"></v-checkbox>
           </div>
         </v-col>
       </v-row>
       <v-row v-if="customer.id !== 'new'">
         <v-col class="col-12 col-md-6 form-col">
-          <v-text-field :label="'Created at' | i18n" v-model="createdAt" readonly tabindex="-1"></v-text-field>
+          <v-text-field :label="$i18n('Created at')" v-model="createdAt" readonly tabindex="-1"></v-text-field>
         </v-col>
         <v-col class="col-12 col-md-6 form-col">
-          <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
+          <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="customer.id !== 'new'">
         <v-col class="col-12 col-md-6 form-col">
-          <v-text-field :label="'Number of tasks' | i18n" v-model="customer.task_count" readonly tabindex="-1"></v-text-field>
+          <v-text-field :label="$i18n('Number of tasks')" v-model="customer.task_count" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-12 form-col" align="right">
-          <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
-          <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
+          <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
+          <v-btn class="ml-2 mt-4" @click="$router.back()">{{ $i18n('Cancel') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>

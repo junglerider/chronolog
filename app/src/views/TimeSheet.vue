@@ -3,7 +3,7 @@
     <v-toolbar flat color="white" class="mb-4" height="100px" bottom>
     <calendar-leaflet :date="date" class="ml-2 mr-4"></calendar-leaflet>
       <div class="page-title">
-        {{ 'Daily Time Sheet' | i18n }}
+        {{ $i18n('Daily Time Sheet') }}
       </div>
       <v-btn fab text small class="ml-2" @click="navigate(-1)">
         <v-icon small>mdi-chevron-left</v-icon>
@@ -14,7 +14,7 @@
       <v-spacer></v-spacer>
       <v-btn color="primary" @click="onAdd">
         <v-icon left>mdi-plus-circle-outline</v-icon>
-        {{ 'Add' | i18n }}
+        {{ $i18n('Add') }}
       </v-btn>
       <v-dialog v-model="deleteDialog" max-width="500">
         <template v-slot:activator="{ on, attrs }">
@@ -27,25 +27,25 @@
           v-on="on"
         >
           <v-icon left>mdi-delete</v-icon>
-          {{ 'Delete' | i18n }}
+          {{ $i18n('Delete') }}
         </v-btn>
         </template>
         <v-card>
           <v-card-title class="headline" primary-title>
-            {{ 'Delete' | i18n }}
+            {{ $i18n('Delete') }}
           </v-card-title>
           <v-card-text>
-            <span v-if="selected.length > 1">{{ 'Are you sure you want to delete {1} records?' | i18n(selected.length) }}</span>
-            <span v-else>{{ 'Are you sure you want to delete this record?' | i18n }}</span>
+            <span v-if="selected.length > 1">{{ $i18n('Are you sure you want to delete {1} records?', selected.length) }}</span>
+            <span v-else>{{ $i18n('Are you sure you want to delete this record?') }}</span>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="onDelete">
-              {{ "OK" | i18n }}
+              {{ $i18n("OK") }}
             </v-btn>
             <v-btn text @click="deleteDialog = false">
-              {{ "Cancel" | i18n }}
+              {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -61,15 +61,15 @@
             v-on="on"
           >
             <v-icon left>mdi-arrow-right-box</v-icon>
-            {{ 'Move' | i18n }}
+            {{ $i18n('Move') }}
           </v-btn>
         </template>
         <v-card style="overflow: hidden">
           <v-card-title class="headline" primary-title>
-            {{ 'Move' | i18n }}
+            {{ $i18n('Move') }}
           </v-card-title>
           <v-card-text>
-            {{ 'Move selected entries to a different date' | i18n }}:
+            {{ $i18n('Move selected entries to a different date') }}:
           </v-card-text>
           <v-row justify="center">
             <v-date-picker
@@ -83,10 +83,10 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="onMove">
-              {{ "OK" | i18n }}
+              {{ $i18n("OK") }}
             </v-btn>
             <v-btn text @click="moveDialog = false">
-              {{ "Cancel" | i18n }}
+              {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -104,13 +104,13 @@
                     <v-icon>mdi-minus-circle-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ 'Delete' | i18n }}</span>
+                <span>{{ $i18n('Delete') }}</span>
               </v-tooltip>
               <v-checkbox v-else v-model="selected" :value="item.id"></v-checkbox>
             </div>
             <div style="flex: 80%">
               <time-input
-                :label="'Hours' | i18n"
+                :label="$i18n('Hours')"
                 v-model="item.duration"
                 @change="onChangeHours"
                 :max="12"
@@ -123,7 +123,7 @@
           <v-col class="col-12 col-sm-3 form-col">
             <v-autocomplete
               v-if="!item.task_id || taskIds.indexOf(item.task_id) > -1"
-              :label="item.task_id ? '' : 'Task' | i18n"
+              :label="$i18n(item.task_id ? '' : 'Task')"
               v-model="item.task_id"
               :items="tasks"
               item-value="id"
@@ -152,7 +152,7 @@
             ></v-text-field>
           </v-col>
           <v-col class="col-12 col-sm-7 form-col">
-            <v-textarea :label="'Description' | i18n" auto-grow rows="1" v-model="item.description"></v-textarea>
+            <v-textarea :label="$i18n('Description')" auto-grow rows="1" v-model="item.description"></v-textarea>
           </v-col>
         </v-row>
         <v-row>
@@ -161,7 +161,7 @@
             </div>
             <div style="flex: 80%">
               <time-input
-              :label="'Total hours' | i18n"
+              :label="$i18n('Total hours')"
               v-model="totalHours"
               readonly
               :allowZero="true"
@@ -171,7 +171,7 @@
           <v-col class="col-12 col-sm-10 form-col" align="right">
             <v-btn color="primary" @click="onSave" style="margin-right: -16px">
               <v-icon left>mdi-content-save</v-icon>
-              {{ 'Save' | i18n }}
+              {{ $i18n('Save') }}
             </v-btn>
           </v-col>
         </v-row>

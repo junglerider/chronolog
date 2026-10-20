@@ -9,7 +9,7 @@
       <v-list>
         <v-list-item v-for="item in items" :key="item.key" @click="onClick(item.key)">
           <v-list-item-title>
-            {{ item.text | i18n }}
+            {{ $i18n(item.text) }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -26,10 +26,10 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="onSave()">
-            {{ 'Save' | i18n }}
+            {{ $i18n('Save') }}
           </v-btn>
           <v-btn  text @click="dialog = false">
-            {{ 'Cancel' | i18n }}
+            {{ $i18n('Cancel') }}
           </v-btn>
         </v-card-actions>
       </v-card>

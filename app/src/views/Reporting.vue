@@ -3,18 +3,18 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Reporting' | i18n }}</div>
+          <div class="page-title">{{ $i18n('Reporting') }}</div>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12 col-md-6 form-col">
-          <v-autocomplete :label="'Report' | i18n" :items="reports" v-model="report.name"></v-autocomplete>
+          <v-autocomplete :label="$i18n('Report')" :items="reports" v-model="report.name"></v-autocomplete>
         </v-col>
       </v-row>
       <v-row v-show="user.hasRole('reporting') && !isProjectSheet()">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
-            :label="'User' | i18n"
+            :label="$i18n('User')"
             :items="users"
             v-model="report.userId"
             item-value="id"
@@ -25,7 +25,7 @@
       <v-row v-show="report.name !== 'working-time'">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
-            :label="'Customer' | i18n"
+            :label="$i18n('Customer')"
             :items="customers"
             v-model="report.customerId"
             item-value="id"
@@ -36,7 +36,7 @@
       <v-row v-show="isProjectSheet() || isProjectSummary()">
         <v-col class="col-12 col-md-6 form-col">
           <v-autocomplete
-            :label="'Project' | i18n"
+            :label="$i18n('Project')"
             :items="projects"
             v-model="report.projectId"
             item-value="id"
@@ -48,7 +48,7 @@
         <v-row>
           <v-col class="col-12 col-md-6 form-col">
             <v-select
-              :label="'Period' | i18n"
+              :label="$i18n('Period')"
               :items="periods"
               v-model="report.period"
               @change="onSelectPeriod"
@@ -57,18 +57,18 @@
         </v-row>
         <v-row>
           <v-col class="col-12 col-md-6 form-col">
-            <date-input :label="'Start date' | i18n" v-model="report.start"></date-input>
+            <date-input :label="$i18n('Start date')" v-model="report.start"></date-input>
           </v-col>
         </v-row>
         <v-row>
           <v-col class="col-12 col-md-6 form-col">
-            <date-input :label="'End date' | i18n" v-model="report.end"></date-input>
+            <date-input :label="$i18n('End date')" v-model="report.end"></date-input>
           </v-col>
         </v-row>
       </div>
       <v-row>
         <v-col class="col-12 col-md-12 form-col pt-3">
-          <v-btn color="primary" @click="onGenerate">{{ 'Generate' | i18n }}</v-btn>
+          <v-btn color="primary" @click="onGenerate">{{ $i18n('Generate') }}</v-btn>
         </v-col>
     </v-row>
     </v-container>

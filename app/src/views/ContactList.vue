@@ -1,7 +1,7 @@
 <template>
   <data-list
     v-if="user.hasRole('contacts')"
-    :title="'Contacts' | i18n"
+    :title="$i18n('Contacts')"
     :headers="headers"
     apiBaseUrl="/person"
     uiBaseUrl="/contacts"

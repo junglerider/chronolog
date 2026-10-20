@@ -3,7 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <div class="page-title">{{ 'Weekly Overview' | i18n }} / {{ 'Total hours' | i18n }}: {{ totalHours }}</div>
+          <div class="page-title">{{ $i18n('Weekly Overview') }} / {{ $i18n('Total hours') }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
           <v-toolbar-title>
             {{ $refs.calendar ? $refs.calendar.title : 'This week' }}
@@ -15,7 +15,7 @@
             <v-icon small>mdi-chevron-right</v-icon>
           </v-btn>
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-            {{ 'Today' | i18n }}
+            {{ $i18n('Today') }}
           </v-btn>
         </v-toolbar>
       </v-sheet>

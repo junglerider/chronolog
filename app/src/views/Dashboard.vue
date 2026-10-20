@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col md="12">
-        <div class="page-title">{{ 'Welcome back' | i18n }}{{ getUserName() }}!</div>
+        <div class="page-title">{{ $i18n('Welcome back') }}{{ getUserName() }}!</div>
         {{ todaysDate }}
       </v-col>
     </v-row>
@@ -18,7 +18,7 @@
               class="centered mb-4"
               primary
               color="primary"
-            >{{ 'Check in' | i18n }}</v-btn>
+            >{{ $i18n('Check in') }}</v-btn>
             <div class="centered dotted-line">- - - - - - - - - -</div>
             <v-btn
               :disabled="!isPresent"
@@ -26,7 +26,7 @@
               class="centered mt-4"
               primary
               color="primary"
-              >{{ 'Check out' | i18n }}</v-btn>
+              >{{ $i18n('Check out') }}</v-btn>
             <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
           </div>
         </div>
@@ -36,31 +36,31 @@
           <template v-slot:default>
             <tbody>
               <tr key="list-status">
-                <td>{{ 'Status' | i18n }}</td>
-                <td class="data">{{ (isPresent ? 'present' : 'absent') | i18n }}</td>
+                <td>{{ $i18n('Status') }}</td>
+                <td class="data">{{ $i18n((isPresent ? 'present' : 'absent')) }}</td>
               </tr>
               <tr key="list-arrival">
-                <td>{{ 'Arrival today' | i18n }}</td>
+                <td>{{ $i18n('Arrival today') }}</td>
                 <td class="data">{{ arrivalTime }}</td>
               </tr>
               <tr key="list-time-today">
-                <td>{{ 'Working time today' | i18n }}</td>
+                <td>{{ $i18n('Working time today') }}</td>
                 <td class="data">{{ $i18nDecToHrs(workingTime) }}</td>
               </tr>
               <tr key="list-departure">
-                <td>{{ 'Departure' | i18n }}</td>
+                <td>{{ $i18n('Departure') }}</td>
                 <td class="data">{{ departureTime }}</td>
               </tr>
               <tr key="list-hrs-today">
-                <td>{{ 'Hours today' | i18n }}</td>
+                <td>{{ $i18n('Hours today') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursToday) }}</td>
               </tr>
               <tr key="list-hrs-week">
-                <td>{{ 'Hours this week' | i18n }}</td>
+                <td>{{ $i18n('Hours this week') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisWeek) }}</td>
               </tr>
               <tr key="list-hrs-month">
-                <td>{{ 'Hours this month' | i18n }}</td>
+                <td>{{ $i18n('Hours this month') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisMonth) }}</td>
               </tr>
             </tbody>

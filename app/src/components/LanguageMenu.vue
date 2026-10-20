@@ -7,11 +7,11 @@
     </template>
 
     <v-list>
-      <lang-menu-item locale="en" :name="'English' | i18n" @clicked="selectLanguage"/>
-      <lang-menu-item locale="de" :name="'German' | i18n" @clicked="selectLanguage"/>
-      <lang-menu-item locale="fr" :name="'French' | i18n" @clicked="selectLanguage"/>
-      <lang-menu-item locale="es" :name="'Spanish' | i18n" @clicked="selectLanguage"/>
-      <lang-menu-item locale="it" :name="'Italian' | i18n" @clicked="selectLanguage"/>
+      <lang-menu-item locale="en" :name="$i18n('English')" @clicked="selectLanguage"/>
+      <lang-menu-item locale="de" :name="$i18n('German')" @clicked="selectLanguage"/>
+      <lang-menu-item locale="fr" :name="$i18n('French')" @clicked="selectLanguage"/>
+      <lang-menu-item locale="es" :name="$i18n('Spanish')" @clicked="selectLanguage"/>
+      <lang-menu-item locale="it" :name="$i18n('Italian')" @clicked="selectLanguage"/>
     </v-list>
 
   </v-menu>

@@ -18,7 +18,7 @@
           <v-icon>mdi-lock-question</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-            <v-list-item-title>{{ 'Change Password' | i18n }}</v-list-item-title>
+            <v-list-item-title>{{ $i18n('Change Password') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item @click="logout()" class="squeeze">
@@ -26,7 +26,7 @@
           <v-icon>mdi-logout</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-            <v-list-item-title>{{ 'Logout' | i18n }}</v-list-item-title>
+            <v-list-item-title>{{ $i18n('Logout') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>

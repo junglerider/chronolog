@@ -12,53 +12,53 @@
     >
       <v-list>
 
-        <nav-link link="/" :tooltip="'Time clock, status and summary' | i18n ">
-          {{ 'Dashboard' | i18n }}
+        <nav-link link="/" :tooltip="$i18n('Time clock, status and summary')">
+          {{ $i18n('Dashboard') }}
         </nav-link>
-        <nav-link link="/password" :tooltip="'Change your password' | i18n ">
-          {{ 'Change Password' | i18n }}
+        <nav-link link="/password" :tooltip="$i18n('Change your password')">
+          {{ $i18n('Change Password') }}
         </nav-link>
-        <nav-link>{{ 'Time Sheets' | i18n }}</nav-link>
-        <nav-link link="/time-sheet" :tooltip="'Enter working time and hours on a daily basis' | i18n ">
-          {{ 'Edit Time Sheet' | i18n }}
+        <nav-link>{{ $i18n('Time Sheets') }}</nav-link>
+        <nav-link link="/time-sheet" :tooltip="$i18n('Enter working time and hours on a daily basis')">
+          {{ $i18n('Edit Time Sheet') }}
         </nav-link>
-        <nav-link link="/weekly-overview" :tooltip="'See working time entries for a week' | i18n">
-          {{ 'Weekly Overview' | i18n }}
+        <nav-link link="/weekly-overview" :tooltip="$i18n('See working time entries for a week')">
+          {{ $i18n('Weekly Overview') }}
         </nav-link>
-        <nav-link link="/monthly-overview" :tooltip="'See working time entries for a whole month' | i18n">
-          {{ 'Monthly Overview' | i18n }}
+        <nav-link link="/monthly-overview" :tooltip="$i18n('See working time entries for a whole month')">
+          {{ $i18n('Monthly Overview') }}
         </nav-link>
-        <nav-link link="/todo" :tooltip="'See/edit todo list, add tasks' | i18n">
-          {{ 'Todo List' | i18n }}
+        <nav-link link="/todo" :tooltip="$i18n('See/edit todo list, add tasks')">
+          {{ $i18n('Todo List') }}
         </nav-link>
         <template v-if="user.hasRole('contacts')">
-          <nav-link>{{ 'Contacts' | i18n }}</nav-link>
-          <nav-link link="/contacts" :tooltip="'Look up people and edit contact data' | i18n ">
-            {{ 'Contacts' | i18n }}
+          <nav-link>{{ $i18n('Contacts') }}</nav-link>
+          <nav-link link="/contacts" :tooltip="$i18n('Look up people and edit contact data')">
+            {{ $i18n('Contacts') }}
           </nav-link>
-          <nav-link link="/organisations" :tooltip="'Look up organisations and edit contact data' | i18n ">
-            {{ 'Organisations' | i18n }}
+          <nav-link link="/organisations" :tooltip="$i18n('Look up organisations and edit contact data')">
+            {{ $i18n('Organisations') }}
           </nav-link>
         </template>
-        <nav-link>{{ 'Reporting' | i18n }}</nav-link>
-        <nav-link link="/reporting" :tooltip="'Select report to view/print from a list of reports' | i18n ">
-          {{ 'Reports' | i18n }}
+        <nav-link>{{ $i18n('Reporting') }}</nav-link>
+        <nav-link link="/reporting" :tooltip="$i18n('Select report to view/print from a list of reports')">
+          {{ $i18n('Reports') }}
         </nav-link>
-        <nav-link v-if="user.hasRole('invoicing')" link="/invoices" :tooltip="'View, edit, create and print invoices' | i18n ">
-          {{ 'Invoices' | i18n }}
+        <nav-link v-if="user.hasRole('invoicing')" link="/invoices" :tooltip="$i18n('View, edit, create and print invoices')">
+          {{ $i18n('Invoices') }}
         </nav-link>
-        <nav-link v-if="user.hasRole('invoicing')" >{{ 'Admin' | i18n }}</nav-link>
-        <nav-link v-if="user.hasRole('invoicing')" link="/customers" :tooltip="'View/edit customers' | i18n ">
-          {{ 'Customers' | i18n }}
+        <nav-link v-if="user.hasRole('invoicing')" >{{ $i18n('Admin') }}</nav-link>
+        <nav-link v-if="user.hasRole('invoicing')" link="/customers" :tooltip="$i18n('View/edit customers')">
+          {{ $i18n('Customers') }}
         </nav-link>
-        <nav-link v-if="user.hasRole('admin')" link="/users" :tooltip="'View/edit users and access privileges' | i18n ">
-          {{ 'Users' | i18n }}
+        <nav-link v-if="user.hasRole('admin')" link="/users" :tooltip="$i18n('View/edit users and access privileges')">
+          {{ $i18n('Users') }}
         </nav-link>
-        <nav-link v-if="user.hasRole('admin')" link="/projects" :tooltip="'View project tree and maintain tasks' | i18n ">
-          {{ 'Projects & Tasks' | i18n }}
+        <nav-link v-if="user.hasRole('admin')" link="/projects" :tooltip="$i18n('View project tree and maintain tasks')">
+          {{ $i18n('Projects & Tasks') }}
         </nav-link>
-        <nav-link v-if="false" link="/time-logs" :tooltip="'Amend time log entries of employees' | i18n ">
-          {{ 'Correct Time Logs' | i18n }}
+        <nav-link v-if="false" link="/time-logs" :tooltip="$i18n('Amend time log entries of employees')">
+          {{ $i18n('Correct Time Logs') }}
         </nav-link>
       </v-list>
     </v-navigation-drawer>

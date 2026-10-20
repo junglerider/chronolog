@@ -3,7 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <div class="page-title">{{ 'Monthly Overview' | i18n }} / {{ 'Total hours' | i18n }}: {{ totalHours }}</div>
+          <div class="page-title">{{ $i18n('Monthly Overview') }} / {{ $i18n('Total hours') }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
           <v-toolbar-title>
             {{ $refs.calendar ? $refs.calendar.title : 'This month' }}
@@ -15,7 +15,7 @@
             <v-icon small>mdi-chevron-right</v-icon>
           </v-btn>
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-            {{ 'Today' | i18n }}
+            {{ $i18n('Today') }}
           </v-btn>
         </v-toolbar>
       </v-sheet>
@@ -42,9 +42,9 @@
                 <span>{{ record.arrival }}</span>
               </div>
               <div v-if="record.logged || record.clocked" class="timelog">
-                <span v-if="record.clocked">{{ $i18nDecToHrs(record.clocked) }} {{ 'clocked' | i18n }}</span>
+                <span v-if="record.clocked">{{ $i18nDecToHrs(record.clocked) }} {{ $i18n('clocked') }}</span>
                 <hr v-if="record.logged && record.clocked"/>
-                <span v-if="record.logged">{{ $i18nDecToHrs(record.logged) }} {{ 'logged' | i18n }}</span>
+                <span v-if="record.logged">{{ $i18nDecToHrs(record.logged) }} {{ $i18n('logged') }}</span>
               </div>
               <div v-if="record.departure" class="timeclock">
                 <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-left-bold</v-icon>

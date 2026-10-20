@@ -1,7 +1,7 @@
 <template>
   <v-autocomplete
     v-bind="$attrs"
-    :no-data-text="'No results' | i18n"
+    :no-data-text="$i18n('No results')"
     :items="items"
     :loading="isLoading"
     :search-input.sync="searchTerm"

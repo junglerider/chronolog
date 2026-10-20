@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-form ref="form" class="password-form">
-      <div class="page-title password-title">{{ 'Change Password' | i18n }}</div>
+      <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
       <v-alert v-model="error" text outlined :type="errorType">
         {{ errorMessage }}
       </v-alert>
       <v-text-field
         v-model="oldPassword"
-        :label="'Old password' | i18n"
+        :label="$i18n('Old password')"
         :type="showOldPassword ? 'text' : 'password'"
       >
         <v-btn
@@ -22,7 +22,7 @@
       </v-text-field>
       <v-text-field
         v-model="newPassword1"
-        :label="'New password' | i18n"
+        :label="$i18n('New password')"
         :type="showNewPassword1 ? 'text' : 'password'"
         :rules="passwordRules"
         loading
@@ -47,7 +47,7 @@
       </v-text-field>
       <v-text-field
         v-model="newPassword2"
-        :label="'Retype new password' | i18n"
+        :label="$i18n('Retype new password')"
         :type="showNewPassword2 ? 'text' : 'password'"
         :rules="repeatRules"
       >
@@ -61,7 +61,7 @@
           <v-icon v-if="!showNewPassword2" >mdi-eye-off</v-icon>
         </v-btn>
       </v-text-field>
-      <v-btn color="primary" @click="updatePassword" class="mt-2">{{ 'Update' | i18n }} </v-btn>
+      <v-btn color="primary" @click="updatePassword" class="mt-2">{{ $i18n('Update') }} </v-btn>
     </v-form>
   </v-container>
 </template>

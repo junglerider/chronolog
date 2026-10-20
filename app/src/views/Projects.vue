@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Projects & Tasks' | i18n }}</div>
+          <div class="page-title">{{ $i18n('Projects & Tasks') }}</div>
         </v-col>
       </v-row>
       <v-row>
@@ -44,25 +44,25 @@
               <v-icon v-else :style="itemStyle(activated, false)" class="mr-2">
                 mdi-folder
               </v-icon>
-              <span :style="itemStyle(activated)">{{ itemType(activated) | i18n }}</span>
+              <span :style="itemStyle(activated)">{{ $i18n(itemType(activated)) }}</span>
               <v-btn icon @click="e => showMenu(activated, e)" class="ml-1">
                 <v-icon>mdi-dots-horizontal</v-icon>
               </v-btn>
             </div>
-            <div>{{ 'Name' | i18n }}: {{ activated.name }}</div>
-            <div>{{ 'ID' | i18n }}: {{ activated.id }}</div>
-            <div v-if="activated.description">{{ 'Description' | i18n }}: {{ activated.description }}</div>
-            <div>{{ 'Parent project' | i18n }}: {{ activated.parent_name ? activated.parent_name : 'Projects' | i18n }}</div>
-            <div>{{ 'Assigned to' | i18n }}: {{ activated.user_name ? activated.user_name : 'all' | i18n }}</div>
-            <div>{{ 'Customer' | i18n }}: {{ activated.customer_name }}</div>
-            <div v-if="activated.is_leaf">{{ 'Total hours' | i18n }}: {{ $i18nDecToHrs(activated.duration) }}</div>
+            <div>{{ $i18n('Name') }}: {{ activated.name }}</div>
+            <div>{{ $i18n('ID') }}: {{ activated.id }}</div>
+            <div v-if="activated.description">{{ $i18n('Description') }}: {{ activated.description }}</div>
+            <div>{{ $i18n('Parent project') }}: {{ $i18n(activated.parent_name ? activated.parent_name : 'Projects') }}</div>
+            <div>{{ $i18n('Assigned to') }}: {{ $i18n(activated.user_name ? activated.user_name : 'all') }}</div>
+            <div>{{ $i18n('Customer') }}: {{ activated.customer_name }}</div>
+            <div v-if="activated.is_leaf">{{ $i18n('Total hours') }}: {{ $i18nDecToHrs(activated.duration) }}</div>
             <div v-else-if="activated.id != 'NULL'">
-              {{ 'Total hours' | i18n }}:
+              {{ $i18n('Total hours') }}:
               <span v-if="activated.duration">
                 {{ $i18nDecToHrs(activated.duration) }}
               </span>
               <span v-else>
-                <a @click="calculateHours">{{ 'Calculate' | i18n }}</a>
+                <a @click="calculateHours">{{ $i18n('Calculate') }}</a>
               </span>
               </div>
           </div>
@@ -77,37 +77,37 @@
       <v-list>
         <v-list-item v-if="activated.id !== 'NULL'" class="squeeze">
           <v-list-item-content>
-            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ 'Edit' | i18n }}</v-list-item-title>
+            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ $i18n('Edit') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item class="squeeze">
           <v-list-item-content>
-              <v-list-item-title @click="beginInsert()">{{ 'Insert child task' | i18n }}</v-list-item-title>
+              <v-list-item-title @click="beginInsert()">{{ $i18n('Insert child task') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="activated.is_leaf && activated.duration == 0 && activated.id !== 'NULL'" class="squeeze">
           <v-list-item-content>
-              <v-list-item-title @click.stop="deleteProject()">{{ 'Delete' | i18n }}</v-list-item-title>
+              <v-list-item-title @click.stop="deleteProject()">{{ $i18n('Delete') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 1})" class="squeeze">
           <v-list-item-content>
-              <v-list-item-title>{{ 'Close' | i18n }}</v-list-item-title>
+              <v-list-item-title>{{ $i18n('Close') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 0})" class="squeeze">
           <v-list-item-content>
-              <v-list-item-title>{{ 'Reopen' | i18n }}</v-list-item-title>
+              <v-list-item-title>{{ $i18n('Reopen') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 0})" class="squeeze">
           <v-list-item-content>
-              <v-list-item-title>{{ 'Deactivate' | i18n }}</v-list-item-title>
+              <v-list-item-title>{{ $i18n('Deactivate') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && !activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 1})" class="squeeze">
           <v-list-item-content>
-              <v-list-item-title>{{ 'Activate' | i18n }}</v-list-item-title>
+              <v-list-item-title>{{ $i18n('Activate') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

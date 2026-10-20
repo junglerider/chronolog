@@ -1,21 +1,21 @@
 <template>
   <div>
     <div style="display: flex">
-      <div class="page-title" style="margin-bottom: 16px">{{ 'Phone/Email' | i18n }}</div>
+      <div class="page-title" style="margin-bottom: 16px">{{ $i18n('Phone/Email') }}</div>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on" @click="add()" style="margin-left: auto">
             <v-icon>mdi-plus-circle-outline</v-icon>
           </v-btn>
         </template>
-        <span>{{ 'Add' | i18n }}</span>
+        <span>{{ $i18n('Add') }}</span>
       </v-tooltip>
     </div>
     <div v-for="item in phoneList" :key="item.id" style="display: flex">
       <v-container style="padding:0">
         <v-row>
           <v-col class="col-12 col-sm-12 col-md-4 form-col">
-            <v-select :label="'Type' | i18n" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
+            <v-select :label="$i18n('Type')" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
           </v-col>
           <v-col class="col-12 col-sm-12 col-md-8 form-col">
             <v-text-field
@@ -35,7 +35,7 @@
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>
                   </template>
-                  <span>{{ 'Open' | i18n }}</span>
+                  <span>{{ $i18n('Open') }}</span>
                 </v-tooltip>
               </template>
             </v-text-field>
@@ -48,7 +48,7 @@
               <v-icon>mdi-minus-circle-outline</v-icon>
             </v-btn>
           </template>
-          <span>{{ 'Delete' | i18n }}</span>
+          <span>{{ $i18n('Delete') }}</span>
         </v-tooltip>
     </div>
   </div>
