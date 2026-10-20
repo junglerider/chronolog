@@ -1,14 +1,16 @@
-import Vue from 'vue'
+import { createApp, watch } from 'vue'
 import App from './App.vue'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
 import i18n from './plugins/i18n'
 import router from './router'
 
-Vue.config.productionTip = false
-Vue.use(i18n)
+const app = createApp(App)
+app.use(vuetify)
+app.use(i18n)
+app.use(router)
 
-new Vue({
-  vuetify,
-  router,
-  render: h => h(App)
-}).$mount('#app')
+watch(() => app.config.globalProperties.$getLanguage(), language => {
+  vuetify.locale.current.value = language
+}, { immediate: true })
+
+app.mount('#app')

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-alert v-model="deletionError" text outlined dismissible type="error">
+    <v-alert v-model="deletionError" closable type="error" variant="outlined">
       {{ $i18n('Some tasks have hours booked. Tasks with hours booked cannot be deleted.') }}
     </v-alert>
     <data-list

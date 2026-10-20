@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" class="password-form">
       <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
-      <v-alert v-model="error" text outlined :type="errorType">
+      <v-alert v-model="error" :type="errorType" variant="outlined">
         {{ errorMessage }}
       </v-alert>
       <v-text-field
@@ -10,15 +10,17 @@
         :label="$i18n('Old password')"
         :type="showOldPassword ? 'text' : 'password'"
       >
+        <template #append-inner>
         <v-btn
           @click="showOldPassword = !showOldPassword"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showOldPassword" >mdi-eye</v-icon>
           <v-icon v-if="!showOldPassword" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
       <v-text-field
         v-model="newPassword1"
@@ -27,23 +29,25 @@
         :rules="passwordRules"
         loading
       >
-        <template v-slot:progress>
+        <template v-slot:loader>
           <v-progress-linear
-            :value="passwordStrength"
+            :model-value="passwordStrength"
             :color="color"
             absolute
             height="5"
           ></v-progress-linear>
         </template>
+        <template #append-inner>
         <v-btn
           @click="showNewPassword1 = !showNewPassword1"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showNewPassword1" >mdi-eye</v-icon>
           <v-icon v-if="!showNewPassword1" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
       <v-text-field
         v-model="newPassword2"
@@ -51,15 +55,17 @@
         :type="showNewPassword2 ? 'text' : 'password'"
         :rules="repeatRules"
       >
+        <template #append-inner>
         <v-btn
           @click="showNewPassword2 = !showNewPassword2"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showNewPassword2" >mdi-eye</v-icon>
           <v-icon v-if="!showNewPassword2" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
       <v-btn color="primary" @click="updatePassword" class="mt-2">{{ $i18n('Update') }} </v-btn>
     </v-form>
@@ -111,7 +117,7 @@ export default {
   methods: {
     async updatePassword() {
       this.updateError = false
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       try {

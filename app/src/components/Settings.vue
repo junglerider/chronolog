@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn icon v-bind="props" variant="text">
           <v-icon>mdi-cog-outline</v-icon>
         </v-btn>
       </template>
@@ -20,15 +20,15 @@
         <v-card-text>
           <div class="mb-4">{{ hint }}</div>
           <v-text-field v-if="type!='text'" :label="label" v-model="value"></v-text-field>
-          <v-textarea v-if="type=='text'" :label="label" v-model="value" auto-grow outlined rows="1"></v-textarea>
+          <v-textarea v-if="type=='text'" :label="label" v-model="value" auto-grow rows="1" variant="outlined"></v-textarea>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="onSave()">
+          <v-btn color="primary" @click="onSave()" variant="text">
             {{ $i18n('Save') }}
           </v-btn>
-          <v-btn  text @click="dialog = false">
+          <v-btn @click="dialog = false" variant="text">
             {{ $i18n('Cancel') }}
           </v-btn>
         </v-card-actions>

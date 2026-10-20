@@ -7,67 +7,67 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col cols="12" md="6" class="form-col">
           <v-autocomplete :label="$i18n('Report')" :items="reports" v-model="report.name"></v-autocomplete>
         </v-col>
       </v-row>
       <v-row v-show="user.hasRole('reporting') && !isProjectSheet()">
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             :label="$i18n('User')"
             :items="users"
             v-model="report.userId"
             item-value="id"
-            item-text="name"
+            item-title="name"
           ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row v-show="report.name !== 'working-time'">
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             :label="$i18n('Customer')"
             :items="customers"
             v-model="report.customerId"
             item-value="id"
-            item-text="name"
+            item-title="name"
           ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row v-show="isProjectSheet() || isProjectSummary()">
-        <v-col class="col-12 col-md-6 form-col">
+        <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             :label="$i18n('Project')"
             :items="projects"
             v-model="report.projectId"
             item-value="id"
-            item-text="name"
+            item-title="name"
           ></v-autocomplete>
         </v-col>
       </v-row>
       <div v-show="isTimeSheet()">
         <v-row>
-          <v-col class="col-12 col-md-6 form-col">
+          <v-col cols="12" md="6" class="form-col">
             <v-select
               :label="$i18n('Period')"
               :items="periods"
               v-model="report.period"
-              @change="onSelectPeriod"
+              @update:model-value="onSelectPeriod"
             ></v-select>
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="col-12 col-md-6 form-col">
+          <v-col cols="12" md="6" class="form-col">
             <date-input :label="$i18n('Start date')" v-model="report.start"></date-input>
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="col-12 col-md-6 form-col">
+          <v-col cols="12" md="6" class="form-col">
             <date-input :label="$i18n('End date')" v-model="report.end"></date-input>
           </v-col>
         </v-row>
       </div>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col pt-3">
+        <v-col cols="12" md="12" class="form-col pt-3">
           <v-btn color="primary" @click="onGenerate">{{ $i18n('Generate') }}</v-btn>
         </v-col>
     </v-row>
@@ -92,17 +92,17 @@ export default {
       user: api.user,
       reports: reports
         .filter(report => !report.access || api.user.hasRole(report.access))
-        .map(report => { return { ...report, text: this.$i18n(report.text)}} ),
+        .map(report => { return { ...report, title: this.$i18n(report.text)}} ),
       periods: [
-        { value: 'today', text: this.$i18n('Today') },
-        { value: 'thisWeek', text: this.$i18n('This week') },
-        { value: 'lastWeek', text: this.$i18n('Last week') },
-        { value: 'thisMonth', text: this.$i18n('This month') },
-        { value: 'lastMonth', text: this.$i18n('Last month') },
-        { value: 'lastThreeMonths', text: this.$i18n('Last three months') },
-        { value: 'lastSixMonths', text: this.$i18n('Last six months') },
-        { value: 'thisYear', text: this.$i18n('This year') },
-        { value: 'lastYear', text: this.$i18n('Last year') },
+        { value: 'today', title: this.$i18n('Today') },
+        { value: 'thisWeek', title: this.$i18n('This week') },
+        { value: 'lastWeek', title: this.$i18n('Last week') },
+        { value: 'thisMonth', title: this.$i18n('This month') },
+        { value: 'lastMonth', title: this.$i18n('Last month') },
+        { value: 'lastThreeMonths', title: this.$i18n('Last three months') },
+        { value: 'lastSixMonths', title: this.$i18n('Last six months') },
+        { value: 'thisYear', title: this.$i18n('This year') },
+        { value: 'lastYear', title: this.$i18n('Last year') },
       ],
       users: [],
       customers: [],

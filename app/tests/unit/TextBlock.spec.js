@@ -4,7 +4,7 @@ import TextBlock from '../../src/components/TextBlock.vue'
 describe('TextBlock', () => {
   it('renders each newline-delimited line', () => {
     const wrapper = shallowMount(TextBlock, {
-      propsData: {
+      props: {
         value: 'First line\nSecond line'
       }
     })

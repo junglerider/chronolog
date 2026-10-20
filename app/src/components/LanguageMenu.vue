@@ -1,7 +1,7 @@
 <template>
-  <v-menu offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn icon v-bind="attrs" v-on="on" color="white" class="mr-4">
+  <v-menu>
+    <template v-slot:activator="{ props }">
+      <v-btn icon v-bind="props" color="white" class="mr-4" variant="text">
         <img style="width: 30px" :src="`/images/flags/${selectedLanguage}.svg`"/>
       </v-btn>
     </template>

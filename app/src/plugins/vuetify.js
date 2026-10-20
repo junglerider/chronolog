@@ -1,102 +1,18 @@
-import Vue from 'vue';
-import Vuetify, {
-  VAlert,
-  VApp,
-  VAppBar,
-  VAppBarNavIcon,
-  VAutocomplete,
-  VBtn,
-  VCalendar,
-  VCard,
-  VCardActions,
-  VCardText,
-  VCardTitle,
-  VCheckbox,
-  VCol,
-  VCombobox,
-  VContainer,
-  VDataTable,
-  VDatePicker,
-  VDialog,
-  VDivider,
-  VExpandTransition,
-  VForm,
-  VIcon,
-  VList,
-  VListItem,
-  VListItemContent,
-  VListItemIcon,
-  VListItemSubtitle,
-  VListItemTitle,
-  VMain,
-  VMenu,
-  VNavigationDrawer,
-  VPagination,
-  VProgressLinear,
-  VRow,
-  VSelect,
-  VSheet,
-  VSimpleTable,
-  VSnackbar,
-  VSpacer,
-  VTextField,
-  VTextarea,
-  VToolbar,
-  VToolbarTitle,
-  VTooltip,
-  VTreeview
-} from 'vuetify/lib';
-import 'vuetify/dist/vuetify.min.css';
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import { de, en, es, fr, it } from 'vuetify/locale'
 
-Vue.use(Vuetify, {
-  components: {
-    VAlert,
-    VApp,
-    VAppBar,
-    VAppBarNavIcon,
-    VAutocomplete,
-    VBtn,
-    VCalendar,
-    VCard,
-    VCardActions,
-    VCardText,
-    VCardTitle,
-    VCheckbox,
-    VCol,
-    VCombobox,
-    VContainer,
-    VDataTable,
-    VDatePicker,
-    VDialog,
-    VDivider,
-    VExpandTransition,
-    VForm,
-    VIcon,
-    VList,
-    VListItem,
-    VListItemContent,
-    VListItemIcon,
-    VListItemSubtitle,
-    VListItemTitle,
-    VMain,
-    VMenu,
-    VNavigationDrawer,
-    VPagination,
-    VProgressLinear,
-    VRow,
-    VSelect,
-    VSheet,
-    VSimpleTable,
-    VSnackbar,
-    VSpacer,
-    VTextField,
-    VTextarea,
-    VToolbar,
-    VToolbarTitle,
-    VTooltip,
-    VTreeview
+export default createVuetify({
+  locale: {
+    locale: 'en',
+    fallback: 'en',
+    messages: { de, en, es, fr, it }
+  },
+  defaults: {
+    VTextField: { variant: 'underlined' },
+    VTextarea: { variant: 'underlined' },
+    VSelect: { variant: 'underlined' },
+    VAutocomplete: { variant: 'underlined' },
+    VCombobox: { variant: 'underlined' }
   }
-});
-
-export default new Vuetify({
-});
+})

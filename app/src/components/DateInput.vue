@@ -2,74 +2,82 @@
   <v-menu
     v-model="menu"
     :close-on-content-click="false"
-    offset-y
     transition="scale-transition"
-    max-width="300px"
-    min-width="200px"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template v-slot:activator="{ props }">
       <v-text-field
         v-bind="$attrs"
         :label="label"
         :disabled="disabled"
-        v-model="formattedDate"
+        :model-value="formattedDate"
         readonly
       >
-        <v-btn
-          v-bind="attrs"
-          v-on="on"
-          icon small color="grey"
-          slot="append"
-          tabindex="-1"
-          :disabled="disabled"
-        >
-          <v-icon>mdi-calendar-month</v-icon>
-        </v-btn>
+        <template #append-inner>
+          <v-btn
+            v-bind="props"
+            icon color="grey"
+            variant="text" size="small"
+            tabindex="-1"
+            :disabled="disabled"
+          >
+            <v-icon>mdi-calendar-month</v-icon>
+          </v-btn>
+        </template>
       </v-text-field>
     </template>
-    <v-date-picker
-      v-bind:value="value"
-      v-on:change="$emit('change', $event)"
-      @input="menu = false"
-      :locale="$getLanguage()"
-      first-day-of-week="1"
-      year-icon="mdi-dots-vertical"
+    <date-picker
+      :model-value="modelValue"
       :max="max"
       :min="min"
-    ></v-date-picker>
+      @update:model-value="onPick"
+    ></date-picker>
   </v-menu>
 </template>
 
 <script>
-  export default {
+import DatePicker from './DatePicker'
 
-    name: 'DateInput',
-    model: {
-      prop: 'value',
-      event: 'change'
-    },
+export default {
 
-    props: {
-      value: String,
-      label: String,
-      max: String,
-      min: String,
-      disabled: Boolean
-    },
+  name: 'DateInput',
 
-    data() {
-      return {
-        menu: false
+  components: {
+    DatePicker
+  },
+
+  inheritAttrs: false,
+
+  props: {
+    modelValue: String,
+    label: String,
+    max: String,
+    min: String,
+    disabled: Boolean
+  },
+
+  emits: ['update:modelValue', 'change'],
+
+  data() {
+    return {
+      menu: false
+    }
+  },
+
+  computed: {
+    formattedDate() {
+      if (!this.modelValue) {
+        return null
       }
-    },
+      return this.$i18nDate(this.modelValue)
+    }
+  },
 
-    computed: {
-      formattedDate() {
-        if (!this.value) {
-          return null
-        }
-        return this.$i18nDate(this.value)
-      }
-    },
+  methods: {
+    onPick(value) {
+      this.menu = false
+      this.$emit('update:modelValue', value)
+      this.$emit('change', value)
+    }
   }
+}
 </script>

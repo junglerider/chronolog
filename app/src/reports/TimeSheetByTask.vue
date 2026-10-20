@@ -15,7 +15,7 @@
           <th>{{ $i18n('Description') }}</th>
           <th class="report-right">{{ $i18n('Hours') }}</th>
         </tr>
-        <template v-for="section in groupedData">
+        <template v-for="(section, sectionIndex) in groupedData" :key="sectionIndex">
           <tr v-for="rec in section.data" :key="rec.id">
             <td class="report-nowrap">{{ $i18nDate(rec.date) }}</td>
             <td class="report-nowrap" v-if="userId <= 0">{{ rec.user_name }}</td>
@@ -24,7 +24,7 @@
             <td>{{ rec.description }}</td>
             <td class="report-right report-nowrap">{{ $i18nDecToHrs(rec.duration) }}</td>
           </tr>
-          <tr :key="section.task">
+          <tr>
             <th>{{ $i18n('Subtotal') }}</th>
             <th v-if="userId <= 0"></th>
             <th v-if="customerId <= 0"></th>

@@ -16,26 +16,24 @@
         hide-details
       ></v-text-field>
       <v-btn color="primary" @click="$router.push(`${uiBaseUrl}/new`)">
-        <v-icon left>mdi-plus-circle-outline</v-icon>
+        <v-icon start>mdi-plus-circle-outline</v-icon>
         {{ $i18n('Add') }}
       </v-btn>
 
       <v-dialog v-model="deleteDialog" max-width="500">
-        <template v-slot:activator="{ on, attrs }">
+        <template v-slot:activator="{ props }">
         <v-btn
-          outlined
           :disabled="!selected || !selected.length"
           color="primary"
           class="ml-2"
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon left>mdi-delete</v-icon>
+          v-bind="props"
+         variant="outlined">
+          <v-icon start>mdi-delete</v-icon>
           {{ $i18n('Delete') }}
         </v-btn>
         </template>
         <v-card>
-          <v-card-title class="headline" primary-title>
+          <v-card-title class="headline">
             {{ $i18n('Delete') }}
           </v-card-title>
           <v-card-text>
@@ -45,10 +43,10 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="onDelete">
+            <v-btn color="primary" @click="onDelete" variant="text">
               {{ $i18n("OK") }}
             </v-btn>
-            <v-btn text @click="deleteDialog = false">
+            <v-btn @click="deleteDialog = false" variant="text">
               {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
@@ -57,33 +55,31 @@
       <slot name="buttons" :selected="selected"></slot>
 
     </v-toolbar>
-    <v-data-table
-      :headers="headers"
-      :items="data"
-      item-key="id"
-      sort-by="id"
-      :sort-desc="true"
-      :items-per-page=15
-      :page="page"
-      @page-count="pageCount = $event"
-      @click:row="rowClick"
-      :options.sync="options"
-      :server-items-length="count"
-      :search="search"
-      :loading="loading"
-      show-select
+    <v-data-table-server
       v-model="selected"
+      :headers="tableHeaders"
+      :items="data"
+      item-value="id"
+      return-object
+      show-select
+      :items-length="count"
+      :items-per-page="itemsPerPage"
+      :page="page"
+      :sort-by="sortBy"
+      :loading="loading"
       hide-default-footer
       class="elevation-0"
+      @update:options="onOptions"
+      @click:row="rowClick"
     >
       <template v-slot:no-data>
         {{ $i18n('No data to display') }}
       </template>
-    </v-data-table>
+    </v-data-table-server>
     <div style="margin-top: 20px">
       <v-pagination v-model="page" :length="pageCount" total-visible="10"></v-pagination>
     </div>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       {{ messageText }}
     </v-snackbar>
   </div>
@@ -128,7 +124,8 @@ export default {
       data: [],
       count: 0,
       page: 1,
-      pageCount: 0,
+      itemsPerPage: 15,
+      sortBy: [{ key: 'id', order: 'desc' }],
       loading: false,
       options: {},
       search: '',
@@ -140,17 +137,28 @@ export default {
     }
   },
 
+  computed: {
+    tableHeaders() {
+      return this.headers.map(header => ({
+        title: header.text,
+        key: header.value,
+        align: header.align,
+        width: header.width,
+        sortable: header.sortable !== false
+      }))
+    },
+    pageCount() {
+      return Math.ceil(this.count / this.itemsPerPage)
+    }
+  },
+
   watch: {
     async search() {
-      this.options.page = 1
-      this.data = await this.getData()
-    },
-
-    options: {
-      deep: true,
-      async handler() {
-        this.data = await this.getData()
+      if (this.page !== 1) {
+        this.page = 1
+        return
       }
+      this.data = await this.getData()
     },
   },
 
@@ -203,9 +211,22 @@ export default {
         this.showMessage('Deletion did not succeed.', 'error')
       }
     },
-    rowClick(row) {
-      if (row && row.id) {
-        this.$router.push(`${this.uiBaseUrl}/${row.id}`)
+    async onOptions(options) {
+      this.options = {
+        page: options.page,
+        itemsPerPage: options.itemsPerPage,
+        sortBy: options.sortBy.map(sort => sort.key),
+        sortDesc: options.sortBy.map(sort => sort.order === 'desc')
+      }
+      this.sortBy = options.sortBy
+      this.data = await this.getData()
+    },
+    rowClick(event, { item }) {
+      if (event.target.closest('.v-selection-control')) {
+        return
+      }
+      if (item && item.id) {
+        this.$router.push(`${this.uiBaseUrl}/${item.id}`)
       }
     }
 

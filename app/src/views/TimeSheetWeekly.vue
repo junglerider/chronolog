@@ -8,13 +8,13 @@
           <v-toolbar-title>
             {{ $refs.calendar ? $refs.calendar.title : 'This week' }}
           </v-toolbar-title>
-          <v-btn fab text small color="grey darken-2" class="ml-2" @click="prev">
-            <v-icon small>mdi-chevron-left</v-icon>
+          <v-btn color="grey darken-2" class="ml-2" @click="prev" icon size="small" variant="text">
+            <v-icon size="small">mdi-chevron-left</v-icon>
           </v-btn>
-          <v-btn fab text small color="grey darken-2" class="mr-2" @click="next">
-            <v-icon small>mdi-chevron-right</v-icon>
+          <v-btn color="grey darken-2" class="mr-2" @click="next" icon size="small" variant="text">
+            <v-icon size="small">mdi-chevron-right</v-icon>
           </v-btn>
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+          <v-btn class="mr-4" color="grey darken-2" @click="setToday" variant="outlined">
             {{ $i18n('Today') }}
           </v-btn>
         </v-toolbar>
@@ -34,8 +34,9 @@
           @change="onChange"
           @click:date="onDateClick"
         >
-        <template v-slot:day={date}>
-          <div v-if="records.has(date)" :set="record=records.get(date)">
+        <template v-slot:day="{ date }">
+          <template v-if="records.has(date)">
+          <div v-for="(record, i) in [records.get(date)]" :key="i">
             <div v-if="record.arrival" class="timeclock">
               <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-right-bold</v-icon>
               <span>{{ record.arrival }}</span>
@@ -56,6 +57,7 @@
               <span>{{ record.departure }}</span>
             </div>
           </div>
+        </template>
         </template>
         </v-calendar>
       </v-sheet>
@@ -170,7 +172,7 @@
           console.error(err)
         }
       },
-      onDateClick(val) {
+      onDateClick(event, val) {
         this.$router.push(`/time-sheet/${val.date}`)
       }
     },

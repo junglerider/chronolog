@@ -2,63 +2,63 @@
   <v-form ref="form" v-if="user.hasRole('invoicing')">
     <v-container>
       <v-row>
-        <v-col class="col-12 col-md-12">
+        <v-col cols="12" md="12">
           <div class="page-title">{{ $i18n('Invoice Details') }}</div>
           <span>{{ $i18n('ID') }}: {{ invoice.id }}</span>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
             <date-input :label="$i18n('Date')" v-model="invoice.date" :rules="requiredRule"></date-input>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <v-autocomplete
             :label="$i18n('Customer')"
             :items="customers"
             v-model="invoice.customer_id"
             item-value="id"
-            item-text="name"
+            item-title="name"
             :rules="requiredRule"
-            @change="onCustomerChange"
+            @update:model-value="onCustomerChange"
           ></v-autocomplete>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <v-text-field :label="$i18n('Invoice no.')" v-model="invoice.invoice_no" :rules="requiredRule"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <v-select :label="$i18n('Status')" :items="statusValues" v-model="invoice.status" :rules="requiredRule"></v-select>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <v-row>
-            <v-col class="col-12 form-col">
+            <v-col cols="12" class="form-col">
               <date-input :label="$i18n('Due date')" v-model="invoice.due_date" :rules="requiredRule" :hint="dateDifference"></date-input>
             </v-col>
           </v-row>
           <v-row>
-            <v-col class="col-12 form-col">
+            <v-col cols="12" class="form-col">
               <v-combobox :label="$i18n('Currency')" :items="currencies" v-model="invoice.currency" :rules="requiredRule"></v-combobox>
             </v-col>
           </v-row>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
             <v-textarea :label="$i18n('Address')" :rules="requiredRule" v-model="invoice.address" auto-grow rows="1"></v-textarea>
         </v-col>
-        <v-col class="col-12 col-sm-12 col-md-6 form-col">
+        <v-col cols="12" sm="12" md="6" class="form-col">
           <v-row>
-            <v-col class="col-12 col-sm-6 col-md-6 form-col">
+            <v-col cols="12" sm="6" md="6" class="form-col">
               <v-text-field :label="$i18n('Payment terms')" v-model="invoice.payment_terms"></v-text-field>
             </v-col>
-            <v-col class="col-12 col-sm-6 col-md-6 form-col">
+            <v-col cols="12" sm="6" md="6" class="form-col">
               <v-text-field :label="$i18n('Issued by')" v-model="invoice.issuer"></v-text-field>
             </v-col>
           </v-row>
           <v-row>
-            <v-col class="col-12 col-sm-6 col-md-6 form-col">
+            <v-col cols="12" sm="6" md="6" class="form-col">
               <v-text-field :label="$i18n('Created at')" v-model="createdAt" readonly tabindex="-1"></v-text-field>
             </v-col>
-            <v-col class="col-12 col-sm-6 col-md-6 form-col">
+            <v-col cols="12" sm="6" md="6" class="form-col">
               <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
             </v-col>
           </v-row>
@@ -66,9 +66,9 @@
       </v-row>
         <div style="display: flex; margin-bottom: 16px">
           <div style="margin-left: -10px; margin-right: 5px;">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on" @click="addItem()" style="padding-bottom: 4px">
+            <v-tooltip location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-btn icon v-bind="props" @click="addItem()" style="padding-bottom: 4px" variant="text">
                   <v-icon>mdi-plus-circle-outline</v-icon>
                 </v-btn>
               </template>
@@ -78,18 +78,18 @@
           <div class="page-title">{{ $i18n('Invoice items') }}</div>
         </div>
         <v-row align="end">
-          <v-col class="col-12 col-sm-6 col-md-6 form-col">
+          <v-col cols="12" sm="6" md="6" class="form-col">
             <v-textarea :label="$i18n('Headline')" v-model="invoice.headline" auto-grow rows="1"></v-textarea>
           </v-col>
-          <v-col class="col-12 col-sm-6 col-md-6 form-col">
+          <v-col cols="12" sm="6" md="6" class="form-col">
           </v-col>
         </v-row>
         <v-row v-for="item in items" :key="item.id" align="end">
-          <v-col class="col-12 col-sm-6 col-md-6 form-col" style="display: flex">
+          <v-col style="display: flex" cols="12" sm="6" md="6" class="form-col">
             <div style="margin-left: -10px; margin-right: 5px; padding-top: 10px;">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" @click="removeItem(item.id)">
+              <v-tooltip location="bottom">
+                <template v-slot:activator="{ props }">
+                  <v-btn icon v-bind="props" @click="removeItem(item.id)" variant="text">
                     <v-icon>mdi-minus-circle-outline</v-icon>
                   </v-btn>
                 </template>
@@ -100,9 +100,9 @@
               <v-textarea :label="$i18n('Description')" v-model="item.description" :rules="requiredRule" auto-grow rows="1"></v-textarea>
             </div>
           </v-col>
-          <v-col class="col-12 col-sm-6 col-md-3 form-col">
+          <v-col cols="12" sm="6" md="3" class="form-col">
             <v-row>
-              <v-col class="col-6 sm-6 md-6 form-col">
+              <v-col cols="6" class="sm-6 md-6 form-col">
                 <v-text-field
                   :label="$i18n('Quantity')"
                   v-model="item.quantity"
@@ -111,7 +111,7 @@
                   :rules="requiredRule"
               ></v-text-field>
               </v-col>
-              <v-col class="col-6 sm-6 md-6 form-col">
+              <v-col cols="6" class="sm-6 md-6 form-col">
                 <currency-input
                   :label="$i18n('Unit price')"
                   v-model="item.unit_price"
@@ -124,10 +124,10 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col class="col-12 col-sm-6 col-md-3 form-col">
+          <v-col cols="12" sm="6" md="3" class="form-col">
             <currency-input
               :label="$i18n('Amount')"
-              :value="calcAmount(item)"
+              :model-value="calcAmount(item)"
               :currency="invoice.currency"
               :locale="$getLanguage()"
               readonly
@@ -136,10 +136,10 @@
           </v-col>
         </v-row>
       <v-row style="margin-top: 30px">
-        <v-col class="col-12 col-sm-6 col-md-9 form-col">
+        <v-col cols="12" sm="6" md="9" class="form-col">
           <div class="page-title">{{ $i18n('Total') }}</div>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <currency-input
             :label="$i18n('Net total')"
             v-model="invoice.net_total"
@@ -150,9 +150,9 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col" style="display: flex;">
+        <v-col style="display: flex;" cols="12" sm="6" md="3" class="form-col">
           <div style="max-width: 180px; margin-right: 15px">
             <v-checkbox
               :label="$i18n('Sales tax')"
@@ -172,7 +172,7 @@
             ></v-text-field>
           </div>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <currency-input
           :label="$i18n('Sales tax amount')"
           v-model="invoice.tax_amount"
@@ -182,7 +182,7 @@
           :disabled="invoice.show_tax == 0"
         ></currency-input>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-md-3 form-col">
+        <v-col cols="12" sm="6" md="3" class="form-col">
           <currency-input
           :label="$i18n('Grand total')"
           v-model="invoice.grand_total"
@@ -193,7 +193,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col" align="right">
+        <v-col cols="12" md="12" class="form-col text-right">
           <v-btn class="ml-2 mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
           <v-btn class="ml-2 mt-4" @click="$router.push('/invoices')">{{ $i18n('Cancel') }}</v-btn>
           <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onPrint">{{ $i18n('Print') }}</v-btn>
@@ -201,7 +201,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>
@@ -232,11 +232,11 @@ export default {
       customers: [],
       currencies: ['EUR', 'USD', 'GBP', 'CHF', 'CNY', 'JPY'],
       statusValues: [
-        { value: 'draft', text: this.$i18n('draft') },
-        { value: 'sent', text: this.$i18n('sent') },
-        { value: 'paid', text: this.$i18n('paid') },
-        { value: 'overdue', text: this.$i18n('overdue') },
-        { value: 'voided', text: this.$i18n('voided') },
+        { value: 'draft', title: this.$i18n('draft') },
+        { value: 'sent', title: this.$i18n('sent') },
+        { value: 'paid', title: this.$i18n('paid') },
+        { value: 'overdue', title: this.$i18n('overdue') },
+        { value: 'voided', title: this.$i18n('voided') },
       ],
       message: false,
       messageColor: 'success',
@@ -275,7 +275,7 @@ export default {
         filter(line => Boolean(a[line])).
         map(line => a[line]).
         join('\n')
-      this.$set(this.invoice, 'address', address)
+      this.invoice.address = address
     },
     onPrint() {
       window.open(`/reports/invoice/${this.invoice.id}`, '_blank')
@@ -286,7 +286,7 @@ export default {
     },
     async onSave() {
       let isDataWritten = false
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       this.isSaving = true

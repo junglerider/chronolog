@@ -8,37 +8,29 @@
         </v-col>
       </v-row>
     <v-row>
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
         <v-text-field :label="$i18n('Name')" v-model="task.name" :rules="requiredRule" ref="nameInput"></v-text-field>
       </v-col>
-      <v-col class="col-12 col-md-6 form-col" style="display: flex">
+      <v-col style="display: flex" cols="12" md="6" class="form-col">
         <v-checkbox :label="$i18n('Active')" class="mx-2" v-model="task.is_active" :true-value="1" :false-value="0"></v-checkbox>
         <v-checkbox :label="$i18n('Closed')" class="mx-2" v-model="task.is_closed" :true-value="1" :false-value="0" v-if="user.hasRole('admin')"></v-checkbox>
       </v-col>
     </v-row>
     <v-row v-if="mode == 'normal'">
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             v-if="isInList(task.parent_id, projects)"
             :label="$i18n('Project')"
             v-model="task.parent_id"
             :items="projects"
             item-value="id"
-            item-text="name"
+            item-title="name"
             :rules="requiredRule"
-            @change="onProjectSelect"
+            @update:model-value="onProjectSelect"
             :return-object="true"
           >
-            <template v-slot:item="data">
-              <template v-if="typeof data.item !== 'object'">
-                <v-list-item-content v-text="data.item"></v-list-item-content>
-              </template>
-              <template v-else>
-                <v-list-item-content>
-                  <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                  <v-list-item-subtitle v-html="data.item.customer_name"></v-list-item-subtitle>
-                </v-list-item-content>
-              </template>
+            <template v-slot:item="{ props, item: opt }">
+              <v-list-item v-bind="props" :title="opt.raw.name" :subtitle="opt.raw.customer_name"></v-list-item>
             </template>
           </v-autocomplete>
           <v-text-field
@@ -48,19 +40,19 @@
             readonly tabindex="-1"
           ></v-text-field>
       </v-col>
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
         <v-text-field :label="$i18n('Customer')" v-model="task.customer_name" readonly tabindex="-1"></v-text-field>
       </v-col>
     </v-row>
     <v-row v-if="mode == 'admin'">
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             v-if="isInList(task.customer_id, customers)"
             :label="$i18n('Customer')"
             v-model="task.customer_id"
             :items="customers"
             item-value="id"
-            item-text="name"
+            item-title="name"
             :rules="requiredRule"
           ></v-autocomplete>
           <v-text-field
@@ -70,14 +62,14 @@
             readonly tabindex="-1"
           ></v-text-field>
       </v-col>
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
           <v-autocomplete
             v-if="isInList(task.user_id, users)"
             :label="$i18n('Assigned to')"
             v-model="task.user_id"
             :items="users"
             item-value="id"
-            item-text="name"
+            item-title="name"
           ></v-autocomplete>
           <v-text-field
             v-else
@@ -88,38 +80,38 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="col-12 col-md-12 form-col">
+      <v-col cols="12" md="12" class="form-col">
         <v-textarea :label="$i18n('Description')" v-model="task.description" auto-grow rows="1"></v-textarea>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
         <v-text-field :label="$i18n('Created at')" v-model="createdAt" readonly tabindex="-1"></v-text-field>
       </v-col>
-      <v-col class="col-12 col-md-6 form-col">
+      <v-col cols="12" md="6" class="form-col">
         <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
       </v-col>
     </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-1 form-col">
-          <v-tooltip v-if="taskid  != 'new'" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-bind="attrs" v-on="on" @click="onExpand">
+        <v-col cols="12" sm="1" class="form-col">
+          <v-tooltip v-if="taskid  != 'new'" location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn icon v-bind="props" @click="onExpand" variant="text">
                 <v-icon>{{ isExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
               </v-btn>
             </template>
             <span>{{ $i18n('Time sheet entries for this task') }}</span>
           </v-tooltip>
         </v-col>
-        <v-col class="col-12 col-sm-11 form-col" align="right">
+        <v-col cols="12" sm="11" class="form-col text-right">
           <v-btn color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
           <v-btn class="ml-2" @click="$emit('task-edit-event', 'canceled')">{{ $i18n('Cancel') }}</v-btn>
           <v-dialog v-if="this.mode == 'normal' && this.task.id != 'new'" v-model="reassignDialog" persistent max-width="500">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="attrs" v-on="on">{{ $i18n('Reassign') }}</v-btn>
+            <template v-slot:activator="{ props }">
+              <v-btn :disabled="!isReassignable()" class="ml-2" v-bind="props">{{ $i18n('Reassign') }}</v-btn>
             </template>
             <v-card>
-              <v-card-title class="headline" primary-title>
+              <v-card-title class="headline">
                 {{ $i18n('Reassign') }}
               </v-card-title>
               <v-card-text>
@@ -129,16 +121,16 @@
                   v-model="task.user_id"
                   :items="users"
                   item-value="id"
-                  item-text="name"
+                  item-title="name"
                 ></v-autocomplete>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="onReassign(true)">
+                <v-btn color="primary" @click="onReassign(true)" variant="text">
                   {{ $i18n("OK") }}
                 </v-btn>
-                <v-btn text @click="onReassign(false)">
+                <v-btn @click="onReassign(false)" variant="text">
                   {{ $i18n("Cancel") }}
                 </v-btn>
               </v-card-actions>
@@ -148,8 +140,8 @@
       </v-row>
       <v-expand-transition>
         <v-row v-if="isExpanded">
-          <v-col class="col-12 col-md-12 form-col mt-8">
-            <v-simple-table>
+          <v-col cols="12" md="12" class="form-col mt-8">
+            <v-table>
               <template v-slot:default>
                 <thead>
                   <th class="text-left pl-4">{{ $i18n('Name') }}</th>
@@ -173,7 +165,7 @@
                   </tr>
                 </tbody>
               </template>
-            </v-simple-table>
+            </v-table>
           </v-col>
         </v-row>
       </v-expand-transition>
@@ -231,7 +223,7 @@ export default {
       return list.find(element => element.id == id)
     },
     async onSave() {
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       if (!_.isEqual(this.task, this.previousTask)) {

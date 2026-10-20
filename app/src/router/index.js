@@ -1,9 +1,7 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import reports from '../reports'
 import _ from 'lodash'
 
-Vue.use(VueRouter)
 const reportComponents = import.meta.glob('../reports/*.vue')
 
   const reportRoutes = reports.map(route => {
@@ -82,14 +80,13 @@ const reportComponents = import.meta.glob('../reports/*.vue')
     path: '/reports/invoice/:id(new|\\d+)',
     component: () => import('../reports/Invoice.vue')
   }, {
-    path: '/*',
-    component: Vue.component('empty')
+    path: '/:pathMatch(.*)*',
+    component: { render: () => null }
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: import.meta.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 

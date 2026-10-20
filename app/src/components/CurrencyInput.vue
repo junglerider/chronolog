@@ -1,14 +1,20 @@
 <template>
   <v-text-field
    v-bind="$attrs"
-   v-model="formattedValue"
+   :model-value="shownValue"
+   @update:model-value="onType"
+   @update:focused="onFocusChange"
    @change="onChange"
-   @input="onInput"
-   @blur="onBlur"
-   @focus="onFocus"
    :reverse="true"
+   class="currency-input"
   ></v-text-field>
 </template>
+
+<style scoped>
+  .currency-input :deep(input) {
+    text-align: right;
+  }
+</style>
 
 <script>
 import NumberFormat from '../services/NumberFormat'
@@ -16,13 +22,11 @@ import NumberFormat from '../services/NumberFormat'
 export default {
 
   name: 'CurrencyInput',
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
+
+  inheritAttrs: false,
 
   props: {
-    value: {
+    modelValue: {
       type: [Number, String],
       default: 0,
     },
@@ -39,66 +43,61 @@ export default {
     }
   },
 
+  emits: ['update:modelValue', 'change'],
+
   data() {
     return {
       isFocused: false,
-      number: this.value,
-      lastNumber: this.value,
-      formatter: new NumberFormat(this.locale, this.currency),
+      text: '',
+      number: this.modelValue,
+      lastNumber: this.modelValue,
+    }
+  },
+
+  computed: {
+    formatter() {
+      return new NumberFormat(this.locale, this.currency)
+    },
+    shownValue() {
+      return this.isFocused ? this.text : this.format(this.modelValue)
     }
   },
 
   methods: {
     format(val) {
-      if (val === null) {
+      if (val === null || val === undefined) {
         return 0
       }
       return this.formatter.formatAmount(val)
     },
+    onType(val) {
+      this.text = val ?? ''
+      const neg = (this.allowNegative && this.text[0] === '-') ? -1 : 1
+      // eslint-disable-next-line
+      this.number = Number(this.text.replace(/[^0-9\.]/g, '')) * neg
+    },
     onChange() {
       this.number = Math.round(this.number * 100) / 100
       if (this.lastNumber !== this.number) {
+        this.$emit('update:modelValue', this.number)
         this.$emit('change', this.number)
         this.lastNumber = this.number
       }
     },
-    onInput() {
-      this.$emit('input', this.number)
-    },
-    onBlur() {
-      this.isFocused = false
-    },
-    onFocus() {
-      this.isFocused = true
-    },
-    updateFormat() {
-      this.formatter = new NumberFormat(this.locale, this.currency)
-    }
-  },
-
-  computed: {
-    formattedValue: {
-      get: function() {
-        return this.isFocused ? this.value : this.format(this.value)
-      },
-      set: function(val)  {
-        const neg = (this.allowNegative && val && val[0] === '-') ? -1 : 1
-        // eslint-disable-next-line
-        this.number = Number(val.replace(/[^0-9\.]/g, '')) * neg
+    onFocusChange(focused) {
+      if (focused) {
+        this.number = this.modelValue
+        this.text = String(this.modelValue ?? '')
       }
+      this.isFocused = focused
     }
   },
 
   watch: {
-    currency() {
-      this.updateFormat()
-    },
-    locale() {
-      this.updateFormat()
-    },
-  },
-  mounted() {
-    this.updateFormat()
+    modelValue(value) {
+      this.number = value
+      this.lastNumber = value
+    }
   }
 }
 </script>

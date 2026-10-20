@@ -165,7 +165,7 @@ export default {
     this.clock = setInterval(this.runTheClock, 1000)
   },
 
-  destroyed() {
+  unmounted() {
     clearInterval(this.clock)
   }
 }

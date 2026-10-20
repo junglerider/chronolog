@@ -1,8 +1,6 @@
 <template>
   <v-app>
     <v-app-bar
-      app
-      clipped-left
       color="black"
       style="color: white; padding-left: 3vw;"
     >
@@ -26,17 +24,19 @@
           :label="$i18n('Password')"
           :type="showPassword ? 'text' : 'password'"
         >
+        <template #append-inner>
         <v-btn
           @click="showPassword = !showPassword"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showPassword" >mdi-eye</v-icon>
           <v-icon v-if="!showPassword" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
         </v-text-field>
-        <v-alert v-model="authError" text outlined type="error">
+        <v-alert v-model="authError" type="error" variant="outlined">
           {{ $i18n('The server did not accept the credentials.') }}
         </v-alert>
         <v-btn color="primary" @click="login" class="mt-2">{{ $i18n('Login') }} </v-btn>
@@ -84,7 +84,7 @@ export default {
 
   methods: {
     async login() {
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       this.authError = false

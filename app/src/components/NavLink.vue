@@ -1,20 +1,20 @@
 <template>
   <v-list-item v-if="link" link :to="link" class="side-bar-item">
-    <v-list-item-content class="side-bar-content">
-      <v-tooltip right>
-        <template v-slot:activator="{ on, attrs }">
-          <v-list-item-title v-bind="attrs" v-on="on">
+    <div class="side-bar-content">
+      <v-tooltip location="right">
+        <template v-slot:activator="{ props }">
+          <v-list-item-title v-bind="props">
             <slot></slot>
           </v-list-item-title>
         </template>
         <span>{{ tooltip }}</span>
       </v-tooltip>
-    </v-list-item-content>
+    </div>
   </v-list-item>
   <v-list-item v-else disabled class="side-bar-title">
-    <v-list-item-content class="side-bar-content">
+    <div class="side-bar-content">
       <v-list-item-title><slot></slot></v-list-item-title>
-    </v-list-item-content>
+    </div>
   </v-list-item>
 </template>
 

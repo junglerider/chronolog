@@ -7,11 +7,11 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="col-12 col-sm-6 form-col">
+      <v-col cols="12" sm="6" class="form-col">
         <div style="display: flex; width: 100%; padding-top: 20px">
           <analogue-clock secondHandColour="#1976d2" style="flex: 60%; margin-right: 2vw; margin-left: 1vw;"/>
           <div style="flex: 40%; align-self: center;">
-            <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
+            <v-icon class="centered" size="x-large">mdi-arrow-down-bold</v-icon>
             <v-btn
               :disabled="isPresent"
               @click="punchTheClock(1)"
@@ -27,12 +27,12 @@
               primary
               color="primary"
               >{{ $i18n('Check out') }}</v-btn>
-            <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
+            <v-icon class="centered" size="x-large">mdi-arrow-down-bold</v-icon>
           </div>
         </div>
       </v-col>
-      <v-col class="col-12 col-sm-6 col-md-4 form-col">
-        <v-simple-table>
+      <v-col cols="12" sm="6" md="4" class="form-col">
+        <v-table>
           <template v-slot:default>
             <tbody>
               <tr key="list-status">
@@ -65,10 +65,10 @@
               </tr>
             </tbody>
           </template>
-        </v-simple-table>
+        </v-table>
       </v-col>
     </v-row>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>

@@ -4,10 +4,26 @@
     <router-view :key="$getLanguage() + user.id"/>
   </div>
   <v-app v-else id="chronolog">
+
+    <v-app-bar
+      color="black"
+      style="color: white"
+    >
+      <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title class="app-title">chronolog</v-toolbar-title>
+      <v-toolbar-title class="app-text">Time &amp; Project Management</v-toolbar-title>
+      <v-spacer></v-spacer>
+
+      <simple-clock />
+
+      <user-menu :key="$getLanguage() + user.id"/>
+
+      <language-menu @changeLanguage="$forceUpdate()" />
+
+    </v-app-bar>
+
     <v-navigation-drawer
       v-model="drawer"
-      app
-      clipped
       color="#1958b7"
     >
       <v-list>
@@ -63,25 +79,6 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar
-      app
-      clipped-left
-      color="black"
-      style="color: white"
-    >
-      <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="app-title">chronolog</v-toolbar-title>
-      <v-toolbar-title class="app-text">Time &amp; Project Management</v-toolbar-title>
-      <v-spacer></v-spacer>
-
-      <simple-clock />
-
-      <user-menu :key="$getLanguage() + user.id"/>
-
-      <language-menu @changeLanguage="$forceUpdate()" />
-
-    </v-app-bar>
-
     <v-main>
       <v-container fluid>
         <!-- reload contents when language changes -->
@@ -123,10 +120,10 @@
   .v-data-table tbody th {
     font-size: 1em !important;
   }
-  .v-card__text {
+  .v-card-text {
     font-size: 1em !important;
   }
-  .v-data-footer {
+  .v-data-table-footer {
     font-size: 1em !important;
   }
   .v-date-picker-title__date {
