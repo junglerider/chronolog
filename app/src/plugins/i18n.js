@@ -1,6 +1,13 @@
 import { decimalHoursToTime, formatDate, translate } from '../services/i18n'
 
 const supportedLanguages = ['en', 'de', 'fr', 'es', 'it']
+const languageCatalogs = {
+  en: () => import('../i18n/en.js'),
+  de: () => import('../i18n/de.js'),
+  fr: () => import('../i18n/fr.js'),
+  es: () => import('../i18n/es.js'),
+  it: () => import('../i18n/it.js')
+}
 let i18nCatalog = new Map()
 let currentLocale = 'en'
 
@@ -12,7 +19,11 @@ export default {
     const $i18nDecToHrs = decimalHoursToTime
 
     const setLanguage = locale => {
-      return import(`../i18n/${locale}`).then(catalog => {
+      const loadCatalog = languageCatalogs[locale]
+      if (!loadCatalog) {
+        return Promise.reject(new Error(`Unsupported language: ${locale}`))
+      }
+      return loadCatalog().then(catalog => {
         i18nCatalog = catalog.default
         currentLocale = locale
         window.localStorage.setItem('language', locale)

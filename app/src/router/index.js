@@ -4,10 +4,17 @@ import reports from '../reports'
 import _ from 'lodash'
 
 Vue.use(VueRouter)
+const reportComponents = import.meta.glob('../reports/*.vue')
+
   const reportRoutes = reports.map(route => {
+    const reportComponent = `../reports/${_.upperFirst(_.camelCase(route.value))}.vue`
+    const loadComponent = reportComponents[reportComponent]
+    if (!loadComponent) {
+      throw new Error(`No report component found for route "${route.value}"`)
+    }
     return {
       path: `/reports/${route.value}`,
-      component: () => import(`../reports/${_.upperFirst(_.camelCase(route.value))}`)
+      component: loadComponent
     }
   })
   const routes = [{
@@ -82,7 +89,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: import.meta.env.BASE_URL,
   routes
 })
 

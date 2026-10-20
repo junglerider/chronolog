@@ -4,9 +4,11 @@ module.exports = {
     node: true
   },
   overrides: [{
-    files: ['tests/unit/**/*.spec.js'],
-    env: {
-      jest: true
+    files: ['tests/**/*.js'],
+    globals: {
+      describe: 'readonly',
+      expect: 'readonly',
+      it: 'readonly'
     }
   }],
   'extends': [
@@ -14,9 +16,8 @@ module.exports = {
     'eslint:recommended'
   ],
   parserOptions: {
-    parser: '@babel/eslint-parser',
-    ecmaVersion: 8,
-    requiredConfigFile: false
+    ecmaVersion: 2022,
+    sourceType: 'module'
   },
   rules: {
     'vue/multi-word-component-names': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

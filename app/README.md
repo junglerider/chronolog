@@ -15,7 +15,7 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
+### Lint frontend source and tests
 ```
 npm run lint
 ```
@@ -33,5 +33,4 @@ npm run test:e2e
 ```
 The browser test starts the Vue development server on port 5403.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The Vite build, dev server, and unit test configuration are in `vite.config.js`.

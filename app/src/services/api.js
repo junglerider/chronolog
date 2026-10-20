@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = process && process.env && process.env.NODE_ENV === 'development' ?
+const baseURL = import.meta.env.DEV ?
   'http://localhost:8888' :
   `${location.protocol}//${location.host}`
 
