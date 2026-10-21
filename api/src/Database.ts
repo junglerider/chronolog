@@ -107,6 +107,10 @@ export class Database {
    * Closes the Sqlite3 database connection and logs a message.
    */
   private closeConnection () {
+    if (this.timeout) {
+      clearTimeout (this.timeout)
+      this.timeout = null
+    }
     if (this.db) {
       this.db.close ()
       this.db = null

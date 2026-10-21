@@ -17,6 +17,7 @@ export class Auth {
   protected logger: Logger
   private sessions: Map <string, IUserSession>
   private config
+  private sessionTimeoutTimer: NodeJS.Timeout
 
   constructor (config, db: Database, logger: Logger) {
     this.config = config
@@ -35,7 +36,11 @@ export class Auth {
     //   })
     // }
     // invalidate sessions periodically
-    setInterval (this.sessionTimeout.bind (this), 30000)
+    this.sessionTimeoutTimer = setInterval (this.sessionTimeout.bind (this), 30000)
+  }
+
+  public close (): void {
+    clearInterval (this.sessionTimeoutTimer)
   }
 
   /**
@@ -256,7 +261,7 @@ export class Auth {
       }
       let sql = 'SELECT password FROM user WHERE id = ?'
       let result: any = await this.db.get (sql, [req.params.id])
-      if (!this.compare (req.body.oldPassword || '', result.password)) {
+      if (!await this.compare (req.body.oldPassword || '', result.password)) {
         throw new Error (`400:Old password of user ${req.params.id} does not match`)
       }
       const password = await this.hash (req.body.password)

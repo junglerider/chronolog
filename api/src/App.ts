@@ -58,7 +58,8 @@ class App {
 
   // close database when server exits
   public exit () {
-    db.close ()
+    auth.close ()
+    return db.close ()
   }
 
   // pass a simple message to logger
