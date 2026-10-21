@@ -44,7 +44,7 @@
         ></v-select>
         </v-col>
         <v-col cols="12" sm="6" class="form-col">
-          <v-alert v-if="user.password == 0" type="warning" variant="outlined">
+          <v-alert v-if="user.password == 0" type="warning" variant="tonal">
             {{ $i18n('This account is not password-protected.') }}
           </v-alert>
         </v-col>

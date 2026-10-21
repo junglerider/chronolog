@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" class="password-form">
       <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
-      <v-alert v-model="error" :type="errorType" variant="outlined">
+      <v-alert v-model="error" :type="errorType" variant="tonal">
         {{ errorMessage }}
       </v-alert>
       <v-text-field
@@ -33,7 +33,6 @@
           <v-progress-linear
             :model-value="passwordStrength"
             :color="color"
-            absolute
             height="5"
           ></v-progress-linear>
         </template>

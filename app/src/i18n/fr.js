@@ -265,6 +265,7 @@ export default new Map([
   ['Unit price', 'Prix ​​unitaire'],
   ['Total', 'Total'],
   ['Net total', 'Total net'],
+  ['Total quantity', 'Quantité totale'],
   ['Subtotal', 'Sous-total'],
   ['Grand total', 'Total général'],
   ['Sales tax', 'TVA'],

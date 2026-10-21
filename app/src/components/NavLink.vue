@@ -19,9 +19,12 @@
 </template>
 
 <style scoped>
-  .side-bar-item {
-    min-height: 20px;
+  .side-bar-item.v-list-item {
+    min-height: 40px !important;
     height: 40px;
+    padding-top: 0;
+    padding-bottom: 0;
+    box-sizing: border-box;
     background-color: #2175bc;
     border-left: 7px solid #1958b7;
     border-bottom: 1px solid #90bade;
@@ -30,13 +33,18 @@
       background-color: #2586d7;
       border-left-color: #1c64d1;
   }
-  .side-bar-content {
+  .side-bar-content,
+  .side-bar-title .side-bar-content {
     color: white;
   }
-  .side-bar-title {
-    min-height: 20px;
+  .side-bar-title.v-list-item {
+    min-height: 40px !important;
     height: 40px;
+    padding-top: 0;
+    padding-bottom: 0;
+    box-sizing: border-box;
     padding-left: 22px;
+    opacity: 1;
     background-color: black;
     border-bottom: 1px solid #90bade;
   }

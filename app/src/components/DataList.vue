@@ -1,21 +1,30 @@
 <template>
   <div>
-    <v-toolbar flat color="white">
+    <v-toolbar flat color="white" class="data-list-toolbar">
       <settings v-if="settings && user.hasRole('admin')" :keys="settings" style="margin-left: -12px"></settings>
       <div class="page-title">{{ title }}</div>
       <v-spacer></v-spacer>
+      <v-pagination
+        v-model="page"
+        :length="pageCount"
+        :total-visible="7"
+        density="comfortable"
+        class="data-list-pagination"
+        style="margin-right: 26px"
+      ></v-pagination>
       <v-text-field
         v-if="searchFilter"
         class="mr-10"
         style="max-width: 300px"
         v-model="search"
         clearable
-        append-icon="mdi-magnify"
+        append-inner-icon="mdi-magnify"
+        density="compact"
         :label="$i18n('Search')"
         single-line
         hide-details
       ></v-text-field>
-      <v-btn color="primary" @click="$router.push(`${uiBaseUrl}/new`)">
+      <v-btn color="primary" variant="flat" @click="$router.push(`${uiBaseUrl}/new`)">
         <v-icon start>mdi-plus-circle-outline</v-icon>
         {{ $i18n('Add') }}
       </v-btn>
@@ -76,9 +85,6 @@
         {{ $i18n('No data to display') }}
       </template>
     </v-data-table-server>
-    <div style="margin-top: 20px">
-      <v-pagination v-model="page" :length="pageCount" total-visible="10"></v-pagination>
-    </div>
     <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       {{ messageText }}
     </v-snackbar>
@@ -86,6 +92,16 @@
 </template>
 
 <style>
+  .data-list-toolbar .v-toolbar__content {
+    padding-inline: 16px;
+  }
+  .data-list-pagination {
+    flex: 0 1 auto;
+    width: auto;
+  }
+  .data-list-toolbar .v-field--appended {
+    padding-inline-end: 4px;
+  }
   .v-data-table tbody td {
     cursor: pointer !important;
   }

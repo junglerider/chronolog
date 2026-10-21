@@ -91,17 +91,39 @@
 
 <style>
     /* global style definitions and overrides */
-  .app-title {
+  html {
+    overflow-y: auto !important;
+  }
+  .v-toolbar__content > .v-toolbar-title.app-title {
+    flex: 0 0 auto;
     color: white;
     font-size: 1.3em;
     font-style: italic;
-    font-weight: bold;
+    font-weight: 700;
     font-family: Ubuntu, Verdana, Arial, Helvetica, sans-serif;
-    padding-right: 20px;
+    padding-right: 0;
   }
-  .app-text {
+  .v-toolbar__content > .v-toolbar-title.app-text {
+    flex: 0 0 auto;
     color: white;
     font-size: 0.9em !important;
+    margin-inline-start: 20px;
+  }
+  .v-main > .v-container {
+    padding: 12px;
+  }
+  .v-btn--disabled.v-btn--variant-outlined {
+    opacity: 1;
+    border-color: #cfcfcf;
+    color: #b5b5b5 !important;
+  }
+  .v-alert.v-alert--variant-tonal {
+    border: 1px solid currentColor;
+    padding: 12px 16px;
+    border-radius: 4px;
+  }
+  .v-alert--variant-tonal .v-alert__prepend {
+    margin-inline-end: 16px;
   }
   .page-title {
     font-size: 1.25em;
@@ -111,14 +133,26 @@
     padding-top: 0px !important;
     padding-bottom: 0px !important;
   }
-  .v-data-table thead th {
-    font-size: 1em !important;
+  .v-table {
+    font-size: 1rem !important;
   }
-  .v-data-table tbody td {
-    font-size: 1em !important;
+  .v-table > .v-table__wrapper > table > thead > tr > th {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: rgba(0, 0, 0, 0.6) !important;
   }
-  .v-data-table tbody th {
-    font-size: 1em !important;
+  .v-table > .v-table__wrapper > table > thead > tr > th,
+  .v-table > .v-table__wrapper > table > tbody > tr > td {
+    padding: 0 16px !important;
+    height: 48px !important;
+    font-size: 1rem !important;
+  }
+  .v-table > .v-table__wrapper > table > thead > tr > th:first-child,
+  .v-table > .v-table__wrapper > table > tbody > tr > td:first-child {
+    padding-left: 8px !important;
+  }
+  .v-table > .v-table__wrapper > table > thead > tr > th.v-data-table__th--sorted {
+    color: rgba(0, 0, 0, 0.87) !important;
   }
   .v-card-text {
     font-size: 1em !important;

@@ -1,6 +1,6 @@
 <template>
   <div v-if="loggedInUser.hasRole('admin')">
-    <v-alert v-model="deletionError" closable type="error" variant="outlined">
+    <v-alert v-model="deletionError" closable type="error" variant="tonal">
       {{ $i18n('Some users have tasks or time sheets assigned. Users with tasks or time sheets cannot be deleted.') }}
     </v-alert>
     <data-list

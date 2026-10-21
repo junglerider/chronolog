@@ -36,7 +36,7 @@
         </v-btn>
         </template>
         </v-text-field>
-        <v-alert v-model="authError" type="error" variant="outlined">
+        <v-alert v-model="authError" type="error" variant="tonal">
           {{ $i18n('The server did not accept the credentials.') }}
         </v-alert>
         <v-btn color="primary" @click="login" class="mt-2">{{ $i18n('Login') }} </v-btn>

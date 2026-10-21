@@ -4,6 +4,11 @@
     :min="toDate(min)"
     :max="toDate(max)"
     first-day-of-week="1"
+    :title="year"
+    color="primary"
+    header-color="primary"
+    elevation="0"
+    class="app-date-picker"
     @update:model-value="onUpdate"
   ></v-date-picker>
 </template>
@@ -25,6 +30,9 @@ export default {
   emits: ['update:modelValue'],
 
   computed: {
+    year() {
+      return String((this.date || new Date()).getFullYear())
+    },
     date() {
       return this.toDate(this.modelValue)
     }
@@ -41,3 +49,28 @@ export default {
   }
 }
 </script>
+
+<style>
+  .app-date-picker .v-picker-title {
+    color: white;
+    font-size: 0.85rem;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  .app-date-picker .v-date-picker-header__content {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .app-date-picker .v-date-picker-header {
+    padding-top: 12px;
+    padding-bottom: 8px;
+    min-height: 0;
+    height: auto;
+    align-items: flex-start;
+  }
+  .app-date-picker .v-date-picker-header {
+    background-color: rgb(var(--v-theme-primary));
+    border-radius: 4px 4px 0 0;
+  }
+</style>

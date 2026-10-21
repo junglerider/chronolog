@@ -136,8 +136,19 @@
           </v-col>
         </v-row>
       <v-row style="margin-top: 30px">
-        <v-col cols="12" sm="6" md="9" class="form-col">
+        <v-col cols="12" sm="6" md="6" class="form-col">
           <div class="page-title">{{ $i18n('Total') }}</div>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" class="form-col">
+          <v-row>
+            <v-col cols="6" class="form-col">
+              <v-text-field
+                :label="$i18n('Total quantity')"
+                :model-value="totalQuantity"
+                readonly tabindex="-1"
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="12" sm="6" md="3" class="form-col">
           <currency-input
@@ -153,7 +164,7 @@
         <v-col cols="12" sm="6" md="3" class="form-col">
         </v-col>
         <v-col style="display: flex;" cols="12" sm="6" md="3" class="form-col">
-          <div style="max-width: 180px; margin-right: 15px">
+          <div style="flex: 0 0 auto; margin-right: 15px; white-space: nowrap">
             <v-checkbox
               :label="$i18n('Sales tax')"
               v-model="invoice.show_tax"
@@ -161,7 +172,7 @@
               @change="onTaxChange"
             ></v-checkbox>
           </div>
-          <div style="flex: 80%;">
+          <div style="flex: 1 1 0; min-width: 0">
             <v-text-field
               :label="$i18n('Sales tax rate')"
               v-model="invoice.tax_rate"
@@ -247,6 +258,10 @@ export default {
   },
 
   computed: {
+    totalQuantity() {
+      const sum = this.items.reduce((acc, item) => acc + (Number(item.quantity) || 0), 0)
+      return Math.round(sum * 1e6) / 1e6
+    },
     updatedAt() {
       return this.invoice.updated_at ? this.$i18nDate(this.invoice.updated_at) : null
     },

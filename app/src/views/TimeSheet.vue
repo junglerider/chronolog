@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar flat color="white" class="mb-4" height="100px">
-    <calendar-leaflet :date="date" class="ml-2 mr-4"></calendar-leaflet>
+    <calendar-leaflet :date="date" style="margin-left: 25px; margin-right: 16px"></calendar-leaflet>
       <div class="page-title">
         {{ $i18n('Daily Time Sheet') }}
       </div>
@@ -12,7 +12,7 @@
         <v-icon size="small">mdi-chevron-right</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="onAdd">
+      <v-btn color="primary" variant="flat" @click="onAdd">
         <v-icon start>mdi-plus-circle-outline</v-icon>
         {{ $i18n('Add') }}
       </v-btn>
@@ -61,10 +61,10 @@
           </v-btn>
         </template>
         <v-card style="overflow: hidden">
-          <v-card-title class="headline">
+          <v-card-title class="text-h5 pt-4 px-6">
             {{ $i18n('Move') }}
           </v-card-title>
-          <v-card-text>
+          <v-card-text class="px-6 text-medium-emphasis">
             {{ $i18n('Move selected entries to a different date') }}:
           </v-card-text>
           <v-row justify="center">

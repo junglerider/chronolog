@@ -1,6 +1,6 @@
 <template>
   <div v-if="user.hasRole('invoicing')">
-    <v-alert v-model="deletionError" closable type="error" variant="outlined">
+    <v-alert v-model="deletionError" closable type="error" variant="tonal">
       {{ $i18n('Some customers have tasks assigned. Customers with tasks cannot be deleted.') }}
     </v-alert>
     <data-list
