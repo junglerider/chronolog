@@ -70,7 +70,7 @@ export class Auth {
    */
   private async compare (givenPwd: string, storedPwd: string): Promise<boolean> {
     if (!storedPwd) {
-      return true
+      return givenPwd === ''
     }
     const parts = storedPwd.split (':')
     const hashedPwd = await this.hash (givenPwd, parts[0])
@@ -126,7 +126,7 @@ export class Auth {
     const token = this.getToken (req)
     if (token && this.sessions.has (token)) {
       this.sessions.delete (token)
-      this.logger.debug (`Removed session token ${token}, total = ${this.sessions.size} sessions`)
+      this.logger.debug (`Removed session, total = ${this.sessions.size} sessions`)
       res.status (205).json ()
     } else {
       res.status (400).json ()
@@ -261,8 +261,15 @@ export class Auth {
       }
       let sql = 'SELECT password FROM user WHERE id = ?'
       let result: any = await this.db.get (sql, [req.params.id])
-      if (!await this.compare (req.body.oldPassword || '', result.password)) {
+      const oldPassword = req.body.oldPassword || ''
+      if (result.password && !await this.compare (oldPassword, result.password)) {
         throw new Error (`400:Old password of user ${req.params.id} does not match`)
+      }
+      if (!result.password && oldPassword) {
+        throw new Error (`400:Old password of user ${req.params.id} does not match`)
+      }
+      if (typeof req.body.password !== 'string' || req.body.password.trim ().length === 0) {
+        throw new Error ('400:New password is required')
       }
       const password = await this.hash (req.body.password)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
@@ -304,7 +311,7 @@ export class Auth {
     this.sessions.forEach ((session, token) => {
       if (now - session.time > this.config.session_timeout) {
         this.sessions.delete (token)
-        this.logger.debug (`Timed out session with token ${token}, total = ${this.sessions.size} sessions`)
+        this.logger.debug (`Timed out session, total = ${this.sessions.size} sessions`)
       }
     })
   }

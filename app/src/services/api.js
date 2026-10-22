@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const baseURL = import.meta.env.DEV ?
-  'http://localhost:8888' :
+  'http://localhost:5404' :
   `${location.protocol}//${location.host}`
 
 const api = axios.create({ baseURL: baseURL + '/api' })

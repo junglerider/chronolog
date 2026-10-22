@@ -41,22 +41,6 @@ export class Database {
   }
 
   /**
-   * Formats a query with parameters
-   *
-   * @param query query sting with ? placeholders
-   * @param params query parameter array
-   */
-  private formatQuery(query: string, params: any[]) {
-    let result = query
-    if (params) {
-      for (let param of params) {
-        result = result.replace('?', String(param))
-      }
-    }
-    return result
-  }
-
-  /**
    * Opens the Sqlite3 database connection explicitly.
    */
   public open () {
@@ -128,7 +112,7 @@ export class Database {
     return new Promise ((resolve, reject) => {
       this.implicitOpen ((err) => {
         if (! err) {
-          this.logger.debug ('SQL: ' + this.formatQuery(query, params))
+          this.logger.debug ('SQL: ' + query)
           this.db.run (query, params, function (err) {
             err ? reject (err): resolve ({ lastID: this.lastID, changes: this.changes })
           })
@@ -149,7 +133,7 @@ export class Database {
     return new Promise ((resolve, reject) => {
       this.implicitOpen ((err) => {
           if (! err) {
-            this.logger.debug ('SQL: ' + this.formatQuery(query, params))
+            this.logger.debug ('SQL: ' + query)
             this.db.get (query, params, (err, row) => {
             err ? reject (err) : resolve (row)
           })
@@ -170,7 +154,7 @@ export class Database {
     return new Promise ((resolve, reject) => {
       this.implicitOpen ((err) => {
         if (! err) {
-          this.logger.debug ('SQL: ' + this.formatQuery(query, params))
+          this.logger.debug ('SQL: ' + query)
           this.db.all (query, params, (err, rows)  => {
             err ? reject (err) : resolve (rows)
           })
@@ -193,7 +177,7 @@ export class Database {
       this.implicitOpen ((err) => {
         if (! err) {
           this.db.serialize (() => {
-            this.logger.debug ('SQL: ' + this.formatQuery(query, params))
+            this.logger.debug ('SQL: ' + query)
             this.db.each (query, params, (err, row)  => {
               err ? reject (err) : callback (row)
             })

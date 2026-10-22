@@ -1,8 +1,7 @@
-import * as express from 'express'
+import express = require('express')
 import { Application, Request, Response, NextFunction } from 'express'
-import * as bodyParser from 'body-parser'
-import * as cors from 'cors'
-import * as history from 'connect-history-api-fallback'
+import cors = require('cors')
+import history = require('connect-history-api-fallback')
 import rateLimit from 'express-rate-limit'
 import * as config from './config.json'
 import * as Logger from 'bunyan'
@@ -27,6 +26,23 @@ import { TimeClock } from './resources/TimeClock'
 import { Invoice } from './resources/Invoice'
 import { InvoiceItem } from './resources/InvoiceItem'
 import { Setting } from './resources/Setting'
+
+const sensitiveRequestField = /password|token|secret|authorization|api[_-]?key/i
+
+function redactRequestBody (value: unknown): unknown {
+  if (Array.isArray (value)) {
+    return value.map (redactRequestBody)
+  }
+  if (value !== null && typeof value === 'object') {
+    const source = value as Record<string, unknown>
+    const redacted: Record<string, unknown> = {}
+    for (const key of Object.keys (source)) {
+      redacted[key] = sensitiveRequestField.test (key) ? '[REDACTED]' : redactRequestBody (source[key])
+    }
+    return redacted
+  }
+  return value
+}
 
 const db = new Database (config, logger)
 const auth = new Auth (config, db, logger)
@@ -105,20 +121,32 @@ class App {
 
   private mountRoutes (): void {
 
-    // parse application/x-www-form-urlencoded request body
-    this.app.use (bodyParser.json ())
+    this.app.set ('query parser', 'extended')
 
     // parse application/json request body
-    this.app.use (bodyParser.urlencoded ({ extended: false }))
+    this.app.use (express.json ())
+
+    // parse application/x-www-form-urlencoded request body
+    this.app.use (express.urlencoded ({ extended: false }))
 
     // log requests in debug mode
     this.app.use ((req: Request, res: Response, next: NextFunction): void => {
-      logger.debug ({params: req.params, body: req.body}, `Incoming request: ${req.method} ${req.url}`)
+      const isCredentialRequest = req.path.startsWith ('/auth/') || req.path.endsWith ('/password')
+      const requestDetails = isCredentialRequest
+        ? {params: req.params}
+        : {params: req.params, body: redactRequestBody (req.body)}
+      logger.debug (requestDetails, `Incoming request: ${req.method} ${req.url}`)
       next ()
     })
 
     // enable CORS requests
-    this.app.use (cors ())
+    const configuredOrigins = process.env.CORS_ORIGINS
+    const allowedOrigins = configuredOrigins !== undefined
+      ? configuredOrigins.split (',').map (origin => origin.trim ()).filter (origin => origin.length > 0)
+      : process.env.NODE_ENV === 'production'
+        ? []
+        : ['http://localhost:5403', 'http://127.0.0.1:5403']
+    this.app.use (cors ({ origin: allowedOrigins }))
 
     // health status
     this.app.get ('/health', this.health)
@@ -151,100 +179,129 @@ class App {
     })
 
     // REST resources
+    api.param ('id', (req, res, next, value) => {
+      if (typeof value === 'string' && /^\d+$/.test (value)) {
+        next ()
+      } else {
+        next ('route')
+      }
+    })
+    api.param ('userId', (req, res, next, value) => {
+      if (typeof value === 'string' && /^\d+$/.test (value)) {
+        next ()
+      } else {
+        next ('route')
+      }
+    })
+    api.param ('user_id', (req, res, next, value) => {
+      if (typeof value === 'string' && /^\d+$/.test (value)) {
+        next ()
+      } else {
+        next ('route')
+      }
+    })
+    api.param ('date', (req, res, next, value) => {
+      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test (value)) {
+        next ()
+      } else {
+        next ('route')
+      }
+    })
+
     api.get ('/organisation', organisation.list.bind (organisation))
     api.get ('/organisation/count', organisation.count.bind (organisation))
     api.post ('/organisation', organisation.create.bind (organisation))
-    api.put ('/organisation/:id(\\d+)', organisation.update.bind (organisation))
-    api.get ('/organisation/:id(\\d+)', organisation.read.bind (organisation))
-    api.delete ('/organisation/:id(\\d+)', organisation.delete.bind (organisation))
-    api.get ('/organisation/:id(\\d+)/persons', organisation.getPersons.bind (organisation))
-    api.get ('/organisation/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
+    api.put ('/organisation/:id', organisation.update.bind (organisation))
+    api.get ('/organisation/:id', organisation.read.bind (organisation))
+    api.delete ('/organisation/:id', organisation.delete.bind (organisation))
+    api.get ('/organisation/:id/persons', organisation.getPersons.bind (organisation))
+    api.get ('/organisation/:id/contacts', contact.listByEntity.bind (contact))
 
     api.get ('/person', person.list.bind (person))
     api.get ('/person/count', person.count.bind (person))
     api.post ('/person', person.create.bind (person))
-    api.put ('/person/:id(\\d+)', person.update.bind (person))
-    api.get ('/person/:id(\\d+)', person.read.bind (person))
-    api.delete ('/person/:id(\\d+)', person.delete.bind (person))
-    api.get ('/person/:id(\\d+)/organisations', person.getOrganisations.bind (person))
-    api.get ('/person/:id(\\d+)/contacts', contact.listByEntity.bind (contact))
+    api.put ('/person/:id', person.update.bind (person))
+    api.get ('/person/:id', person.read.bind (person))
+    api.delete ('/person/:id', person.delete.bind (person))
+    api.get ('/person/:id/organisations', person.getOrganisations.bind (person))
+    api.get ('/person/:id/contacts', contact.listByEntity.bind (contact))
 
     api.get ('/contact', contact.list.bind (contact))
     api.get ('/contact/count', contact.count.bind (contact))
     api.post ('/contact', contact.create.bind (contact))
-    api.get ('/contact/:id(\\d+)', contact.read.bind (contact))
-    api.put ('/contact/:id(\\d+)', contact.update.bind (contact))
-    api.delete ('/contact/:id(\\d+)', contact.delete.bind (contact))
+    api.get ('/contact/:id', contact.read.bind (contact))
+    api.put ('/contact/:id', contact.update.bind (contact))
+    api.delete ('/contact/:id', contact.delete.bind (contact))
 
     api.get ('/employee', employee.list.bind (employee))
     api.get ('/employee/count', employee.count.bind (employee))
     api.post ('/employee', employee.create.bind (employee))
-    api.get ('/employee/:id(\\d+)', employee.read.bind (employee))
-    api.put ('/employee/:id(\\d+)', employee.update.bind (employee))
-    api.delete ('/employee/:id(\\d+)', employee.delete.bind (employee))
+    api.get ('/employee/:id', employee.read.bind (employee))
+    api.put ('/employee/:id', employee.update.bind (employee))
+    api.delete ('/employee/:id', employee.delete.bind (employee))
 
     api.get ('/user', user.list.bind (user))
     api.get ('/user/count', user.count.bind (user))
     api.post ('/user', user.create.bind (user))
-    api.get ('/user/:id(\\d+)', user.read.bind (user))
-    api.put ('/user/:id(\\d+)', user.update.bind (user))
-    api.delete ('/user/:id(\\d+)', user.delete.bind (user))
-    api.put ('/user/:id(\\d+)/password', auth.updatePassword.bind (auth))
-    api.delete ('/user/:id(\\d+)/password', auth.resetPassword.bind (auth))
+    api.get ('/user/:id', user.read.bind (user))
+    api.put ('/user/:id', user.update.bind (user))
+    api.delete ('/user/:id', user.delete.bind (user))
+    api.put ('/user/:id/password', auth.updatePassword.bind (auth))
+    api.delete ('/user/:id/password', auth.resetPassword.bind (auth))
 
     api.get ('/customer', customer.list.bind (customer))
     api.get ('/customer/count', customer.count.bind (customer))
     api.post ('/customer', customer.create.bind (customer))
-    api.get ('/customer/:id(\\d+)', customer.read.bind (customer))
-    api.put ('/customer/:id(\\d+)', customer.update.bind (customer))
-    api.delete ('/customer/:id(\\d+)', customer.delete.bind (customer))
     api.get ('/customer/task-count', customer.taskCount.bind (customer))
+    api.get ('/customer/:id', customer.read.bind (customer))
+    api.put ('/customer/:id', customer.update.bind (customer))
+    api.delete ('/customer/:id', customer.delete.bind (customer))
 
     api.get ('/task', task.list.bind (task))
     api.get ('/task/count', task.count.bind (task))
     api.post ('/task', task.create.bind (task))
-    api.get ('/task/:id(\\d+)', task.read.bind (task))
-    api.get ('/task/:id(\\d+)/descendants', task.descendants.bind (task))
-    api.put ('/task/:id(\\d+)', task.update.bind (task))
-    api.put ('/task/:id(\\d+)/descendants', task.updateDescendants.bind (task))
-    api.delete ('/task/:id(\\d+)', task.delete.bind (task))
     api.get ('/task/projects', task.projects.bind (task))
-    api.get ('/todo/:userId(\\d+)', task.todoList.bind (task))
-    api.get ('/todo/:userId(\\d+)/count', task.todoCount.bind (task))
-    api.get ('/todo/:userId(\\d+)/projects', task.projectList.bind (task))
+    api.get ('/task/:id', task.read.bind (task))
+    api.get ('/task/:id/descendants', task.descendants.bind (task))
+    api.put ('/task/:id', task.update.bind (task))
+    api.put ('/task/:id/descendants', task.updateDescendants.bind (task))
+    api.delete ('/task/:id', task.delete.bind (task))
+    api.get ('/todo/:userId', task.todoList.bind (task))
+    api.get ('/todo/:userId/count', task.todoCount.bind (task))
+    api.get ('/todo/:userId/projects', task.projectList.bind (task))
 
     api.get ('/timelog', timelog.list.bind (timelog))
     api.get ('/timelog/count', timelog.count.bind (timelog))
     api.get ('/timelog/daily', timelog.daily.bind (timelog))
     api.get ('/timelog/sum', timelog.sum.bind (timelog))
     api.post ('/timelog', timelog.create.bind (timelog))
-    api.get ('/timelog/:id(\\d+)', timelog.read.bind (timelog))
-    api.put ('/timelog/:id(\\d+)', timelog.update.bind (timelog))
-    api.delete ('/timelog/:id(\\d+)', timelog.delete.bind (timelog))
+    api.get ('/timelog/:id', timelog.read.bind (timelog))
+    api.put ('/timelog/:id', timelog.update.bind (timelog))
+    api.delete ('/timelog/:id', timelog.delete.bind (timelog))
 
     api.get ('/timelog/report', timelogReport.list.bind (timelogReport))
 
     api.get ('/timeclock', timeclock.list.bind (timeclock))
     api.get ('/timeclock/count', timeclock.count.bind (timeclock))
     api.post ('/timeclock', timeclock.create.bind (timeclock))
-    api.get ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.read.bind (timeclock))
-    api.put ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.update.bind (timeclock))
-    api.delete ('/timeclock/:user_id/:date(\\d\\d\\d\\d-\\d\\d-\\d\\d)', timeclock.delete.bind (timeclock))
+    api.get ('/timeclock/:user_id/:date', timeclock.read.bind (timeclock))
+    api.put ('/timeclock/:user_id/:date', timeclock.update.bind (timeclock))
+    api.delete ('/timeclock/:user_id/:date', timeclock.delete.bind (timeclock))
 
     api.get ('/invoice', invoice.list.bind (invoice))
     api.get ('/invoice/count', invoice.count.bind (invoice))
     api.post ('/invoice', invoice.create.bind (invoice))
-    api.get ('/invoice/:id(\\d+)', invoice.read.bind (invoice))
-    api.get ('/invoice/:id(\\d+)/items', invoiceItem.items.bind (invoiceItem))
-    api.put ('/invoice/:id(\\d+)', invoice.update.bind (invoice))
-    api.delete ('/invoice/:id(\\d+)', invoice.delete.bind (invoice))
+    api.get ('/invoice/:id', invoice.read.bind (invoice))
+    api.get ('/invoice/:id/items', invoiceItem.items.bind (invoiceItem))
+    api.put ('/invoice/:id', invoice.update.bind (invoice))
+    api.delete ('/invoice/:id', invoice.delete.bind (invoice))
 
     api.get ('/invoice-item', invoiceItem.list.bind (invoiceItem))
     api.get ('/invoice-item/count', invoiceItem.count.bind (invoiceItem))
     api.post ('/invoice-item', invoiceItem.create.bind (invoiceItem))
-    api.get ('/invoice-item/:id(\\d+)', invoiceItem.read.bind (invoiceItem))
-    api.put ('/invoice-item/:id(\\d+)', invoiceItem.update.bind (invoiceItem))
-    api.delete ('/invoice-item/:id(\\d+)', invoiceItem.delete.bind (invoiceItem))
+    api.get ('/invoice-item/:id', invoiceItem.read.bind (invoiceItem))
+    api.put ('/invoice-item/:id', invoiceItem.update.bind (invoiceItem))
+    api.delete ('/invoice-item/:id', invoiceItem.delete.bind (invoiceItem))
 
     api.post ('/setting', setting.create.bind (setting))
     api.get ('/setting/:key', setting.read.bind (setting))

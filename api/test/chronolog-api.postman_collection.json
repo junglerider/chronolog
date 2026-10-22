@@ -2823,12 +2823,12 @@
 		{
 			"id": "19b53730-ea83-4eeb-ad50-aa7db352a688",
 			"key": "domain",
-			"value": "http://localhost:8888"
+			"value": "http://localhost:5404"
 		},
 		{
 			"id": "17f41f1f-3279-4301-bec9-e9e84443416d",
 			"key": "baseURL",
-			"value": "http://localhost:8888/api"
+			"value": "http://localhost:5404/api"
 		}
 	]
 }

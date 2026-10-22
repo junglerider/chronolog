@@ -25,7 +25,7 @@ build_db() {
 
     local database=./db/chronolog.db
     if [[ -e "$database" && "$force" != true ]]; then
-        echo "Refusing to replace $database; pass 'db --force' to overwrite it." >&2
+        echo "Cannot replace existing $database; pass 'db --force' to overwrite it." >&2
         return 1
     fi
 

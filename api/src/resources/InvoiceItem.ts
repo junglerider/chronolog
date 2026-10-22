@@ -22,7 +22,7 @@ export class InvoiceItem extends SingleTable {
     try {
       this.validateAccess (<IRequest>req)
       const [whereClause, params] = this.sqlGenerator.generate (req.query)
-      const sql = `SELECT id, invoice_id, FROM invoice_item ${whereClause}`
+      const sql = `SELECT id, invoice_id FROM invoice_item ${whereClause}`
       const rows = await this.db.all (sql, params)
       rows ? res.json (rows) : res.status (404).json ()
       next ()

@@ -119,6 +119,7 @@ describe ('Auth', () => {
     await auth.logout (request as any, logout as any, jest.fn ())
     expect (logout.status).toHaveBeenCalledWith (205)
     expect (auth.authenticate (request as any)).toBe (false)
+    expect (JSON.stringify (logger.debug.mock.calls)).not.toContain (token)
   })
 
   test ('changes passwords only with the correct old password and resets only as admin', async () => {
@@ -182,6 +183,30 @@ describe ('Auth', () => {
     expect (failedReset.status).toHaveBeenCalledWith (500)
   })
 
+  test ('allows passwordless logins in production when the stored password is empty', async () => {
+    const originalNodeEnv = process.env.NODE_ENV
+    process.env.NODE_ENV = 'production'
+    const productionAuth = new Auth ({ session_timeout: 3600000 }, db, logger)
+    try {
+      db.get.mockResolvedValueOnce ({
+        id: 1, login: 'admin', name: 'Admin', password: null, roles: 'admin', visits: 0
+      })
+      const response = makeResponse ()
+      await productionAuth.login (makeRequest ({
+        body: { username: 'admin', password: '' }
+      }), response as any, jest.fn ())
+      expect (response.status).toHaveBeenCalledWith (200)
+      expect (response.json.mock.calls[0][0]).toMatchObject ({ username: 'admin', roles: ['admin'] })
+    } finally {
+      productionAuth.close ()
+      if (originalNodeEnv === undefined) {
+        delete process.env.NODE_ENV
+      } else {
+        process.env.NODE_ENV = originalNodeEnv
+      }
+    }
+  })
+
   test ('removes sessions when the configured timeout expires', async () => {
     auth.close ()
     let timeoutHandler: Function
@@ -204,5 +229,6 @@ describe ('Auth', () => {
     const response = makeResponse ()
     await auth.session (makeRequest ({ headers: { authorization: `Bearer ${token}` } }) as any, response as any, jest.fn ())
     expect (response.status).toHaveBeenCalledWith (401)
+    expect (JSON.stringify (logger.debug.mock.calls)).not.toContain (token)
   })
 })

@@ -8,6 +8,7 @@ node_modules
 # testing
 api/coverage
 app/coverage
+db/chronolog.db
 
 # production builds
 api/lib

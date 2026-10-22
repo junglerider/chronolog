@@ -156,7 +156,8 @@ export class SingleTable {
       let status = 400
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
-        values.push(req.params[this.idColumn])
+        const id = req.params[this.idColumn]
+        values.push(Array.isArray (id) ? id[0] : id)
         const sql = `UPDATE ${this.getTableName()} SET ` + this.getUpdateList(names) + ` WHERE ${this.idColumn} = ?`
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404
