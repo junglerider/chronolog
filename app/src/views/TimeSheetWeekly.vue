@@ -1,8 +1,8 @@
 <template>
   <v-row class="fill-height">
     <v-col>
-      <v-sheet height="64">
-        <v-toolbar flat color="surface">
+      <v-sheet height="64" color="background">
+        <v-toolbar flat color="background">
           <div class="page-title">{{ $i18n('Weekly Overview') }} / {{ $i18n('Total hours') }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
           <v-toolbar-title style="flex: 0 0 auto">
@@ -82,7 +82,7 @@
   }
   .v-calendar-weekly .v-calendar-weekly__weeknumber,
   .v-calendar-weekly .v-calendar-weekly__head-weeknumber {
-    background-color: rgb(var(--v-theme-surface-variant)) !important;
+    background-color: rgb(var(--v-theme-background)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday {
     background-color: rgb(var(--v-theme-surface)) !important;
@@ -95,7 +95,7 @@
     color: rgb(var(--v-theme-primary)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__day.v-outside {
-    background-color: rgb(var(--v-theme-surface-variant)) !important;
+    background-color: rgb(var(--v-theme-background)) !important;
   }
   .v-calendar-weekly__day-label .v-btn {
     font-size: 1em !important;

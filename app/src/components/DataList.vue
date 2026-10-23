@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar flat color="surface" class="data-list-toolbar">
+    <v-toolbar flat color="background" class="data-list-toolbar">
       <settings v-if="settings && user.hasRole('admin')" :keys="settings" style="margin-left: -12px"></settings>
       <div class="page-title">{{ title }}</div>
       <v-spacer></v-spacer>

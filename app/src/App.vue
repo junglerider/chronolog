@@ -147,6 +147,16 @@
   .v-table {
     font-size: 1rem !important;
   }
+  #chronolog.v-theme--dark .v-table,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > thead > tr > th,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > tfoot > tr > th,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > tfoot > tr > td {
+    background-color: rgb(var(--v-theme-background));
+  }
+  #chronolog.v-theme--dark .v-navigation-drawer {
+    background-color: #000 !important;
+  }
   #chronolog .v-table > .v-table__wrapper > table > thead > tr > th {
     font-size: 1rem !important;
     font-weight: 700 !important;

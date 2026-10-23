@@ -9,7 +9,14 @@
     <v-row>
       <v-col cols="12" sm="6" class="form-col">
         <div style="display: flex; width: 100%; padding-top: 20px">
-          <analogue-clock secondHandColour="#1976d2" style="flex: 60%; margin-right: 2vw; margin-left: 1vw;"/>
+          <analogue-clock
+            dial-colour="rgb(var(--v-theme-surface))"
+            stroke-colour="rgb(var(--v-theme-on-surface))"
+            hour-hand-colour="rgb(var(--v-theme-on-surface))"
+            minute-hand-colour="rgb(var(--v-theme-on-surface))"
+            secondHandColour="#1976d2"
+            style="flex: 60%; margin-right: 2vw; margin-left: 1vw;"
+          />
           <div style="flex: 40%; align-self: center;">
             <v-icon class="centered" size="x-large">mdi-arrow-down-bold</v-icon>
             <v-btn
@@ -171,4 +178,3 @@ export default {
   }
 }
 </script>
-
