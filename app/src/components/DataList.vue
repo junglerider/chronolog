@@ -114,6 +114,7 @@
 <script>
 import api from '../services/api'
 import Settings from '../components/Settings'
+import { controlArrowDirection } from '../services/keyboard'
 
 export default {
   name: 'DataList',
@@ -166,6 +167,14 @@ export default {
     pageCount() {
       return Math.ceil(this.count / this.itemsPerPage)
     }
+  },
+
+  mounted() {
+    window.addEventListener('keydown', this.onKeydown)
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.onKeydown)
   },
 
   watch: {
@@ -236,6 +245,16 @@ export default {
       }
       this.sortBy = options.sortBy
       this.data = await this.getData()
+    },
+    onKeydown(event) {
+      const direction = controlArrowDirection(event)
+      if (direction < 0 && this.page > 1) {
+        event.preventDefault()
+        this.page -= 1
+      } else if (direction > 0 && this.page < this.pageCount) {
+        event.preventDefault()
+        this.page += 1
+      }
     },
     rowClick(event, { item }) {
       if (event.target.closest('.v-selection-control')) {

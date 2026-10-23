@@ -7,7 +7,7 @@
     :title="year"
     color="primary"
     header-color="primary"
-    elevation="0"
+    elevation="6"
     class="app-date-picker"
     @update:model-value="onUpdate"
   ></v-date-picker>

@@ -123,6 +123,7 @@
 
 <script>
 import api from '../services/api'
+import { controlArrowDirection } from '../services/keyboard'
 
   export default {
 
@@ -136,9 +137,22 @@ import api from '../services/api'
 
     mounted () {
       this.$refs.calendar.checkChange()
+      window.addEventListener('keydown', this.onKeydown)
+    },
+
+    beforeUnmount() {
+      window.removeEventListener('keydown', this.onKeydown)
     },
 
     methods: {
+      onKeydown(event) {
+        const direction = controlArrowDirection(event)
+        if (direction === 0) {
+          return
+        }
+        event.preventDefault()
+        direction < 0 ? this.prev() : this.next()
+      },
       setToday () {
         this.focus = ''
       },

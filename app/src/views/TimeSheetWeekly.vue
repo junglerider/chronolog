@@ -128,6 +128,7 @@
 <script>
   import api from '../services/api'
   import dateCalc from '../services/DateCalc'
+  import { controlArrowDirection } from '../services/keyboard'
 
   const colourPool = [
     '#5e84ea', '#003086',
@@ -149,7 +150,23 @@
       colourPool: [...colourPool]
     }),
 
+    mounted() {
+      window.addEventListener('keydown', this.onKeydown)
+    },
+
+    beforeUnmount() {
+      window.removeEventListener('keydown', this.onKeydown)
+    },
+
     methods: {
+      onKeydown(event) {
+        const direction = controlArrowDirection(event)
+        if (direction === 0) {
+          return
+        }
+        event.preventDefault()
+        direction < 0 ? this.prev() : this.next()
+      },
       setToday () {
         this.calendarDate = dateCalc.firstDayOfWeek(new Date())
       },

@@ -112,6 +112,11 @@
   .v-main > .v-container {
     padding: 12px;
   }
+  .v-input.v-text-field .v-field--variant-underlined .v-field__append-inner {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
   .v-btn--disabled.v-btn--variant-outlined {
     opacity: 1;
     border-color: #cfcfcf;
@@ -188,6 +193,13 @@ export default {
       drawer: null,
       user: api.user,
   }},
+
+  async mounted() {
+    if (!this.user.id) {
+      await api.reloadSession()
+      this.user = api.user
+    }
+  },
 
   methods: {
     hasRole(role) {

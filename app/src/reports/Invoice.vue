@@ -280,8 +280,12 @@ export default {
     },
     writtenAmount() {
       const options = {lang: this.$getLanguage()}
-      const amount = Math.floor(this.invoice.grand_total)
-      const hundredth = Math.floor((this.invoice.grand_total - amount) * 100)
+      const grandTotal = Number(this.invoice.grand_total)
+      if (!Number.isFinite(grandTotal)) {
+        return ''
+      }
+      const amount = Math.floor(grandTotal)
+      const hundredth = Math.floor((grandTotal - amount) * 100)
       let writtenAmount = n2words(amount, options)
       if (hundredth > 0) {
         writtenAmount += ' / ' + n2words(hundredth, options)
@@ -292,6 +296,14 @@ export default {
 
   async mounted() {
     try {
+      if (!api.user.id) {
+        await api.reloadSession()
+      }
+      this.user = api.user
+      if (!this.user.hasRole('invoicing')) {
+        return
+      }
+
       const id = this.$route.params.id
       let response = await api.get(`/invoice/${id}`)
       this.invoice = response.data

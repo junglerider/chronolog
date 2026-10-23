@@ -77,6 +77,9 @@ const reportComponents = import.meta.glob('../reports/*.vue')
     component: () => import('../views/Projects.vue')
   },
   ...reportRoutes, {
+    path: '/reports/invoice',
+    redirect: '/invoices'
+  }, {
     path: '/reports/invoice/:id(new|\\d+)',
     component: () => import('../reports/Invoice.vue')
   }, {
