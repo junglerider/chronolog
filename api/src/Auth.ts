@@ -17,6 +17,7 @@ export class Auth {
   protected logger: Logger
   private sessions: Map <string, IUserSession>
   private config
+  private sessionTimeoutTimer: NodeJS.Timeout
 
   constructor (config, db: Database, logger: Logger) {
     this.config = config
@@ -35,7 +36,11 @@ export class Auth {
     //   })
     // }
     // invalidate sessions periodically
-    setInterval (this.sessionTimeout.bind (this), 30000)
+    this.sessionTimeoutTimer = setInterval (this.sessionTimeout.bind (this), 30000)
+  }
+
+  public close (): void {
+    clearInterval (this.sessionTimeoutTimer)
   }
 
   /**
@@ -65,7 +70,7 @@ export class Auth {
    */
   private async compare (givenPwd: string, storedPwd: string): Promise<boolean> {
     if (!storedPwd) {
-      return true
+      return givenPwd === ''
     }
     const parts = storedPwd.split (':')
     const hashedPwd = await this.hash (givenPwd, parts[0])
@@ -93,6 +98,7 @@ export class Auth {
             username: row.login,
             name: row.name,
             roles: row.roles ? row.roles.split(',') : [],
+            password_empty: !row.password,
             visits: row.visits,
             last_visit: row.last_visit,
             token: this.createSession (row, this.getToken (req))
@@ -121,7 +127,7 @@ export class Auth {
     const token = this.getToken (req)
     if (token && this.sessions.has (token)) {
       this.sessions.delete (token)
-      this.logger.debug (`Removed session token ${token}, total = ${this.sessions.size} sessions`)
+      this.logger.debug (`Removed session, total = ${this.sessions.size} sessions`)
       res.status (205).json ()
     } else {
       res.status (400).json ()
@@ -202,6 +208,7 @@ export class Auth {
     if (existingToken && this.sessions.has (existingToken)) {
       const session = this.sessions.get (existingToken)
       session.time = Date.now ()
+      session.password_empty = !user.password
       this.logger.debug (`Reused session for user ${user.login}, total = ${this.sessions.size} sessions`)
       return existingToken
     }
@@ -212,11 +219,20 @@ export class Auth {
       username: user.login,
       name: user.name,
       roles: user.roles ? user.roles.split(',') : [],
+      password_empty: !user.password
     }
     this.sessions.set (token, session)
     this.updateUserStats (user)
     this.logger.debug (`Created session for user ${user.login}, total = ${this.sessions.size} sessions`)
     return token
+  }
+
+  private setPasswordEmpty (userId: number, passwordEmpty: boolean): void {
+    this.sessions.forEach (session => {
+      if (session.id === userId) {
+        session.password_empty = passwordEmpty
+      }
+    })
   }
 
   private getToken (req: Request): string | undefined {
@@ -256,12 +272,22 @@ export class Auth {
       }
       let sql = 'SELECT password FROM user WHERE id = ?'
       let result: any = await this.db.get (sql, [req.params.id])
-      if (!this.compare (req.body.oldPassword || '', result.password)) {
+      const oldPassword = req.body.oldPassword || ''
+      if (result.password && !await this.compare (oldPassword, result.password)) {
         throw new Error (`400:Old password of user ${req.params.id} does not match`)
+      }
+      if (!result.password && oldPassword) {
+        throw new Error (`400:Old password of user ${req.params.id} does not match`)
+      }
+      if (typeof req.body.password !== 'string' || req.body.password.trim ().length === 0) {
+        throw new Error ('400:New password is required')
       }
       const password = await this.hash (req.body.password)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
       result = await this.db.run (sql, [password, req.params.id])
+      if (result.changes) {
+        this.setPasswordEmpty (Number (req.params.id), false)
+      }
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {
@@ -284,6 +310,9 @@ export class Auth {
       }
       const sql = 'UPDATE user SET password = NULL WHERE id = ?'
       const result: any = await this.db.run (sql, [req.params.id])
+      if (result.changes) {
+        this.setPasswordEmpty (Number (req.params.id), true)
+      }
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {
@@ -299,7 +328,7 @@ export class Auth {
     this.sessions.forEach ((session, token) => {
       if (now - session.time > this.config.session_timeout) {
         this.sessions.delete (token)
-        this.logger.debug (`Timed out session with token ${token}, total = ${this.sessions.size} sessions`)
+        this.logger.debug (`Timed out session, total = ${this.sessions.size} sessions`)
       }
     })
   }

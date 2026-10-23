@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const baseURL = process && process.env && process.env.NODE_ENV === 'development' ?
-  'http://localhost:8888' :
+const baseURL = import.meta.env.DEV ?
+  'http://localhost:5404' :
   `${location.protocol}//${location.host}`
 
 const api = axios.create({ baseURL: baseURL + '/api' })

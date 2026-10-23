@@ -65,7 +65,8 @@ export class Person {
   public async create (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Person.create()')
     if (!req.body.first_name && !req.body.last_name) {
-      return res.status (400).json ()
+      res.status (400).json ()
+      return
     }
     try {
       await this.db.run ('BEGIN TRANSACTION')

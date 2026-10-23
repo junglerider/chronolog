@@ -1,65 +1,47 @@
+import { shallowRef } from 'vue'
+import { decimalHoursToTime, formatDate, translate } from '../services/i18n'
+
 const supportedLanguages = ['en', 'de', 'fr', 'es', 'it']
-let i18nCatalog = new Map()
-let currentLocale = 'en'
+const languageCatalogs = {
+  en: () => import('../i18n/en.js'),
+  de: () => import('../i18n/de.js'),
+  fr: () => import('../i18n/fr.js'),
+  es: () => import('../i18n/es.js'),
+  it: () => import('../i18n/it.js')
+}
+const i18nCatalog = shallowRef(new Map())
+const currentLocale = shallowRef('en')
 
 export default {
-  install(Vue) {
+  install(application) {
 
-    const i18n = function(sourceStr) {
-      if (typeof sourceStr !== 'string') {
-        return sourceStr
-      }
-      let translatedStr = i18nCatalog.has(sourceStr) ? i18nCatalog.get(sourceStr) : sourceStr
-      for (let i = 1; i < arguments.length; i++) {
-        translatedStr = translatedStr.replace(`{${i}}`, String(arguments[i]))
-      }
-      return translatedStr
-    }
-
-    const i18nDate = value => {
-      if (typeof value !== 'string') {
-        return value
-      }
-      const matches = value.match(/^(\d{4}-[01]\d-[0-3]\d)(\D[0-2]\d:[0-5]\d(:[0-5]\d)?)?(\.\d+([+-][0-2]\d:[0-5]\d|Z))?$/)
-      if (!matches) {
-        return value
-      }
-      const [year, month, day] = matches[1].split('-')
-      const date = currentLocale === 'de' ?
-        `${day}.${month}.${year}` :
-        `${day}/${month}/${year}`
-      const time = matches[2] ? ' ' + matches[2].substr(1) : ''
-      return date + time
-    }
-
-    const $i18nDecToHrs = hrs => {
-      const hours = Math.floor(Math.abs(hrs))
-      const mins = Math.round((Math.abs(hrs) - hours) * 60)
-      return hours + ':' + (mins > 9 ? '' : '0') + mins
-    }
+    const i18n = (sourceStr, ...args) => translate(sourceStr, i18nCatalog.value, ...args)
+    const i18nDate = value => formatDate(value, currentLocale.value)
+    const $i18nDecToHrs = decimalHoursToTime
 
     const setLanguage = locale => {
-      return import(`../i18n/${locale}`).then(catalog => {
-        i18nCatalog = catalog.default
-        currentLocale = locale
+      const loadCatalog = languageCatalogs[locale]
+      if (!loadCatalog) {
+        return Promise.reject(new Error(`Unsupported language: ${locale}`))
+      }
+      return loadCatalog().then(catalog => {
+        i18nCatalog.value = catalog.default
+        currentLocale.value = locale
         window.localStorage.setItem('language', locale)
       })
     }
 
-    currentLocale = window.localStorage.getItem('language')
-    if (!currentLocale || !supportedLanguages.includes(currentLocale)) {
-      currentLocale = 'en'
-    }
-    setLanguage(currentLocale)
+    const storedLocale = window.localStorage.getItem('language')
+    currentLocale.value = supportedLanguages.includes(storedLocale) ? storedLocale : 'en'
 
-    Vue.filter('i18n', i18n)
-    Vue.filter('i18nDate', i18nDate)
+    const globalProperties = application.config.globalProperties
 
-    Vue.prototype.$i18n = i18n
-    Vue.prototype.$i18nDate = i18nDate
-    Vue.prototype.$i18nDecToHrs = $i18nDecToHrs
+    globalProperties.$i18n = i18n
+    globalProperties.$i18nDate = i18nDate
+    globalProperties.$i18nDecToHrs = $i18nDecToHrs
+    globalProperties.$setLanguage = setLanguage
+    globalProperties.$getLanguage = () => currentLocale.value
 
-    Vue.prototype.$setLanguage = setLanguage
-    Vue.prototype.$getLanguage = () => currentLocale
+    setLanguage(currentLocale.value)
   }
 }

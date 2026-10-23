@@ -1,92 +1,83 @@
 <template>
   <div>
-    <v-toolbar flat color="white" class="mb-4" height="100px" bottom>
-    <calendar-leaflet :date="date" class="ml-2 mr-4"></calendar-leaflet>
+    <v-toolbar flat color="white" class="mb-4" height="100px">
+    <calendar-leaflet :date="date" style="margin-left: 25px; margin-right: 16px"></calendar-leaflet>
       <div class="page-title">
-        {{ 'Daily Time Sheet' | i18n }}
+        {{ $i18n('Daily Time Sheet') }}
       </div>
-      <v-btn fab text small class="ml-2" @click="navigate(-1)">
-        <v-icon small>mdi-chevron-left</v-icon>
+      <v-btn class="ml-2" @click="navigate(-1)" icon size="small" variant="text">
+        <v-icon size="small">mdi-chevron-left</v-icon>
       </v-btn>
-      <v-btn fab text small class="mr-2" @click="navigate(1)">
-        <v-icon small>mdi-chevron-right</v-icon>
+      <v-btn class="mr-2" @click="navigate(1)" icon size="small" variant="text">
+        <v-icon size="small">mdi-chevron-right</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="primary" @click="onAdd">
-        <v-icon left>mdi-plus-circle-outline</v-icon>
-        {{ 'Add' | i18n }}
+      <v-btn color="primary" variant="flat" @click="onAdd">
+        <v-icon start>mdi-plus-circle-outline</v-icon>
+        {{ $i18n('Add') }}
       </v-btn>
       <v-dialog v-model="deleteDialog" max-width="500">
-        <template v-slot:activator="{ on, attrs }">
+        <template v-slot:activator="{ props }">
         <v-btn
-          outlined
           :disabled="!selected || !selected.length"
           color="primary"
           class="ml-2"
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon left>mdi-delete</v-icon>
-          {{ 'Delete' | i18n }}
+          v-bind="props"
+         variant="outlined">
+          <v-icon start>mdi-delete</v-icon>
+          {{ $i18n('Delete') }}
         </v-btn>
         </template>
         <v-card>
-          <v-card-title class="headline" primary-title>
-            {{ 'Delete' | i18n }}
+          <v-card-title class="headline">
+            {{ $i18n('Delete') }}
           </v-card-title>
           <v-card-text>
-            <span v-if="selected.length > 1">{{ 'Are you sure you want to delete {1} records?' | i18n(selected.length) }}</span>
-            <span v-else>{{ 'Are you sure you want to delete this record?' | i18n }}</span>
+            <span v-if="selected.length > 1">{{ $i18n('Are you sure you want to delete {1} records?', selected.length) }}</span>
+            <span v-else>{{ $i18n('Are you sure you want to delete this record?') }}</span>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="onDelete">
-              {{ "OK" | i18n }}
+            <v-btn color="primary" @click="onDelete" variant="text">
+              {{ $i18n("OK") }}
             </v-btn>
-            <v-btn text @click="deleteDialog = false">
-              {{ "Cancel" | i18n }}
+            <v-btn @click="deleteDialog = false" variant="text">
+              {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog v-model="moveDialog" max-width="320">
-        <template v-slot:activator="{ on, attrs }">
+        <template v-slot:activator="{ props }">
           <v-btn
-            outlined
             :disabled="!selected || !selected.length"
             color="primary"
             class="ml-2"
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon left>mdi-arrow-right-box</v-icon>
-            {{ 'Move' | i18n }}
+            v-bind="props"
+           variant="outlined">
+            <v-icon start>mdi-arrow-right-box</v-icon>
+            {{ $i18n('Move') }}
           </v-btn>
         </template>
         <v-card style="overflow: hidden">
-          <v-card-title class="headline" primary-title>
-            {{ 'Move' | i18n }}
+          <v-card-title class="text-h5 pt-4 px-6">
+            {{ $i18n('Move') }}
           </v-card-title>
-          <v-card-text>
-            {{ 'Move selected entries to a different date' | i18n }}:
+          <v-card-text class="px-6 text-medium-emphasis">
+            {{ $i18n('Move selected entries to a different date') }}:
           </v-card-text>
           <v-row justify="center">
-            <v-date-picker
-              v-model="targetDate"
-              :locale="$getLanguage()"
-              first-day-of-week="1"
-              year-icon="mdi-dots-vertical"
-            ></v-date-picker>
+            <date-picker v-model="targetDate"></date-picker>
           </v-row>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="onMove">
-              {{ "OK" | i18n }}
+            <v-btn color="primary" @click="onMove" variant="text">
+              {{ $i18n("OK") }}
             </v-btn>
-            <v-btn text @click="moveDialog = false">
-              {{ "Cancel" | i18n }}
+            <v-btn @click="moveDialog = false" variant="text">
+              {{ $i18n("Cancel") }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -96,21 +87,21 @@
     <v-form ref="form">
       <v-container fluid style="padding-left: 30px; padding-right: 30px" @keyup="keyControl">
         <v-row v-for="item in log" :key="item.id">
-          <v-col class="col-12 col-sm-2 form-col" style="display: flex">
+          <v-col style="display: flex" cols="12" sm="2" class="form-col">
             <div style="flex: 50%; max-width: 50px">
-              <v-tooltip v-if="isNew(item)" bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon @click="remove(item.id)" v-bind="attrs" v-on="on" style="margin-top: 12px; margin-left: -5px">
+              <v-tooltip v-if="isNew(item)" location="bottom">
+                <template v-slot:activator="{ props }">
+                  <v-btn icon @click="remove(item.id)" v-bind="props" style="margin-top: 12px; margin-left: -5px" variant="text">
                     <v-icon>mdi-minus-circle-outline</v-icon>
                   </v-btn>
                 </template>
-                <span>{{ 'Delete' | i18n }}</span>
+                <span>{{ $i18n('Delete') }}</span>
               </v-tooltip>
               <v-checkbox v-else v-model="selected" :value="item.id"></v-checkbox>
             </div>
             <div style="flex: 80%">
               <time-input
-                :label="'Hours' | i18n"
+                :label="$i18n('Hours')"
                 v-model="item.duration"
                 @change="onChangeHours"
                 :max="12"
@@ -120,28 +111,20 @@
               </time-input>
             </div>
           </v-col>
-          <v-col class="col-12 col-sm-3 form-col">
+          <v-col cols="12" sm="3" class="form-col">
             <v-autocomplete
               v-if="!item.task_id || taskIds.indexOf(item.task_id) > -1"
-              :label="item.task_id ? '' : 'Task' | i18n"
+              :label="$i18n(item.task_id ? '' : 'Task')"
               v-model="item.task_id"
               :items="tasks"
               item-value="id"
-              item-text="name"
+              item-title="name"
               :rules="requiredRule"
               :messages="item.customer_name"
-              @change="(taskId) => onTaskSelect(taskId, item)"
+              @update:model-value="(taskId) => onTaskSelect(taskId, item)"
             >
-              <template v-slot:item="data">
-                <template v-if="typeof data.item !== 'object'">
-                  <v-list-item-content v-text="data.item"></v-list-item-content>
-                </template>
-                <template v-else>
-                  <v-list-item-content>
-                    <v-list-item-title v-html="data.item.name"></v-list-item-title>
-                    <v-list-item-subtitle v-html="data.item.customer_name"></v-list-item-subtitle>
-                  </v-list-item-content>
-                </template>
+              <template v-slot:item="{ props, item: opt }">
+                <v-list-item v-bind="props" :title="opt.raw.name" :subtitle="opt.raw.customer_name"></v-list-item>
               </template>
             </v-autocomplete>
             <v-text-field
@@ -151,32 +134,32 @@
               :messages="item.customer_name"
             ></v-text-field>
           </v-col>
-          <v-col class="col-12 col-sm-7 form-col">
-            <v-textarea :label="'Description' | i18n" auto-grow rows="1" v-model="item.description"></v-textarea>
+          <v-col cols="12" sm="7" class="form-col">
+            <v-textarea :label="$i18n('Description')" auto-grow rows="1" v-model="item.description"></v-textarea>
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="col-12 col-sm-2 form-col" style="display: flex">
+          <v-col style="display: flex" cols="12" sm="2" class="form-col">
             <div style="flex: 50%; max-width: 50px">
             </div>
             <div style="flex: 80%">
               <time-input
-              :label="'Total hours' | i18n"
+              :label="$i18n('Total hours')"
               v-model="totalHours"
               readonly
               :allowZero="true"
             ></time-input>
             </div>
           </v-col>
-          <v-col class="col-12 col-sm-10 form-col" align="right">
+          <v-col cols="12" sm="10" class="form-col text-right">
             <v-btn color="primary" @click="onSave" style="margin-right: -16px">
-              <v-icon left>mdi-content-save</v-icon>
-              {{ 'Save' | i18n }}
+              <v-icon start>mdi-content-save</v-icon>
+              {{ $i18n('Save') }}
             </v-btn>
           </v-col>
         </v-row>
       </v-container>
-      <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+      <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
         {{ messageText }}
       </v-snackbar>
     </v-form>
@@ -189,12 +172,14 @@ import api from '../services/api'
 import DateCalc from '../services/DateCalc'
 import CalendarLeaflet from '../components/CalendarLeaflet'
 import TimeInput from '../components/TimeInput'
+import DatePicker from '../components/DatePicker'
 
 export default {
 
   components: {
     CalendarLeaflet,
     TimeInput,
+    DatePicker,
   },
 
   data() {
@@ -297,7 +282,7 @@ export default {
       this.totalHours = this.log.reduce((total, item) => total + (Number(item.duration) || 0), 0)
     },
     async onSave() {
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       let recordsWritten = 0

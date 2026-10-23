@@ -1,7 +1,7 @@
 <template>
-  <v-tooltip bottom>
-    <template v-slot:activator="{ on, attrs }">
-      <span v-bind="attrs" v-on="on">{{ localTimeDate.toLocaleTimeString() }}</span>
+  <v-tooltip location="bottom">
+    <template v-slot:activator="{ props }">
+      <span v-bind="props">{{ localTimeDate.toLocaleTimeString() }}</span>
     </template>
     <span>{{ localTimeDate.toLocaleDateString() }}</span>
   </v-tooltip>
@@ -23,7 +23,7 @@
       this.clock = setInterval(() => { this.localTimeDate = new Date() }, 1000)
     },
 
-    destroyed() {
+    unmounted() {
       clearInterval(this.clock)
     }
   }

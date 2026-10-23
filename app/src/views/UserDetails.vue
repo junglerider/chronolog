@@ -3,83 +3,83 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'User Details' | i18n }}</div>
-          <span>{{ 'ID' | i18n }}: {{ user.id }}</span>
+          <div class="page-title">{{ $i18n('User Details') }}</div>
+          <span>{{ $i18n('ID') }}: {{ user.id }}</span>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 form-col">
-          <v-text-field :label="'User name' | i18n" v-model="user.login" :rules="requiredRule"></v-text-field>
+        <v-col cols="12" sm="6" class="form-col">
+          <v-text-field :label="$i18n('User name')" v-model="user.login" :rules="requiredRule"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-6 form-col">
+        <v-col cols="12" sm="6" class="form-col">
           <v-autocomplete
-            :label="'Contact' | i18n"
+            :label="$i18n('Contact')"
             :items="persons"
             v-model="user.person_id"
             item-value="id"
-            item-text="name"
+            item-title="name"
             :rules="requiredRule"
           ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-md-12 form-col" style="display: flex;">
+        <v-col style="display: flex;" cols="12" md="12" class="form-col">
           <div style="flex: 80%;">
-            <v-textarea :label="'Notes' | i18n" v-model="user.notes" auto-grow rows="1"></v-textarea>
+            <v-textarea :label="$i18n('Notes')" v-model="user.notes" auto-grow rows="1"></v-textarea>
           </div>
           <div style="max-width: 180px; margin-left: auto; text-align: right">
-            <v-checkbox :label="'Is Active' | i18n" class="mx-2" v-model="user.is_active" :true-value="1" :false-value="0"></v-checkbox>
+            <v-checkbox :label="$i18n('Is Active')" class="mx-2" v-model="user.is_active" :true-value="1" :false-value="0"></v-checkbox>
           </div>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 form-col">
+        <v-col cols="12" sm="6" class="form-col">
           <v-select
           v-model="roles"
-          :label="'Access control' | i18n"
+          :label="$i18n('Access control')"
           :items="allRoles"
           multiple
           chips
-          @change="onChangeRoles"
+          @update:model-value="onChangeRoles"
         ></v-select>
         </v-col>
-        <v-col class="col-12 col-sm-6 form-col">
-          <v-alert v-if="user.password == 0" text outlined type="warning">
-            {{ 'This account is not password-protected.' | i18n }}
+        <v-col cols="12" sm="6" class="form-col">
+          <v-alert v-if="user.password == 0" type="warning" variant="tonal">
+            {{ $i18n('This account is not password-protected.') }}
           </v-alert>
         </v-col>
       </v-row>
       <v-row v-if="user.id !== 'new'">
-        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
-          <v-text-field :label="'Last visit' | i18n" v-model="lastVisit" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="3" class="col-xs-6 form-col">
+          <v-text-field :label="$i18n('Last visit')" v-model="lastVisit" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
-          <v-text-field :label="'Total visits' | i18n" v-model="user.visits" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="3" class="col-xs-6 form-col">
+          <v-text-field :label="$i18n('Total visits')" v-model="user.visits" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
-          <v-text-field :label="'Number of tasks' | i18n" v-model="user.task_count" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="3" class="col-xs-6 form-col">
+          <v-text-field :label="$i18n('Number of tasks')" v-model="user.task_count" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-3 col-xs-6 form-col">
-          <v-text-field :label="'Number of time sheet entries' | i18n" v-model="user.time_log_count" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="3" class="col-xs-6 form-col">
+          <v-text-field :label="$i18n('Number of time sheet entries')" v-model="user.time_log_count" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row v-if="user.id !== 'new'">
-        <v-col class="col-12 col-sm-6 form-col">
-          <v-text-field :label="'Created at' | i18n" v-model="createdAt" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="6" class="form-col">
+          <v-text-field :label="$i18n('Created at')" v-model="createdAt" readonly tabindex="-1"></v-text-field>
         </v-col>
-        <v-col class="col-12 col-sm-6 form-col">
-          <v-text-field :label="'Updated at' | i18n" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
+        <v-col cols="12" sm="6" class="form-col">
+          <v-text-field :label="$i18n('Updated at')" v-model="updatedAt" readonly tabindex="-1"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-12 form-col" align="right">
-          <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ 'Save' | i18n }}</v-btn>
-          <v-btn class="ml-2 mt-4" @click="$router.back()">{{ 'Cancel' | i18n }}</v-btn>
-          <v-btn v-if="user.password != 0" class="ml-2 mt-4" @click="onResetPassword">{{ 'Reset password' | i18n }}</v-btn>
+        <v-col cols="12" sm="12" class="form-col text-right">
+          <v-btn class="mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
+          <v-btn class="ml-2 mt-4" @click="$router.back()">{{ $i18n('Cancel') }}</v-btn>
+          <v-btn v-if="user.password != 0" class="ml-2 mt-4" @click="onResetPassword">{{ $i18n('Reset password') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>
@@ -104,10 +104,10 @@ export default {
       messageText: '',
       isSaving: false,
       allRoles: [
-        { value: 'admin', text: this.$i18n('Administrator') },
-        { value: 'invoicing', text: this.$i18n('Invoicing') },
-        { value: 'reporting', text: this.$i18n('Reporting') },
-        { value: 'contacts', text: this.$i18n('Contacts') },
+        { value: 'admin', title: this.$i18n('Administrator') },
+        { value: 'invoicing', title: this.$i18n('Invoicing') },
+        { value: 'reporting', title: this.$i18n('Reporting') },
+        { value: 'contacts', title: this.$i18n('Contacts') },
       ],
       roles: [],
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
@@ -128,7 +128,7 @@ export default {
 
   methods: {
     async onSave() {
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       if (!_.isEqual(this.user, this.previousUser)) {

@@ -1,33 +1,33 @@
 <template>
     <div class="report-container">
-      <div class="report-title">{{ "Project time sheet by task" | i18n }}</div>
+      <div class="report-title">{{ $i18n("Project time sheet by task") }}</div>
     <div>
-      {{ "Project" | i18n }}: {{ project.name }}
+      {{ $i18n("Project") }}: {{ project.name }}
     </div>
     <div class="report-subtitle">
-      {{ "From" | i18n }} {{ from | i18nDate }} {{ "to" | i18n }} {{ to | i18nDate }}
-      <span v-if="customerId > 0">- {{ "Customer" | i18n }}: {{ data[0].customer_name }}</span>
+      {{ $i18n("From") }} {{ $i18nDate(from) }} {{ $i18n("to") }} {{ $i18nDate(to) }}
+      <span v-if="customerId > 0">- {{ $i18n("Customer") }}: {{ data[0].customer_name }}</span>
     </div>
       <table class="report-body">
         <tr>
-          <th>{{ 'Date' | i18n }}</th>
-          <th>{{ "Name" | i18n }}</th>
-          <th v-if="customerId <= 0">{{ 'Customer' | i18n }}</th>
-          <th>{{ 'Project/Task' | i18n }}</th>
-          <th>{{ 'Description' | i18n }}</th>
-          <th class="report-right">{{ 'Hours' | i18n }}</th>
+          <th>{{ $i18n('Date') }}</th>
+          <th>{{ $i18n("Name") }}</th>
+          <th v-if="customerId <= 0">{{ $i18n('Customer') }}</th>
+          <th>{{ $i18n('Project/Task') }}</th>
+          <th>{{ $i18n('Description') }}</th>
+          <th class="report-right">{{ $i18n('Hours') }}</th>
         </tr>
-        <template v-for="section in groupedData">
+        <template v-for="(section, sectionIndex) in groupedData" :key="sectionIndex">
           <tr v-for="rec in section.data" :key="rec.id">
-            <td class="report-nowrap">{{ rec.date | i18nDate }}</td>
+            <td class="report-nowrap">{{ $i18nDate(rec.date) }}</td>
             <td class="report-nowrap">{{ rec.user_name }}</td>
             <td v-if="customerId <= 0">{{ rec.customer_name }}</td>
             <td>{{ rec.task_name }}</td>
             <td>{{ rec.description }}</td>
             <td class="report-right report-nowrap">{{ $i18nDecToHrs(rec.duration) }}</td>
           </tr>
-          <tr :key="section.task">
-            <th>{{ 'Subtotal' | i18n }}</th>
+          <tr>
+            <th>{{ $i18n('Subtotal') }}</th>
             <th></th>
             <th v-if="customerId <= 0"></th>
             <th>{{ section.task }}</th>
@@ -36,7 +36,7 @@
           </tr>
         </template>
         <tr>
-          <th>{{ 'Total' | i18n }}</th>
+          <th>{{ $i18n('Total') }}</th>
           <th></th>
           <th v-if="customerId <= 0"></th>
           <th></th>

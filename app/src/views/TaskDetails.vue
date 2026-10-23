@@ -1,7 +1,7 @@
 <template>
   <div>
     <task-edit :task="task" mode="normal" @task-edit-event="onTaskEdit" :key="'taskedit' + version"></task-edit>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>

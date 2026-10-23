@@ -1,54 +1,54 @@
 <template>
   <div>
     <div style="display: flex">
-      <div class="page-title" style="margin-bottom: 16px">{{ 'Phone/Email' | i18n }}</div>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="add()" style="margin-left: auto">
+      <div class="page-title" style="margin-bottom: 16px">{{ $i18n('Phone/Email') }}</div>
+      <v-tooltip location="bottom">
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props" @click="add()" style="margin-left: auto" variant="text">
             <v-icon>mdi-plus-circle-outline</v-icon>
           </v-btn>
         </template>
-        <span>{{ 'Add' | i18n }}</span>
+        <span>{{ $i18n('Add') }}</span>
       </v-tooltip>
     </div>
     <div v-for="item in phoneList" :key="item.id" style="display: flex">
       <v-container style="padding:0">
         <v-row>
-          <v-col class="col-12 col-sm-12 col-md-4 form-col">
-            <v-select :label="'Type' | i18n" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
+          <v-col cols="12" sm="12" md="4" class="form-col">
+            <v-select :label="$i18n('Type')" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
           </v-col>
-          <v-col class="col-12 col-sm-12 col-md-8 form-col">
+          <v-col cols="12" sm="12" md="8" class="form-col">
             <v-text-field
               :label="dynamicLabel(item.type)"
               v-model="item.entry"
               :rules="rules"
             >
               <template v-if="item.type == 'EML' || item.type == 'WEB'" v-slot:prepend-inner>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
                     <v-btn
                       icon
-                      v-bind="attrs" v-on="on"
+                      v-bind="props"
                       @click="jumpTo(item)"
                       style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
-                    >
+                     variant="text">
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>
                   </template>
-                  <span>{{ 'Open' | i18n }}</span>
+                  <span>{{ $i18n('Open') }}</span>
                 </v-tooltip>
               </template>
             </v-text-field>
           </v-col>
         </v-row>
       </v-container>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on" @click="remove(item.id)" style="margin-left: auto; margin-top: 0.8em">
+        <v-tooltip location="bottom">
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props" @click="remove(item.id)" style="margin-left: auto; margin-top: 0.8em" variant="text">
               <v-icon>mdi-minus-circle-outline</v-icon>
             </v-btn>
           </template>
-          <span>{{ 'Delete' | i18n }}</span>
+          <span>{{ $i18n('Delete') }}</span>
         </v-tooltip>
     </div>
   </div>

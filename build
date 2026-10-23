@@ -1,22 +1,53 @@
 #!/bin/bash
 # Executes production build steps of chronolog application
 
+set -euo pipefail
+
 cd "$(dirname "$0")"
 
 usage() {
-    echo "Usage: build.sh [-h|--help] [db|app|api|all|docker]"
-    echo "       db     - creates a new chronolog.db file (overwrites the old one)"
+    echo "Usage: build.sh [-h|--help] [db [--force]|app|api|all|docker]"
+    echo "       db     - creates chronolog.db; use --force to replace an existing file"
     echo "       app    - creates the Vue frontend"
     echo "       api    - creates the Node.js backend"
     echo "       all    - creates both frontend and backend"
-    echo "       docker - creates db, frontend, backend and Docker image"
+    echo "       docker - creates frontend, backend and Docker image"
 }
 
 build_db() {
+    local force=false
+    if [[ $# -eq 1 && "${1:-}" == "--force" ]]; then
+        force=true
+    elif [[ $# -gt 0 ]]; then
+        usage >&2
+        return 2
+    fi
+
+    local database=./db/chronolog.db
+    if [[ -e "$database" && "$force" != true ]]; then
+        echo "Cannot replace existing $database; pass 'db --force' to overwrite it." >&2
+        return 1
+    fi
+
+    local temporary_database
+    temporary_database=$(mktemp ./db/.chronolog.db.XXXXXX)
     echo "creating new database: chronolog.db"
-    rm -f ./db/chronolog.db || true
-    sqlite3 ./db/chronolog.db < ./db/schema.sql
-    sqlite3 ./db/chronolog.db < ./db/fixtures.sql
+    if ! sqlite3 "$temporary_database" < ./db/schema.sql ||
+       ! sqlite3 "$temporary_database" < ./db/fixtures.sql; then
+        rm -f "$temporary_database"
+        return 1
+    fi
+    chmod 644 "$temporary_database"
+
+    if [[ "$force" == true ]]; then
+        mv -f "$temporary_database" "$database"
+    elif ! ln "$temporary_database" "$database"; then
+        echo "Refusing to replace $database; pass 'db --force' to overwrite it." >&2
+        rm -f "$temporary_database"
+        return 1
+    else
+        rm -f "$temporary_database"
+    fi
     ls -lh ./db/chronolog.db
 }
 
@@ -37,7 +68,6 @@ build_all() {
 }
 
 build_docker() {
-    build_db
     build_all
     docker build -t chronolog .
 }
@@ -52,8 +82,9 @@ while [ "$1" != "" ]; do
         -h | --help )   usage
                         exit
                         ;;
-        db )            build_db
-                        exit
+        db )            shift
+                        build_db "$@"
+                        exit $?
                         ;;
         app )           build_app
                         exit
@@ -72,4 +103,3 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
-

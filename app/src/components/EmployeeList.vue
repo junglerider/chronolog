@@ -2,23 +2,23 @@
   <div>
     <div style="display: flex">
       <div class="page-title" style="margin-bottom: 16px">
-        {{ (entityType === 'person' ? 'Organisations' : 'Employees') | i18n }}
+        {{ $i18n((entityType === 'person' ? 'Organisations' : 'Employees')) }}
       </div>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click="add()" style="margin-left: auto">
+      <v-tooltip location="bottom">
+        <template v-slot:activator="{ props }">
+          <v-btn icon v-bind="props" @click="add()" style="margin-left: auto" variant="text">
             <v-icon>mdi-plus-circle-outline</v-icon>
           </v-btn>
         </template>
-        <span>{{ 'Add' | i18n }}</span>
+        <span>{{ $i18n('Add') }}</span>
       </v-tooltip>
     </div>
     <div v-for="employee in employeeList" :key="employee.employee_id" style="display: flex">
       <v-container style="padding:0">
         <v-row>
-          <v-col class="col-12 col-sm-12 col-md-7 form-col">
+          <v-col cols="12" sm="12" md="7" class="form-col">
             <auto-complete
-              :label="'Name' | i18n"
+              :label="$i18n('Name')"
               :item="{ id: (entityType === 'person' ? employee.organisation_id : employee.person_id), name: employee.name }"
               :lookup="entityType === 'person'? orgLookup : personLookup"
               min-search-length="2"
@@ -27,34 +27,34 @@
               clearable
             >
               <template v-slot:prepend>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
+                <v-tooltip location="bottom">
+                  <template v-slot:activator="{ props }">
                     <v-btn
                       icon
-                      v-bind="attrs" v-on="on"
+                      v-bind="props"
                       @click="jumpTo(employee)"
                       style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
-                    >
+                     variant="text">
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>
                   </template>
-                  <span>{{ entityType === 'person' ? 'Organisation Details' : 'Contact Details' | i18n }}</span>
+                  <span>{{ $i18n(entityType === 'person' ? 'Organisation Details' : 'Contact Details') }}</span>
                 </v-tooltip>
               </template>
             </auto-complete>
           </v-col>
-          <v-col class="col-12 col-sm-12 col-md-5 form-col">
-            <v-text-field :label="'Position' | i18n" v-model="employee.position"></v-text-field>
+          <v-col cols="12" sm="12" md="5" class="form-col">
+            <v-text-field :label="$i18n('Position')" v-model="employee.position"></v-text-field>
           </v-col>
         </v-row>
       </v-container>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on" @click="remove(employee.employee_id)" style="margin-left: auto; margin-top: 0.8em">
+        <v-tooltip location="bottom">
+          <template v-slot:activator="{ props }">
+            <v-btn icon v-bind="props" @click="remove(employee.employee_id)" style="margin-left: auto; margin-top: 0.8em" variant="text">
               <v-icon>mdi-minus-circle-outline</v-icon>
             </v-btn>
           </template>
-          <span>{{ 'Delete' | i18n }}</span>
+          <span>{{ $i18n('Delete') }}</span>
         </v-tooltip>
     </div>
   </div>

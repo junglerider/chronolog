@@ -134,12 +134,12 @@ export class Task extends SingleTable {
       const extendedFormat = req.query.format === 'extended'
       let projectName = ''
       if (extendedFormat) {
-        const rows: any = await this.db.get (`SELECT t.name FROM task t WHERE t.id = ?`, [req.params.id])
+        const rows: any = await this.db.get (`SELECT t.name FROM task t WHERE t.id = ?`, [String (req.params.id)])
         if (rows && rows.name) {
           projectName = rows.name
         }
       }
-      let descendants = await this.findDescendants (req.params.id, projectName, type)
+      let descendants = await this.findDescendants (String (req.params.id), projectName, type)
       if (!extendedFormat) {
         descendants = descendants.map (desc => desc.id)
       }
@@ -156,9 +156,9 @@ export class Task extends SingleTable {
       let status = 400
       const [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
-        let descendants = await this.findDescendants (req.params.id, '')
+        let descendants = await this.findDescendants (String (req.params.id), '')
         descendants = descendants.map (desc => desc.id)
-        descendants.unshift (req.params.id)
+        descendants.unshift (String (req.params.id))
         const sql = `UPDATE task AS t SET ` + this.getUpdateList(names) + ` WHERE t.id IN (${descendants.join (',')})`
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404

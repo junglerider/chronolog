@@ -1,22 +1,22 @@
 <template>
     <div class="report-container">
-      <div class="report-title">{{ 'Working time' | i18n }}</div>
-      <div>{{ 'From' | i18n }} {{ from | i18nDate }} {{ 'to' | i18n }} {{ to | i18nDate }}</div>
+      <div class="report-title">{{ $i18n('Working time') }}</div>
+      <div>{{ $i18n('From') }} {{ $i18nDate(from) }} {{ $i18n('to') }} {{ $i18nDate(to) }}</div>
       <div class="report-subtitle" v-if="userId > 0">
-        {{ 'Name' | i18n }}: {{ getUserName(userId) }}
+        {{ $i18n('Name') }}: {{ getUserName(userId) }}
       </div>
       <table class="report-body">
         <tr>
-          <th>{{ "Day" | i18n }}</th>
-          <th>{{ "Date" | i18n }}</th>
-          <th v-if="userId <= 0">{{ "Name" | i18n }}</th>
-          <th>{{ "Arrival" | i18n }}</th>
-          <th>{{ "Departure" | i18n }}</th>
-          <th class="report-right">{{ "Hours" | i18n }}</th>
+          <th>{{ $i18n("Day") }}</th>
+          <th>{{ $i18n("Date") }}</th>
+          <th v-if="userId <= 0">{{ $i18n("Name") }}</th>
+          <th>{{ $i18n("Arrival") }}</th>
+          <th>{{ $i18n("Departure") }}</th>
+          <th class="report-right">{{ $i18n("Hours") }}</th>
         </tr>
         <tr v-for="rec of data" :key="rec.id">
-          <td class="report-nowrap">{{ weekDay(rec.date) | i18n }}</td>
-          <td class="report-nowrap">{{ rec.date | i18nDate }}</td>
+          <td class="report-nowrap">{{ $i18n(weekDay(rec.date)) }}</td>
+          <td class="report-nowrap">{{ $i18nDate(rec.date) }}</td>
           <td class="report-nowrap" v-if="userId <= 0">{{ getUserName(rec.user_id) }}</td>
           <td>{{ rec.arrival_time }}</td>
           <td>{{ rec.departure_time}}</td>
@@ -25,7 +25,7 @@
           </td>
         </tr>
         <tr>
-          <th>{{ 'Total' | i18n }}</th>
+          <th>{{ $i18n('Total') }}</th>
           <th v-if="userId <= 0"></th>
           <th></th>
           <th></th>

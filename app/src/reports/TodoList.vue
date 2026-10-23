@@ -1,32 +1,32 @@
 <template>
     <div class="report-container">
-      <div class="report-title">{{ 'Todo List' | i18n }}</div>
+      <div class="report-title">{{ $i18n('Todo List') }}</div>
       <div class="report-subtitle" v-if="userId > 0">
-        {{ 'Name' | i18n }}: {{ getUserName(userId) }}
+        {{ $i18n('Name') }}: {{ getUserName(userId) }}
       </div>
       <table class="report-body">
         <tr>
-          <th>{{ "Task" | i18n }}</th>
-          <th v-if="userId <= 0">{{ "Name" | i18n }}</th>
-          <th>{{ "Project" | i18n }}</th>
-          <th>{{ "Customer" | i18n }}</th>
-          <th>{{ "Status" | i18n }}</th>
-          <th>{{ "Created at" | i18n }}</th>
-          <th class="report-right">{{ "Total hours" | i18n }}</th>
+          <th>{{ $i18n("Task") }}</th>
+          <th v-if="userId <= 0">{{ $i18n("Name") }}</th>
+          <th>{{ $i18n("Project") }}</th>
+          <th>{{ $i18n("Customer") }}</th>
+          <th>{{ $i18n("Status") }}</th>
+          <th>{{ $i18n("Created at") }}</th>
+          <th class="report-right">{{ $i18n("Total hours") }}</th>
         </tr>
         <tr v-for="rec of data" :key="rec.id">
           <td class="report-nowrap">{{ rec.name }}</td>
           <td class="report-nowrap" v-if="userId <= 0">{{ getUserName(rec.user_id) }}</td>
           <td>{{ rec.parent_name }}</td>
           <td>{{ rec.customer_name }}</td>
-          <td>{{ rec.is_active === 1 ? 'active' : 'inactive' | i18n }}</td>
-          <td>{{ rec.created_at | i18nDate }}</td>
+          <td>{{ $i18n(rec.is_active === 1 ? 'active' : 'inactive') }}</td>
+          <td>{{ $i18nDate(rec.created_at) }}</td>
           <td class="report-right report-nowrap">
             {{ $i18nDecToHrs(rec.duration) }}
           </td>
         </tr>
         <tr>
-          <th>{{ 'Total' | i18n }}</th>
+          <th>{{ $i18n('Total') }}</th>
           <th v-if="userId <= 0"></th>
           <th></th>
           <th></th>

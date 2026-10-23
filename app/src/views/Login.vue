@@ -1,8 +1,6 @@
 <template>
   <v-app>
     <v-app-bar
-      app
-      clipped-left
       color="black"
       style="color: white; padding-left: 3vw;"
     >
@@ -17,29 +15,31 @@
         <div class="login-title">chronolog</div>
         <v-text-field
           v-model="username"
-          :label="'User name' | i18n"
+          :label="$i18n('User name')"
           :rules="requiredRule"
           ref="username"
         ></v-text-field>
         <v-text-field
           v-model="password"
-          :label="'Password' | i18n"
+          :label="$i18n('Password')"
           :type="showPassword ? 'text' : 'password'"
         >
+        <template #append-inner>
         <v-btn
           @click="showPassword = !showPassword"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showPassword" >mdi-eye</v-icon>
           <v-icon v-if="!showPassword" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
         </v-text-field>
-        <v-alert v-model="authError" text outlined type="error">
-          {{ 'The server did not accept the credentials.' | i18n }}
+        <v-alert v-model="authError" type="error" variant="tonal">
+          {{ $i18n('The server did not accept the credentials.') }}
         </v-alert>
-        <v-btn color="primary" @click="login" class="mt-2">{{ 'Login' | i18n }} </v-btn>
+        <v-btn color="primary" @click="login" class="mt-2">{{ $i18n('Login') }} </v-btn>
       </v-card>
     </v-form>
   </v-app>
@@ -84,16 +84,16 @@ export default {
 
   methods: {
     async login() {
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       this.authError = false
       try {
-        await api.login({
+        const response = await api.login({
           username: this.username,
           password: this.password
         })
-        this.$router.push('/')
+        this.$router.push(response.data.password_empty ? '/password' : '/')
       } catch (err) {
         if (err.response && ([401, 404, 429].includes(err.response.status))) {
           this.authError = true

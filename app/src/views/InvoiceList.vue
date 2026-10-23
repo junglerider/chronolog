@@ -2,7 +2,7 @@
   <div>
     <data-list
       v-if="user.hasRole('invoicing')"
-      :title="'Invoices' | i18n"
+      :title="$i18n('Invoices')"
       :headers="headers"
       apiBaseUrl="/invoice"
       uiBaseUrl="/invoices"

@@ -1,67 +1,75 @@
 <template>
   <v-container>
     <v-form ref="form" class="password-form">
-      <div class="page-title password-title">{{ 'Change Password' | i18n }}</div>
-      <v-alert v-model="error" text outlined :type="errorType">
+      <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
+      <v-alert v-if="user.password_empty" type="warning" variant="tonal">
+        {{ $i18n('This account is not secured. Please add a password.') }}
+      </v-alert>
+      <v-alert v-model="error" :type="errorType" variant="tonal">
         {{ errorMessage }}
       </v-alert>
       <v-text-field
         v-model="oldPassword"
-        :label="'Old password' | i18n"
+        :label="$i18n('Old password')"
         :type="showOldPassword ? 'text' : 'password'"
       >
+        <template #append-inner>
         <v-btn
           @click="showOldPassword = !showOldPassword"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showOldPassword" >mdi-eye</v-icon>
           <v-icon v-if="!showOldPassword" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
       <v-text-field
         v-model="newPassword1"
-        :label="'New password' | i18n"
+        :label="$i18n('New password')"
         :type="showNewPassword1 ? 'text' : 'password'"
         :rules="passwordRules"
         loading
       >
-        <template v-slot:progress>
+        <template v-slot:loader>
           <v-progress-linear
-            :value="passwordStrength"
+            :model-value="passwordStrength"
             :color="color"
-            absolute
             height="5"
           ></v-progress-linear>
         </template>
+        <template #append-inner>
         <v-btn
           @click="showNewPassword1 = !showNewPassword1"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showNewPassword1" >mdi-eye</v-icon>
           <v-icon v-if="!showNewPassword1" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
       <v-text-field
         v-model="newPassword2"
-        :label="'Retype new password' | i18n"
+        :label="$i18n('Retype new password')"
         :type="showNewPassword2 ? 'text' : 'password'"
         :rules="repeatRules"
       >
+        <template #append-inner>
         <v-btn
           @click="showNewPassword2 = !showNewPassword2"
           tabindex="-1"
-          icon small color="grey"
-          slot="append"
-        >
+          icon color="grey"
+
+         variant="text" size="small">
           <v-icon v-if="showNewPassword2" >mdi-eye</v-icon>
           <v-icon v-if="!showNewPassword2" >mdi-eye-off</v-icon>
         </v-btn>
+        </template>
       </v-text-field>
-      <v-btn color="primary" @click="updatePassword" class="mt-2">{{ 'Update' | i18n }} </v-btn>
+      <v-btn color="primary" @click="updatePassword" class="mt-2">{{ $i18n('Update') }} </v-btn>
     </v-form>
   </v-container>
 </template>
@@ -111,7 +119,7 @@ export default {
   methods: {
     async updatePassword() {
       this.updateError = false
-      if (!this.$refs.form.validate()) {
+      if (!(await this.$refs.form.validate()).valid) {
         return
       }
       try {
@@ -119,6 +127,8 @@ export default {
           password: this.newPassword1,
           oldPassword: this.oldPassword,
         })
+        api.user.password_empty = false
+        this.user.password_empty = false
         this.errorMessage = this.$i18n('Your password has been updated.')
         this.errorType = 'success'
         this.error = true

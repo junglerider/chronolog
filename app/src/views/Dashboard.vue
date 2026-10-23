@@ -2,23 +2,23 @@
   <v-container>
     <v-row>
       <v-col md="12">
-        <div class="page-title">{{ 'Welcome back' | i18n }}{{ getUserName() }}!</div>
+        <div class="page-title">{{ $i18n('Welcome back') }}{{ getUserName() }}!</div>
         {{ todaysDate }}
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="col-12 col-sm-6 form-col">
+      <v-col cols="12" sm="6" class="form-col">
         <div style="display: flex; width: 100%; padding-top: 20px">
           <analogue-clock secondHandColour="#1976d2" style="flex: 60%; margin-right: 2vw; margin-left: 1vw;"/>
           <div style="flex: 40%; align-self: center;">
-            <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
+            <v-icon class="centered" size="x-large">mdi-arrow-down-bold</v-icon>
             <v-btn
               :disabled="isPresent"
               @click="punchTheClock(1)"
               class="centered mb-4"
               primary
               color="primary"
-            >{{ 'Check in' | i18n }}</v-btn>
+            >{{ $i18n('Check in') }}</v-btn>
             <div class="centered dotted-line">- - - - - - - - - -</div>
             <v-btn
               :disabled="!isPresent"
@@ -26,49 +26,49 @@
               class="centered mt-4"
               primary
               color="primary"
-              >{{ 'Check out' | i18n }}</v-btn>
-            <v-icon x-large class="centered">mdi-arrow-down-bold</v-icon>
+              >{{ $i18n('Check out') }}</v-btn>
+            <v-icon class="centered" size="x-large">mdi-arrow-down-bold</v-icon>
           </div>
         </div>
       </v-col>
-      <v-col class="col-12 col-sm-6 col-md-4 form-col">
-        <v-simple-table>
+      <v-col cols="12" sm="6" md="4" class="form-col">
+        <v-table>
           <template v-slot:default>
             <tbody>
               <tr key="list-status">
-                <td>{{ 'Status' | i18n }}</td>
-                <td class="data">{{ (isPresent ? 'present' : 'absent') | i18n }}</td>
+                <td>{{ $i18n('Status') }}</td>
+                <td class="data">{{ $i18n((isPresent ? 'present' : 'absent')) }}</td>
               </tr>
               <tr key="list-arrival">
-                <td>{{ 'Arrival today' | i18n }}</td>
+                <td>{{ $i18n('Arrival today') }}</td>
                 <td class="data">{{ arrivalTime }}</td>
               </tr>
               <tr key="list-time-today">
-                <td>{{ 'Working time today' | i18n }}</td>
+                <td>{{ $i18n('Working time today') }}</td>
                 <td class="data">{{ $i18nDecToHrs(workingTime) }}</td>
               </tr>
               <tr key="list-departure">
-                <td>{{ 'Departure' | i18n }}</td>
+                <td>{{ $i18n('Departure') }}</td>
                 <td class="data">{{ departureTime }}</td>
               </tr>
               <tr key="list-hrs-today">
-                <td>{{ 'Hours today' | i18n }}</td>
+                <td>{{ $i18n('Hours today') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursToday) }}</td>
               </tr>
               <tr key="list-hrs-week">
-                <td>{{ 'Hours this week' | i18n }}</td>
+                <td>{{ $i18n('Hours this week') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisWeek) }}</td>
               </tr>
               <tr key="list-hrs-month">
-                <td>{{ 'Hours this month' | i18n }}</td>
+                <td>{{ $i18n('Hours this month') }}</td>
                 <td class="data">{{ $i18nDecToHrs(timeSheet.hoursThisMonth) }}</td>
               </tr>
             </tbody>
           </template>
-        </v-simple-table>
+        </v-table>
       </v-col>
     </v-row>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>

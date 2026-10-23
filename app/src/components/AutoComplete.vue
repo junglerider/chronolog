@@ -1,17 +1,19 @@
 <template>
   <v-autocomplete
     v-bind="$attrs"
-    :no-data-text="'No results' | i18n"
+    :no-data-text="$i18n('No results')"
     :items="items"
     :loading="isLoading"
-    :search-input.sync="searchTerm"
-    :value="value"
-    :item-text="itemText"
+    v-model:search="searchTerm"
+    :model-value="value"
+    :item-title="itemText"
     :item-value="itemValue"
     return-object
-    @change="onChange"
+    @update:model-value="onChange"
   >
-    <slot v-for="(_, name) in $slots" :name="name" :slot="name" />
+    <template v-for="(_, name) in $slots" #[name]="slotProps">
+      <slot :name="name" v-bind="slotProps || {}" />
+    </template>
   </v-autocomplete>
 </template>
 
@@ -21,10 +23,7 @@ export default {
 
   name: 'AutoComplete',
 
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
+  inheritAttrs: false,
 
   props: {
     item: {
@@ -45,6 +44,8 @@ export default {
     }
   },
 
+  emits: ['change'],
+
   data() {
     return {
       isLoading: false,
@@ -59,6 +60,7 @@ export default {
 
   methods: {
     onChange(value) {
+      this.value = value
       this.$emit('change', value)
     }
   },

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-alert v-model="deletionError" text outlined dismissible type="error">
-      {{ 'Some tasks have hours booked. Tasks with hours booked cannot be deleted.' | i18n }}
+    <v-alert v-model="deletionError" closable type="error" variant="tonal">
+      {{ $i18n('Some tasks have hours booked. Tasks with hours booked cannot be deleted.') }}
     </v-alert>
     <data-list
-      :title="'Todo List' | i18n"
+      :title="$i18n('Todo List')"
       :headers="headers"
       :apiBaseUrl="`/todo/${user.id}`"
       uiBaseUrl="/todo"

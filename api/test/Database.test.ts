@@ -1,4 +1,4 @@
-import * as sqlite3 from 'sqlite3'
+import sqlite3 = require('sqlite3')
 import { Database } from '../src/Database'
 import { createMockLogger } from './MockLogger'
 
@@ -41,13 +41,13 @@ describe ('Database', () => {
     instance = new Database (config, logger)
     Object.defineProperty (instance, 'resetTimeout', { value: timeoutFunction })
     const verboseFunction = jest.fn().mockReturnValue ({ OPEN_READWRITE: 222 })
-    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction })
+    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction, configurable: true })
     const databaseMock = jest.fn((param1, param2, callback) => {
       setTimeout(() => { callback() }, 20)
       db.run = jest.fn ((param1, callbackFunction) => { callbackFunction() })
       return db
     })
-    Object.defineProperty(sqlite3, 'Database', { value: databaseMock })
+    Object.defineProperty(sqlite3, 'Database', { value: databaseMock, configurable: true })
     expect.assertions (7)
     return instance.open ().then (() => {
       expect (timeoutFunction).toHaveBeenCalled ()
@@ -64,13 +64,13 @@ describe ('Database', () => {
     instance = new Database (config, logger)
     Object.defineProperty (instance, 'resetTimeout', { value: timeoutFunction })
     const verboseFunction = jest.fn().mockReturnValue ({ OPEN_READWRITE: 222 })
-    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction })
+    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction, configurable: true })
     const databaseMock = jest.fn((param1, param2, callback) => {
       setTimeout(() => { callback(new Error('Error')) }, 20)
       db.run = jest.fn ((param1, callbackFunction) => { callbackFunction() })
       return db
     })
-    Object.defineProperty(sqlite3, 'Database', { value: databaseMock })
+    Object.defineProperty(sqlite3, 'Database', { value: databaseMock, configurable: true })
     expect.assertions (4)
     try {
       await instance.open ()
@@ -89,13 +89,13 @@ describe ('Database', () => {
     }
     instance = new Database (testConfig, logger)
     const verboseFunction = jest.fn().mockReturnValue ({ OPEN_READWRITE: 2 })
-    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction })
+    Object.defineProperty (sqlite3, 'verbose', { value: verboseFunction, configurable: true })
     const databaseMock = jest.fn((param1, param2, callback) => {
       setTimeout(() => { callback() }, 20)
       db.run = jest.fn ((param1, callbackFunction) => { callbackFunction() })
       return db
     })
-    Object.defineProperty(sqlite3, 'Database', { value: databaseMock })
+    Object.defineProperty(sqlite3, 'Database', { value: databaseMock, configurable: true })
     setTimeout (() => {
       const db = Object.getOwnPropertyDescriptor (instance, 'db')
       expect (dbCloseFunction).not.toHaveBeenCalled ()
@@ -115,7 +115,7 @@ describe ('Database', () => {
     Object.defineProperty (instance, 'db', { value: db })
     const timeout = setTimeout(() => {}, 100)
     Object.defineProperty (instance, 'timeout', { value: timeout })
-    Object.defineProperty (sqlite3, 'verbose', { value: jest.fn() })
+    Object.defineProperty (sqlite3, 'verbose', { value: jest.fn(), configurable: true })
     return instance.open ().then (() => {
       expect (sqlite3.verbose).not.toHaveBeenCalled ()
       const timeout2 = Object.getOwnPropertyDescriptor (instance, 'timeout')
@@ -159,7 +159,8 @@ describe ('Database', () => {
     expect (db.run.mock.calls[0][1]).toBe (params)
     expect (status).toEqual (runResult)
     expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain ('INSERT (id, field) INTO table VALUES (1, value)')
+    expect (logger.debug.mock.calls[0][0]).toBe ('SQL: ' + sql)
+    expect (logger.debug.mock.calls[0][0]).not.toContain ('value')
   })
 
   it ('should run a command or update/insert query against database and reject the promise on DB error', async () => {
@@ -200,7 +201,7 @@ describe ('Database', () => {
     expect (db.get.mock.calls[0][1]).toBe (params)
     expect (row).toEqual (result)
     expect (logger.debug).toHaveBeenCalledTimes (1)
-    expect (logger.debug.mock.calls[0][0]).toContain ('SELECT * FROM table WHERE field = 1')
+    expect (logger.debug.mock.calls[0][0]).toBe ('SQL: ' + sql)
   })
 
   it ('should run single row query against database and reject the promise on DB error', async () => {

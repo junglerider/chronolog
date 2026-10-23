@@ -27,7 +27,7 @@ $ docker pull junglerider/chronolog:1.1.0
 
 ## Install (development)
 
-You need the npm package manager for installation. You also need sqlite3 for building the database. The API and web application are installed separately:
+Use Node.js 24 LTS and npm for installation. You also need sqlite3 for building a demo database. The API and web application are installed separately:
 
 ```
 cd api
@@ -45,21 +45,23 @@ The application runs in a single Docker container. It uses an SQLite database to
 ./build docker
 ```
 
-This creates a new docker image called chronolog.latest which exposes internal port 8888 (or as configured in ./api/config.json).
+This creates a new Docker image called `chronolog` which exposes internal port 5404 (or as configured in `api/src/config.json`). The image includes the single-admin `db/empty.db` demo database; it does not include or regenerate `db/chronolog.db`.
+
+To regenerate the populated demo database in the repository, run `./build db --force` only when you intend to discard the existing `db/chronolog.db` and recreate it from the schema and fixtures. Without `--force`, `./build db` creates the database only when that path does not already exist. The Docker build does not run this command.
 
 ## Deploy
 
-While there is an SQLite sample database included in the container image, this should only be used for demos and testing, as it will be destroyed along with the container. For a production deployment, place a chronolog.db database file into a directory of your choice and use a host mount, e.g.:
+The database included in the image is for demos and testing; it will be destroyed along with the container. For production, place a backed-up `chronolog.db` database file in a directory of your choice and use a host mount, e.g.:
 
 ```
-docker run -d --name chronolog -p 5000:8888 -v /your/db/directory:/home/db chronolog
+docker run -d --name chronolog -p 5404:5404 -v /your/db/directory:/home/db chronolog
 ```
 
-This makes the application available at localhost:5000 and looks for the chronolog.db file in /your/db/directory. If you want to start with an empty database instead, copy `db/empty.db` into the mounted database directory and rename it to `chronolog.db`.
+This makes the application available at localhost:5404 and looks for the chronolog.db file in /your/db/directory. If you want to start with an empty database instead, copy `db/empty.db` into the mounted database directory and rename it to `chronolog.db`.
 
 ## Run
 
 ```
-http://localhost:5000
+http://localhost:5404
 ```
-The Chronolog web application at this URL should display a login dialogue. Sample data includes four configured users with the following user names: `enzo`, `james`, `gabriella` and `mehmed`. The `empty.db` database file only contains one user named `admin`. The passwords for all preconfigured users are left empty, so they can login without providing a password. Make sure to add a password later.
+The Chronolog web application at this URL should display a login dialogue. The image's `empty.db` database contains one user named `admin`. The password for this account is empty, so it can log in without a password; set a password immediately and do not expose a demo deployment publicly. The generated `db/chronolog.db` database contains four sample users (`enzo`, `james`, `gabriella`, and `mehmed`), also with empty passwords.

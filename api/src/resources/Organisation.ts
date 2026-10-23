@@ -63,7 +63,8 @@ export class Organisation {
   public async create (req: Request, res: Response, next: NextFunction) {
     this.logger.trace ('Organisation.create()')
     if (!req.body.name) {
-      return res.status (400).json ()
+      res.status (400).json ()
+      return
     }
     try {
       await this.db.run ('BEGIN TRANSACTION')

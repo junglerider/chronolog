@@ -53,8 +53,10 @@ export class TimeClock extends SingleTable {
       let [ names, values ] = this.sqlGenerator.buildParameterList (req.body)
       if (names.length > 0) {
         const sql = `UPDATE time_clock AS tc SET ` + this.getUpdateList(names) + ' WHERE tc.user_id = ? AND tc.date = ?'
-        values.push(req.params.user_id)
-        values.push(req.params.date)
+        const userId = req.params.user_id
+        const date = req.params.date
+        values.push(Array.isArray (userId) ? userId[0] : userId)
+        values.push(Array.isArray (date) ? date[0] : date)
         const result: any = await this.db.run (sql, values)
         status = result.changes ? 204 : 404
       }
@@ -101,4 +103,3 @@ export class TimeClock extends SingleTable {
     throw new Error ('403:Insufficient credentials')
   }
 }
-

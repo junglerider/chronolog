@@ -1,10 +1,10 @@
 <template>
   <div v-if="user.hasRole('invoicing')">
-    <v-alert v-model="deletionError" text outlined dismissible type="error">
-      {{ 'Some customers have tasks assigned. Customers with tasks cannot be deleted.' | i18n }}
+    <v-alert v-model="deletionError" closable type="error" variant="tonal">
+      {{ $i18n('Some customers have tasks assigned. Customers with tasks cannot be deleted.') }}
     </v-alert>
     <data-list
-      :title="'Customers' | i18n"
+      :title="$i18n('Customers')"
       :headers="headers"
       apiBaseUrl="/customer"
       uiBaseUrl="/customers"

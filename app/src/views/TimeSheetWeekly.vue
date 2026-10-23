@@ -3,19 +3,19 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <div class="page-title">{{ 'Weekly Overview' | i18n }} / {{ 'Total hours' | i18n }}: {{ totalHours }}</div>
+          <div class="page-title">{{ $i18n('Weekly Overview') }} / {{ $i18n('Total hours') }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
-          <v-toolbar-title>
+          <v-toolbar-title style="flex: 0 0 auto">
             {{ $refs.calendar ? $refs.calendar.title : 'This week' }}
           </v-toolbar-title>
-          <v-btn fab text small color="grey darken-2" class="ml-2" @click="prev">
-            <v-icon small>mdi-chevron-left</v-icon>
+          <v-btn color="grey darken-2" class="ml-2" @click="prev" icon size="small" variant="text">
+            <v-icon size="small">mdi-chevron-left</v-icon>
           </v-btn>
-          <v-btn fab text small color="grey darken-2" class="mr-2" @click="next">
-            <v-icon small>mdi-chevron-right</v-icon>
+          <v-btn color="grey darken-2" class="mr-2" @click="next" icon size="small" variant="text">
+            <v-icon size="small">mdi-chevron-right</v-icon>
           </v-btn>
-          <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
-            {{ 'Today' | i18n }}
+          <v-btn class="mr-4" color="black" @click="setToday" variant="outlined">
+            {{ $i18n('Today') }}
           </v-btn>
         </v-toolbar>
       </v-sheet>
@@ -24,7 +24,8 @@
           ref="calendar"
           type="custom-weekly"
           color="primary"
-          weekdays="1,2,3,4,5,6,0"
+          :weekdays="[1, 2, 3, 4, 5, 6, 0]"
+          :first-day-of-week="1"
           :start="calendarDate"
           v-model="calendarDate"
           :show-month-on-first="false"
@@ -34,8 +35,9 @@
           @change="onChange"
           @click:date="onDateClick"
         >
-        <template v-slot:day={date}>
-          <div v-if="records.has(date)" :set="record=records.get(date)">
+        <template v-slot:day="{ date }">
+          <template v-if="records.has(date)">
+          <div v-for="(record, i) in [records.get(date)]" :key="i">
             <div v-if="record.arrival" class="timeclock">
               <v-icon color="#1958b7" style="margin-top:-2px">mdi-arrow-right-bold</v-icon>
               <span>{{ record.arrival }}</span>
@@ -57,6 +59,7 @@
             </div>
           </div>
         </template>
+        </template>
         </v-calendar>
       </v-sheet>
     </v-col>
@@ -64,6 +67,36 @@
 </template>
 
 <style>
+  .v-calendar-weekly__day-label .v-icon-btn {
+    font-size: 1em;
+    letter-spacing: 0.1em;
+  }
+  .v-calendar-weekly__day-label .v-icon-btn__content {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    --v-icon-btn-height: 40px;
+  }
+  .v-calendar-weekly__day-label .v-icon-btn--active {
+    background-color: rgb(var(--v-theme-primary));
+    color: white !important;
+  }
+  .v-calendar-weekly .v-calendar-weekly__weeknumber,
+  .v-calendar-weekly .v-calendar-weekly__head-weeknumber {
+    background-color: #f1f3f4 !important;
+  }
+  .v-calendar-weekly .v-calendar-weekly__head-weekday {
+    background-color: white !important;
+    color: black !important;
+  }
+  .v-calendar-weekly .v-calendar-weekly__head-weekday.v-past {
+    color: #9e9e9e !important;
+  }
+  .v-calendar-weekly .v-calendar-weekly__head-weekday.v-present {
+    color: rgb(var(--v-theme-primary)) !important;
+  }
+  .v-calendar-weekly .v-calendar-weekly__day.v-outside {
+    background-color: #f7f7f7 !important;
+  }
   .v-calendar-weekly__day-label .v-btn {
     font-size: 1em !important;
     font-weight: 400;
@@ -95,6 +128,7 @@
 <script>
   import api from '../services/api'
   import dateCalc from '../services/DateCalc'
+  import { controlArrowDirection } from '../services/keyboard'
 
   const colourPool = [
     '#5e84ea', '#003086',
@@ -116,7 +150,23 @@
       colourPool: [...colourPool]
     }),
 
+    mounted() {
+      window.addEventListener('keydown', this.onKeydown)
+    },
+
+    beforeUnmount() {
+      window.removeEventListener('keydown', this.onKeydown)
+    },
+
     methods: {
+      onKeydown(event) {
+        const direction = controlArrowDirection(event)
+        if (direction === 0) {
+          return
+        }
+        event.preventDefault()
+        direction < 0 ? this.prev() : this.next()
+      },
       setToday () {
         this.calendarDate = dateCalc.firstDayOfWeek(new Date())
       },
@@ -170,7 +220,7 @@
           console.error(err)
         }
       },
-      onDateClick(val) {
+      onDateClick(event, val) {
         this.$router.push(`/time-sheet/${val.date}`)
       }
     },

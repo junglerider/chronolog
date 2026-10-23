@@ -219,6 +219,7 @@ export default new Map([
   ['The server did not accept the credentials.', 'El servidor no aceptó las credenciales.'],
   ['The server could not update the password.', 'El servidor no pudo actualizar la contraseña.'],
   ['Your password has been updated.', 'Tu contraseña ha sido actualizada.'],
+  ['This account is not secured. Please add a password.', 'Esta cuenta no está protegida. Por favor, añada una contraseña.'],
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Informe cronológico horario'],
   ['Time sheet by task', 'Informe horario según tareas'],
@@ -266,6 +267,7 @@ export default new Map([
   ['Subtotal', 'Subtotal'],
   ['Total', 'Total'],
   ['Net total', 'Neto total'],
+  ['Total quantity', 'Cantidad total'],
   ['Grand total', 'Bruto total'],
   ['Sales tax', 'I.V.A.'],
   ['Sales tax rate', 'Tasa del I.V.A.'],

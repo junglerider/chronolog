@@ -1,13 +1,18 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import reports from '../reports'
 import _ from 'lodash'
 
-Vue.use(VueRouter)
+const reportComponents = import.meta.glob('../reports/*.vue')
+
   const reportRoutes = reports.map(route => {
+    const reportComponent = `../reports/${_.upperFirst(_.camelCase(route.value))}.vue`
+    const loadComponent = reportComponents[reportComponent]
+    if (!loadComponent) {
+      throw new Error(`No report component found for route "${route.value}"`)
+    }
     return {
       path: `/reports/${route.value}`,
-      component: () => import(`../reports/${_.upperFirst(_.camelCase(route.value))}`)
+      component: loadComponent
     }
   })
   const routes = [{
@@ -72,17 +77,19 @@ Vue.use(VueRouter)
     component: () => import('../views/Projects.vue')
   },
   ...reportRoutes, {
+    path: '/reports/invoice',
+    redirect: '/invoices'
+  }, {
     path: '/reports/invoice/:id(new|\\d+)',
     component: () => import('../reports/Invoice.vue')
   }, {
-    path: '/*',
-    component: Vue.component('empty')
+    path: '/:pathMatch(.*)*',
+    component: { render: () => null }
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 

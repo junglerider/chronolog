@@ -3,39 +3,46 @@
     <v-container>
       <v-row>
         <v-col md="12">
-          <div class="page-title">{{ 'Projects & Tasks' | i18n }}</div>
+          <div class="page-title">{{ $i18n('Projects & Tasks') }}</div>
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="col-12 col-sm-6 col-xs-12 form-col">
+        <v-col cols="12" sm="6" class="col-xs-12 form-col">
           <v-treeview
             ref="treeview"
             :key="treeversion"
             :items="items"
-            :active.sync="active"
+            item-value="id"
+            item-title="name"
+            item-children="children"
+            :activated="active"
+            v-model:opened="open"
             :load-children="fetchProjects"
-            :open.sync="open"
             activatable
             color="info"
-            transition
-            @update:active="showProjectDetails"
+            @update:activated="onActivate"
           >
-            <template v-slot:prepend="{ item, open }">
+            <template v-slot:prepend="{ item }">
               <v-icon v-if="item.is_leaf" :style="itemStyle(item, false)" @contextmenu="e => showMenu(item, e)">
                 {{ 'mdi-hammer-wrench' }}
               </v-icon>
               <v-icon v-else :style="itemStyle(item, false)" @contextmenu="e => showMenu(item, e)">
-                {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+                {{ open.includes(item.id) ? 'mdi-folder-open' : 'mdi-folder' }}
               </v-icon>
             </template>
-            <template v-slot:label="{ item }">
-              <draggable :list="items" group="projects" :id="item.id" @end="dragEnd">
-                <span :style="itemStyle(item)" @contextmenu="e => showMenu(item, e)">{{ item.name }}</span>
-              </draggable>
+            <template v-slot:title="{ item }">
+              <span
+                :style="itemStyle(item)"
+                :draggable="item.id != 'NULL'"
+                @dragstart="onDragStart(item, $event)"
+                @dragover.prevent
+                @drop.prevent="onDrop(item)"
+                @contextmenu="e => showMenu(item, e)"
+              >{{ item.name }}</span>
             </template>
           </v-treeview>
         </v-col>
-        <v-col class="col-12 col-sm-6 col-xs-12 form-col">
+        <v-col cols="12" sm="6" class="col-xs-12 form-col">
           <div class="active-project" v-if="active.length" style="position: fixed">
             <div>
               <v-icon v-if="activated.is_leaf" :style="itemStyle(activated, false)" class="mr-2">
@@ -44,71 +51,71 @@
               <v-icon v-else :style="itemStyle(activated, false)" class="mr-2">
                 mdi-folder
               </v-icon>
-              <span :style="itemStyle(activated)">{{ itemType(activated) | i18n }}</span>
-              <v-btn icon @click="e => showMenu(activated, e)" class="ml-1">
+              <span :style="itemStyle(activated)">{{ $i18n(itemType(activated)) }}</span>
+              <v-btn icon @click="e => showMenu(activated, e)" class="ml-1" variant="text">
                 <v-icon>mdi-dots-horizontal</v-icon>
               </v-btn>
             </div>
-            <div>{{ 'Name' | i18n }}: {{ activated.name }}</div>
-            <div>{{ 'ID' | i18n }}: {{ activated.id }}</div>
-            <div v-if="activated.description">{{ 'Description' | i18n }}: {{ activated.description }}</div>
-            <div>{{ 'Parent project' | i18n }}: {{ activated.parent_name ? activated.parent_name : 'Projects' | i18n }}</div>
-            <div>{{ 'Assigned to' | i18n }}: {{ activated.user_name ? activated.user_name : 'all' | i18n }}</div>
-            <div>{{ 'Customer' | i18n }}: {{ activated.customer_name }}</div>
-            <div v-if="activated.is_leaf">{{ 'Total hours' | i18n }}: {{ $i18nDecToHrs(activated.duration) }}</div>
+            <div>{{ $i18n('Name') }}: {{ activated.name }}</div>
+            <div>{{ $i18n('ID') }}: {{ activated.id }}</div>
+            <div v-if="activated.description">{{ $i18n('Description') }}: {{ activated.description }}</div>
+            <div>{{ $i18n('Parent project') }}: {{ $i18n(activated.parent_name ? activated.parent_name : 'Projects') }}</div>
+            <div>{{ $i18n('Assigned to') }}: {{ $i18n(activated.user_name ? activated.user_name : 'all') }}</div>
+            <div>{{ $i18n('Customer') }}: {{ activated.customer_name }}</div>
+            <div v-if="activated.is_leaf">{{ $i18n('Total hours') }}: {{ $i18nDecToHrs(activated.duration) }}</div>
             <div v-else-if="activated.id != 'NULL'">
-              {{ 'Total hours' | i18n }}:
+              {{ $i18n('Total hours') }}:
               <span v-if="activated.duration">
                 {{ $i18nDecToHrs(activated.duration) }}
               </span>
               <span v-else>
-                <a @click="calculateHours">{{ 'Calculate' | i18n }}</a>
+                <a @click="calculateHours">{{ $i18n('Calculate') }}</a>
               </span>
               </div>
           </div>
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar timeout="1500" :color="messageColor" v-model="message" top text>
+    <v-snackbar timeout="1500" :color="messageColor" v-model="message" location="top" variant="tonal">
       <v-icon v-if="messageColor == 'info'" color="blue">mdi-alert-outline</v-icon>
       {{ messageText }}
     </v-snackbar>
-    <v-menu v-model="menuOpen" :position-x="menuCoord[0]" :position-y="menuCoord[1]" offset-y absolute>
+    <v-menu v-model="menuOpen" :target="menuCoord">
       <v-list>
         <v-list-item v-if="activated.id !== 'NULL'" class="squeeze">
-          <v-list-item-content>
-            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ 'Edit' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+            <v-list-item-title @click.stop="menuOpen = false; dialog = true">{{ $i18n('Edit') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title @click="beginInsert()">{{ 'Insert child task' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title @click="beginInsert()">{{ $i18n('Insert child task') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item v-if="activated.is_leaf && activated.duration == 0 && activated.id !== 'NULL'" class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title @click.stop="deleteProject()">{{ 'Delete' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title @click.stop="deleteProject()">{{ $i18n('Delete') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 1})" class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title>{{ 'Close' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title>{{ $i18n('Close') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item v-if="activated.is_closed && activated.id !== 'NULL'" @click.stop="updateTree({is_closed: 0})" class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title>{{ 'Reopen' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title>{{ $i18n('Reopen') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 0})" class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title>{{ 'Deactivate' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title>{{ $i18n('Deactivate') }}</v-list-item-title>
+          </div>
         </v-list-item>
         <v-list-item v-if="!activated.is_closed && !activated.is_active && activated.id !== 'NULL'" @click.stop="updateTree({is_active: 1})" class="squeeze">
-          <v-list-item-content>
-              <v-list-item-title>{{ 'Activate' | i18n }}</v-list-item-title>
-          </v-list-item-content>
+          <div>
+              <v-list-item-title>{{ $i18n('Activate') }}</v-list-item-title>
+          </div>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -127,19 +134,16 @@
   margin-bottom: 6px;
 }
 .squeeze {
-  margin: -12px 0 -1px 0;
   cursor: pointer;
 }
 </style>
 
 <script>
 import api from '../services/api'
-import draggable from 'vuedraggable'
 import TaskEdit from '../components/TaskEdit'
 
 export default {
   components: {
-    draggable,
     TaskEdit
   },
 
@@ -148,6 +152,7 @@ export default {
       user: api.user,
       projects: [],
       active: [],
+      draggedProjectId: null,
       activated: {},
       open: [],
       treeversion: 1,
@@ -251,12 +256,7 @@ export default {
             if (!task.is_leaf) {
               task.children = []
             }
-            // --- treeview component bug workaround
-            const pNode = this.$refs.treeview.nodes[task.id]
-            const childNode = {...pNode, item: task, vnode: null}
-            this.$refs.treeview.nodes[task.id] = childNode
             project.children.push(task)
-            // --- treeview component bug workaround
           })
         })
       .catch(e => {
@@ -367,10 +367,20 @@ export default {
       }
       return undefined
     },
-    async dragEnd(event) {
+    onDragStart(item, event) {
+      this.draggedProjectId = item.id
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('text/plain', String(item.id))
+    },
+    onDrop(target) {
+      if (this.draggedProjectId !== null) {
+        const draggedProjectId = this.draggedProjectId
+        this.draggedProjectId = null
+        return this.moveProject(draggedProjectId, target.id)
+      }
+    },
+    async moveProject(draggedProjectId, targetProjectId) {
       const rootProject = this.items[0]
-      const draggedProjectId = event.srcElement.id
-      const targetProjectId = event.to.id
       // dragged root or invalid drop?
       if (draggedProjectId == 'NULL' || draggedProjectId == targetProjectId) {
         return
@@ -396,6 +406,10 @@ export default {
       }
       this.removeFromTree(draggedProject, oldParentProject)
       this.insertIntoTree(draggedProject, newParentProject)
+    },
+    onActivate(ids) {
+      this.active = ids
+      return this.showProjectDetails()
     },
     async showProjectDetails() {
       if (!this.active.length) {
