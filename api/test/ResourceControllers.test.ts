@@ -16,7 +16,7 @@ import { TimeLogReport } from '../src/resources/TimeLogReport'
 import { User } from '../src/resources/User'
 
 const makeSession = (roles = ['admin'], id = 1) =>
-  new UserSession ({ time: Date.now (), id, username: 'test', name: 'Test User', roles })
+  new UserSession ({ time: Date.now (), id, username: 'test', name: 'Test User', roles, password_empty: false })
 
 const makeDatabase = () => new MockDatabase ({
   error: new Error ('database failure'),

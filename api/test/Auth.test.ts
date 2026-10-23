@@ -56,7 +56,8 @@ describe ('Auth', () => {
     const result = acceptedResponse.json.mock.calls[0][0]
     expect (acceptedResponse.status).toHaveBeenCalledWith (200)
     expect (result).toMatchObject ({
-      user_id: 3, username: 'alice', name: 'Alice Example', roles: ['reporting', 'contacts']
+      user_id: 3, username: 'alice', name: 'Alice Example', roles: ['reporting', 'contacts'],
+      password_empty: false
     })
     expect (result.token).toEqual (expect.any (String))
     expect (db.run).toHaveBeenCalledWith (
@@ -96,7 +97,9 @@ describe ('Auth', () => {
     const sessionResponse = makeResponse ()
     await auth.session (request as any, sessionResponse as any, jest.fn ())
     expect (sessionResponse.status).toHaveBeenCalledWith (200)
-    expect (sessionResponse.json.mock.calls[0][0]).toMatchObject ({ id: 5, username: 'bob', roles: [] })
+    expect (sessionResponse.json.mock.calls[0][0]).toMatchObject ({
+      id: 5, username: 'bob', roles: [], password_empty: true
+    })
 
     const missingSession = makeResponse ()
     await auth.session (makeRequest () as any, missingSession as any, jest.fn ())
@@ -135,7 +138,9 @@ describe ('Auth', () => {
     const request = makeRequest ({
       headers: { authorization: `Bearer ${token}` },
       body: { oldPassword: 'wrong', password: 'new secret' },
-      session: new UserSession ({ time: Date.now (), id: 1, username: 'admin', name: 'Admin', roles: ['admin'] })
+      session: new UserSession ({
+        time: Date.now (), id: 1, username: 'admin', name: 'Admin', roles: ['admin'], password_empty: false
+      })
     })
     db.get.mockResolvedValueOnce ({ password: oldPassword })
     const wrongPassword = makeResponse ()
@@ -152,33 +157,51 @@ describe ('Auth', () => {
       body: { oldPassword: 'old secret', password: 'new secret' }
     } as any, updatedPassword as any, jest.fn ())
     expect (updatedPassword.status).toHaveBeenCalledWith (204)
+    const updatedSession = makeResponse ()
+    await auth.session (makeRequest ({
+      headers: { authorization: `Bearer ${token}` }
+    }) as any, updatedSession as any, jest.fn ())
+    expect (updatedSession.json.mock.calls[0][0]).toMatchObject ({ password_empty: false })
 
     const forbiddenUpdate = makeResponse ()
     const forbiddenNext = jest.fn ()
     await auth.updatePassword (makeRequest ({
       body: { oldPassword: 'old secret', password: 'new secret' },
-      session: new UserSession ({ time: 1, id: 2, username: 'other', name: 'Other', roles: [] })
+      session: new UserSession ({
+        time: 1, id: 2, username: 'other', name: 'Other', roles: [], password_empty: false
+      })
     }) as any, forbiddenUpdate as any, forbiddenNext)
     expect (forbiddenNext).toHaveBeenCalledWith (expect.objectContaining ({ message: '403:User 1 cannot change password of another user' }))
 
     const reset = makeResponse ()
     await auth.resetPassword (makeRequest ({
-      session: new UserSession ({ time: 1, id: 1, username: 'admin', name: 'Admin', roles: ['admin'] })
+      session: new UserSession ({
+        time: 1, id: 1, username: 'admin', name: 'Admin', roles: ['admin'], password_empty: false
+      })
     }) as any, reset as any, jest.fn ())
     expect (reset.status).toHaveBeenCalledWith (204)
     expect (db.run).toHaveBeenLastCalledWith ('UPDATE user SET password = NULL WHERE id = ?', ['1'])
+    const resetSession = makeResponse ()
+    await auth.session (makeRequest ({
+      headers: { authorization: `Bearer ${token}` }
+    }) as any, resetSession as any, jest.fn ())
+    expect (resetSession.json.mock.calls[0][0]).toMatchObject ({ password_empty: true })
 
     const deniedReset = makeResponse ()
     const deniedNext = jest.fn ()
     await auth.resetPassword (makeRequest ({
-      session: new UserSession ({ time: 1, id: 2, username: 'other', name: 'Other', roles: [] })
+      session: new UserSession ({
+        time: 1, id: 2, username: 'other', name: 'Other', roles: [], password_empty: false
+      })
     }) as any, deniedReset as any, deniedNext)
     expect (deniedNext).toHaveBeenCalledWith (expect.objectContaining ({ message: '403:User 1 cannot reset password of another user' }))
 
     db.behaviour.runResult = { lastID: 0, changes: 0 }
     const failedReset = makeResponse ()
     await auth.resetPassword (makeRequest ({
-      session: new UserSession ({ time: 1, id: 1, username: 'admin', name: 'Admin', roles: ['admin'] })
+      session: new UserSession ({
+        time: 1, id: 1, username: 'admin', name: 'Admin', roles: ['admin'], password_empty: false
+      })
     }) as any, failedReset as any, jest.fn ())
     expect (failedReset.status).toHaveBeenCalledWith (500)
   })
@@ -196,7 +219,9 @@ describe ('Auth', () => {
         body: { username: 'admin', password: '' }
       }), response as any, jest.fn ())
       expect (response.status).toHaveBeenCalledWith (200)
-      expect (response.json.mock.calls[0][0]).toMatchObject ({ username: 'admin', roles: ['admin'] })
+      expect (response.json.mock.calls[0][0]).toMatchObject ({
+        username: 'admin', roles: ['admin'], password_empty: true
+      })
     } finally {
       productionAuth.close ()
       if (originalNodeEnv === undefined) {

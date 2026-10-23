@@ -2,6 +2,9 @@
   <v-container>
     <v-form ref="form" class="password-form">
       <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
+      <v-alert v-if="user.password_empty" type="warning" variant="tonal">
+        {{ $i18n('This account is not secured. Please add a password.') }}
+      </v-alert>
       <v-alert v-model="error" :type="errorType" variant="tonal">
         {{ errorMessage }}
       </v-alert>
@@ -124,6 +127,8 @@ export default {
           password: this.newPassword1,
           oldPassword: this.oldPassword,
         })
+        api.user.password_empty = false
+        this.user.password_empty = false
         this.errorMessage = this.$i18n('Your password has been updated.')
         this.errorType = 'success'
         this.error = true

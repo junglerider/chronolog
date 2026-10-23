@@ -89,11 +89,11 @@ export default {
       }
       this.authError = false
       try {
-        await api.login({
+        const response = await api.login({
           username: this.username,
           password: this.password
         })
-        this.$router.push('/')
+        this.$router.push(response.data.password_empty ? '/password' : '/')
       } catch (err) {
         if (err.response && ([401, 404, 429].includes(err.response.status))) {
           this.authError = true

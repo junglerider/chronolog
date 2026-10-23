@@ -98,7 +98,9 @@ describe ('API contracts', () => {
     const login = await request ('/auth/login', json ({ username: 'admin', password: '' }))
     expect (login.status).toBe (200)
     const user = await login.json ()
-    expect (user).toMatchObject ({ user_id: 1, username: 'admin', roles: ['admin'] })
+    expect (user).toMatchObject ({
+      user_id: 1, username: 'admin', roles: ['admin'], password_empty: true
+    })
     expect (user.token).toEqual (expect.any (String))
     adminToken = user.token
 
@@ -106,7 +108,9 @@ describe ('API contracts', () => {
       headers: { Authorization: `Bearer ${adminToken}`, Accept: 'application/json' }
     })
     expect (session.status).toBe (200)
-    expect (await session.json ()).toMatchObject ({ id: 1, username: 'admin', roles: ['admin'] })
+    expect (await session.json ()).toMatchObject ({
+      id: 1, username: 'admin', roles: ['admin'], password_empty: true
+    })
 
     const logout = await request ('/auth/logout', {
       method: 'POST',
@@ -616,18 +620,25 @@ describe ('API contracts', () => {
       password: 'contract-password'
     }))
     expect (passwordLogin.status).toBe (200)
+    const passwordLoginUser = await passwordLogin.json ()
+    expect (passwordLoginUser.password_empty).toBe (false)
 
     const passwordReset = await request (`/api/user/${userId}/password`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${adminToken}` }
     })
     expect (passwordReset.status).toBe (204)
+    const resetSession = await request ('/auth/session', {
+      headers: { Authorization: `Bearer ${passwordLoginUser.token}`, Accept: 'application/json' }
+    })
+    expect (await resetSession.json ()).toMatchObject ({ password_empty: true })
 
     const resetPasswordLogin = await request ('/auth/login', json ({
       username: 'contract-user',
       password: ''
     }))
     expect (resetPasswordLogin.status).toBe (200)
+    expect ((await resetPasswordLogin.json ()).password_empty).toBe (true)
 
     const recoveredPassword = await request (`/api/user/${userId}/password`, json ({
       oldPassword: '',
@@ -640,6 +651,7 @@ describe ('API contracts', () => {
       password: 'recovered-contract-password'
     }))
     expect (recoveredLogin.status).toBe (200)
+    expect ((await recoveredLogin.json ()).password_empty).toBe (false)
 
     const rejectedEmptyPassword = await request ('/auth/login', json ({
       username: 'contract-user',

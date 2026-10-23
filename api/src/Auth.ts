@@ -98,6 +98,7 @@ export class Auth {
             username: row.login,
             name: row.name,
             roles: row.roles ? row.roles.split(',') : [],
+            password_empty: !row.password,
             visits: row.visits,
             last_visit: row.last_visit,
             token: this.createSession (row, this.getToken (req))
@@ -207,6 +208,7 @@ export class Auth {
     if (existingToken && this.sessions.has (existingToken)) {
       const session = this.sessions.get (existingToken)
       session.time = Date.now ()
+      session.password_empty = !user.password
       this.logger.debug (`Reused session for user ${user.login}, total = ${this.sessions.size} sessions`)
       return existingToken
     }
@@ -217,11 +219,20 @@ export class Auth {
       username: user.login,
       name: user.name,
       roles: user.roles ? user.roles.split(',') : [],
+      password_empty: !user.password
     }
     this.sessions.set (token, session)
     this.updateUserStats (user)
     this.logger.debug (`Created session for user ${user.login}, total = ${this.sessions.size} sessions`)
     return token
+  }
+
+  private setPasswordEmpty (userId: number, passwordEmpty: boolean): void {
+    this.sessions.forEach (session => {
+      if (session.id === userId) {
+        session.password_empty = passwordEmpty
+      }
+    })
   }
 
   private getToken (req: Request): string | undefined {
@@ -274,6 +285,9 @@ export class Auth {
       const password = await this.hash (req.body.password)
       sql = 'UPDATE user SET password = ? WHERE id = ?'
       result = await this.db.run (sql, [password, req.params.id])
+      if (result.changes) {
+        this.setPasswordEmpty (Number (req.params.id), false)
+      }
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {
@@ -296,6 +310,9 @@ export class Auth {
       }
       const sql = 'UPDATE user SET password = NULL WHERE id = ?'
       const result: any = await this.db.run (sql, [req.params.id])
+      if (result.changes) {
+        this.setPasswordEmpty (Number (req.params.id), true)
+      }
       res.status (result.changes ? 204 : 500).json ()
       next ()
     } catch (err) {

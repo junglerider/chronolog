@@ -219,6 +219,7 @@ export default new Map([
   ['The server did not accept the credentials.', 'Le serveur n\'a pas accepté les informations d\'identification.'],
   ['The server could not update the password.', 'Le serveur n\'a pas pu mettre à jour le mot de passe.'],
   ['Your password has been updated.', 'Votre mot de passe a été mis à jour.'],
+  ['This account is not secured. Please add a password.', 'Ce compte n\'est pas sécurisé. Veuillez ajouter un mot de passe.'],
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Feuille de temps chronologique'],
   ['Time sheet by task', 'Feuille de temps par tâche'],

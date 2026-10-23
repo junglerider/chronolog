@@ -13,6 +13,7 @@ export interface IUserSession {
   username: string
   name: string
   roles: string []
+  password_empty: boolean
 }
 
 export interface IRequest extends Request {

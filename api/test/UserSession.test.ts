@@ -2,7 +2,7 @@ import { UserSession } from '../src/UserSession'
 
 describe ('UserSession permissions', () => {
   const session = (roles: string[], id = 7) =>
-    new UserSession ({ time: 1, id, username: 'test', name: 'Test User', roles })
+    new UserSession ({ time: 1, id, username: 'test', name: 'Test User', roles, password_empty: false })
 
   test ('grants each role and administrator inheritance only where configured', () => {
     const admin = session (['admin'])
