@@ -2,19 +2,19 @@
   <v-row class="fill-height">
     <v-col>
       <v-sheet height="64">
-        <v-toolbar flat color="white">
+        <v-toolbar flat color="surface">
           <div class="page-title">{{ $i18n('Weekly Overview') }} / {{ $i18n('Total hours') }}: {{ totalHours }}</div>
           <v-spacer></v-spacer>
           <v-toolbar-title style="flex: 0 0 auto">
             {{ $refs.calendar ? $refs.calendar.title : 'This week' }}
           </v-toolbar-title>
-          <v-btn color="grey darken-2" class="ml-2" @click="prev" icon size="small" variant="text">
+          <v-btn color="on-surface" class="ml-2" @click="prev" icon size="small" variant="text">
             <v-icon size="small">mdi-chevron-left</v-icon>
           </v-btn>
-          <v-btn color="grey darken-2" class="mr-2" @click="next" icon size="small" variant="text">
+          <v-btn color="on-surface" class="mr-2" @click="next" icon size="small" variant="text">
             <v-icon size="small">mdi-chevron-right</v-icon>
           </v-btn>
-          <v-btn class="mr-4" color="black" @click="setToday" variant="outlined">
+          <v-btn class="mr-4" color="on-surface" @click="setToday" variant="outlined">
             {{ $i18n('Today') }}
           </v-btn>
         </v-toolbar>
@@ -82,20 +82,20 @@
   }
   .v-calendar-weekly .v-calendar-weekly__weeknumber,
   .v-calendar-weekly .v-calendar-weekly__head-weeknumber {
-    background-color: #f1f3f4 !important;
+    background-color: rgb(var(--v-theme-surface-variant)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday {
-    background-color: white !important;
-    color: black !important;
+    background-color: rgb(var(--v-theme-surface)) !important;
+    color: rgb(var(--v-theme-on-surface)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday.v-past {
-    color: #9e9e9e !important;
+    color: rgba(var(--v-theme-on-surface), 0.6) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday.v-present {
     color: rgb(var(--v-theme-primary)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__day.v-outside {
-    background-color: #f7f7f7 !important;
+    background-color: rgb(var(--v-theme-surface-variant)) !important;
   }
   .v-calendar-weekly__day-label .v-btn {
     font-size: 1em !important;
