@@ -31,9 +31,11 @@
                   <template v-slot:activator="{ props }">
                     <v-btn
                       icon
+                      density="compact"
+                      size="small"
                       v-bind="props"
                       @click="jumpTo(employee)"
-                      style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
+                      style="margin-left: -0.5em; margin-right: -0.3em"
                      variant="text">
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>
@@ -50,7 +52,7 @@
       </v-container>
         <v-tooltip location="bottom">
           <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props" @click="remove(employee.employee_id)" style="margin-left: auto; margin-top: 0.8em" variant="text">
+            <v-btn icon v-bind="props" @click="remove(employee.employee_id)" style="margin-left: auto; margin-top: 0.8em; transform: translateY(-10px)" variant="text">
               <v-icon>mdi-minus-circle-outline</v-icon>
             </v-btn>
           </template>

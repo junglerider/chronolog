@@ -2,7 +2,7 @@
   <v-container>
     <v-form ref="form" class="password-form">
       <div class="page-title password-title">{{ $i18n('Change Password') }}</div>
-      <v-alert v-if="user.password_empty" type="warning" variant="tonal">
+      <v-alert v-if="user.password_empty" type="warning" variant="tonal" class="mb-5">
         {{ $i18n('This account is not secured. Please add a password.') }}
       </v-alert>
       <v-alert v-model="error" :type="errorType" variant="tonal">

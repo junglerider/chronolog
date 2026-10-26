@@ -9,6 +9,8 @@ export default new Map([
   ['Dashboard', 'Startseite'],
   ['Time clock, status and summary', 'Stechuhr, Status und Übersicht'],
   ['Change Password', 'Passwort ändern'],
+  ['Switch to dark mode', 'Dunkelmodus aktivieren'],
+  ['Switch to light mode', 'Hellmodus aktivieren'],
   ['Change your password', 'Passwort ändern'],
   ['Logout', 'Logout'],
   ['Forget password and display login form', 'Passwort vergessen und Login anzeigen'],
@@ -219,7 +221,7 @@ export default new Map([
   ['The server did not accept the credentials.', 'Die Anmeldeinformationen wurden nicht akzeptiert.'],
   ['The server could not update the password.', 'Das Passwort konnte nicht vom Server aktualisiert werden.'],
   ['Your password has been updated.', 'Ihr Passwort wurde aktualisiert.'],
-  ['This account is not secured. Please add a password.', 'Dieses Konto ist nicht geschützt. Bitte gebn Sie ein Passwort ein.'],
+  ['This account is not secured. Please add a password.', 'Dieses Konto ist nicht geschützt. Bitte geben Sie ein Passwort ein.'],
   // reporting --------------------------------------------
   ['Chronological time sheet', 'Chronologische Stundenberichte'],
   ['Time sheet by task', 'Stundenberichte nach Aufgaben'],

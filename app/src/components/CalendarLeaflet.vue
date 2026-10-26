@@ -4,7 +4,7 @@
     <tr><td class="weekday" :style="{backgroundColor: colour || '#003086'}">
       {{ $i18n(today.toLocaleString('en', { weekday: 'long' })) }}
     </td></tr>
-    <tr><td class="day" :style="{color: [0, 6].includes(today.getDay())? 'crimson' : 'black' }">
+    <tr><td class="day" :class="{ weekend: [0, 6].includes(today.getDay()) }">
       {{ today.getDate() }}
     </td></tr>
     <tr><td class="month" :style="{color: colour || '#003086'}">
@@ -16,7 +16,7 @@
 
 <style scoped>
 table.calendar {
-  border: 1px solid black;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.6);
   width: 100px;
   height: 100px;
   border-collapse: collapse;
@@ -30,19 +30,41 @@ td.weekday {
 }
 td.day {
   height: 50%;
-  background-color: white;
+  background-color: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
   text-align: center;
   font-family: Roboto, sans-serif;
   font-size: 2.5em;
   line-height: 0%;
   font-weight: 800;
 }
+td.day.weekend {
+  color: crimson;
+}
 td.month {
-  background-color: white;
+  background-color: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-primary));
   font-size: 100%;
   text-align: center;
   text-transform: uppercase;
   font-weight: 500;
+}
+
+.v-theme--dark td.day,
+.v-theme--dark td.month {
+  background-color: #0a0a0f;
+}
+
+.v-theme--dark td.day:not(.weekend) {
+  color: white !important;
+}
+
+.v-theme--dark td.day.weekend {
+  color: rgb(var(--v-theme-error));
+}
+
+.v-theme--dark td.month {
+  color: rgba(var(--v-theme-on-surface), var(--v-disabled-opacity)) !important;
 }
 </style>
 

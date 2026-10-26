@@ -42,11 +42,15 @@ jobs:
       # Exercise the frontend in a real browser.
       - run: npm run test:e2e --prefix ./app
 
+      # Generate the demo database included in the production image.
+      - name: Create demo database
+        run: ./build db --force
+
       # Assemble the deployable production image from the API and frontend builds.
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
-      # Check the image's health, frontend routes, and passwordless-account login flow.
+      # Check the image's health, frontend routes, and demo admin's passwordless login flow.
       - name: Smoke test container
         run: |
           set -euo pipefail
@@ -73,7 +77,7 @@ jobs:
           test "$status" = 404
           admin_login=$(curl --fail --silent --request POST \
             --header 'Content-Type: application/json' \
-            --data '{"username":"admin","password":""}' \
+            --data '{"username":"enzo","password":""}' \
             "$base_url/auth/login")
           admin_token=$(printf '%s' "$admin_login" | jq -er '.token')
           status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request DELETE \
@@ -82,7 +86,7 @@ jobs:
           test "$status" = 204
           status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request POST \
             --header 'Content-Type: application/json' \
-            --data '{"username":"admin","password":""}' \
+            --data '{"username":"enzo","password":""}' \
             "$base_url/auth/login")
           test "$status" = 200
           status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request PUT \
@@ -93,12 +97,12 @@ jobs:
           test "$status" = 204
           status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request POST \
             --header 'Content-Type: application/json' \
-            --data '{"username":"admin","password":""}' \
+            --data '{"username":"enzo","password":""}' \
             "$base_url/auth/login")
           test "$status" = 401
           status=$(curl --silent --output /dev/null --write-out '%{http_code}' --request POST \
             --header 'Content-Type: application/json' \
-            --data "{\"username\":\"admin\",\"password\":\"$admin_password\"}" \
+            --data "{\"username\":\"enzo\",\"password\":\"$admin_password\"}" \
             "$base_url/auth/login")
           test "$status" = 200
           unset admin_login admin_token

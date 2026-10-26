@@ -9,6 +9,8 @@ export default new Map([
   ['Dashboard', 'Página inicial'],
   ['Time clock, status and summary', 'Reloj para fichar, estado y resumen'],
   ['Change Password', 'Cambia la contraseña'],
+  ['Switch to dark mode', 'Activar modo oscuro'],
+  ['Switch to light mode', 'Activar modo claro'],
   ['Change your password', 'Cambia la contraseña'],
   ['Logout', 'Cerrar sesión'],
   ['Forget password and display login form', 'Olvide la contraseña y muestre el formulario de inicio de sesión'],

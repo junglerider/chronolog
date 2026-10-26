@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar flat color="white" class="mb-4" height="100px">
+    <v-toolbar flat color="background" class="mb-4" height="100px">
     <calendar-leaflet :date="date" style="margin-left: 25px; margin-right: 16px"></calendar-leaflet>
       <div class="page-title">
         {{ $i18n('Daily Time Sheet') }}

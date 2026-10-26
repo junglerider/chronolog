@@ -10,6 +10,7 @@
         <v-col cols="12" sm="6" class="col-xs-12 form-col">
           <v-treeview
             ref="treeview"
+            class="project-tree"
             :key="treeversion"
             :items="items"
             item-value="id"
@@ -130,6 +131,10 @@
 </template>
 
 <style scoped>
+.v-theme--dark .project-tree {
+  background-color: rgb(var(--v-theme-background));
+}
+
 .active-project > div {
   margin-bottom: 6px;
 }

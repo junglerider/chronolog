@@ -7,7 +7,6 @@
     :title="year"
     color="primary"
     header-color="primary"
-    elevation="6"
     class="app-date-picker"
     @update:model-value="onUpdate"
   ></v-date-picker>
@@ -56,6 +55,10 @@ export default {
     font-size: 0.85rem;
     letter-spacing: normal;
     text-transform: none;
+    padding-bottom: 6px;
+  }
+  .app-date-picker {
+    margin-bottom: -15px;
   }
   .app-date-picker .v-date-picker-header__content {
     color: white;

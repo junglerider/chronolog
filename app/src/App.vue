@@ -1,12 +1,12 @@
 <template>
-  <div v-if="isBlankPage()">
+  <div v-if="isBlankPage()" :class="{ 'reports-light-theme': isReportPage() }">
     <!-- reload contents when language changes -->
     <router-view :key="$getLanguage() + user.id"/>
   </div>
   <v-app v-else id="chronolog">
 
     <v-app-bar
-      color="black"
+      color="#0a0a0f"
       style="color: white"
     >
       <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -94,6 +94,12 @@
   html {
     overflow-y: auto !important;
   }
+  html.reports-light-theme,
+  .reports-light-theme {
+    color: #000;
+    color-scheme: light;
+    background-color: #fff;
+  }
   .v-toolbar__content > .v-toolbar-title.app-title {
     flex: 0 0 auto;
     color: white;
@@ -117,10 +123,10 @@
     padding-top: 0;
     padding-bottom: 0;
   }
-  .v-btn--disabled.v-btn--variant-outlined {
+  #chronolog .v-btn--disabled.v-btn--variant-outlined {
     opacity: 1;
-    border-color: #cfcfcf;
-    color: #b5b5b5 !important;
+    border-color: rgba(var(--v-theme-on-surface), 0.24);
+    color: rgba(var(--v-theme-on-surface), 0.38) !important;
   }
   .v-alert.v-alert--variant-tonal {
     border: 1px solid currentColor;
@@ -141,23 +147,33 @@
   .v-table {
     font-size: 1rem !important;
   }
-  .v-table > .v-table__wrapper > table > thead > tr > th {
+  #chronolog.v-theme--dark .v-table,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > thead > tr > th,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > tfoot > tr > th,
+  #chronolog.v-theme--dark .v-table > .v-table__wrapper > table > tfoot > tr > td {
+    background-color: rgb(var(--v-theme-background));
+  }
+  #chronolog.v-theme--dark .v-navigation-drawer {
+    background-color: #0a0a0f !important;
+  }
+  #chronolog .v-table > .v-table__wrapper > table > thead > tr > th {
     font-size: 1rem !important;
     font-weight: 700 !important;
-    color: rgba(0, 0, 0, 0.6) !important;
+    color: rgba(var(--v-theme-on-surface), 0.6) !important;
   }
-  .v-table > .v-table__wrapper > table > thead > tr > th,
-  .v-table > .v-table__wrapper > table > tbody > tr > td {
+  #chronolog .v-table > .v-table__wrapper > table > thead > tr > th,
+  #chronolog .v-table > .v-table__wrapper > table > tbody > tr > td {
     padding: 0 16px !important;
     height: 48px !important;
     font-size: 1rem !important;
   }
-  .v-table > .v-table__wrapper > table > thead > tr > th:first-child,
-  .v-table > .v-table__wrapper > table > tbody > tr > td:first-child {
+  #chronolog .v-table > .v-table__wrapper > table > thead > tr > th:first-child,
+  #chronolog .v-table > .v-table__wrapper > table > tbody > tr > td:first-child {
     padding-left: 8px !important;
   }
-  .v-table > .v-table__wrapper > table > thead > tr > th.v-data-table__th--sorted {
-    color: rgba(0, 0, 0, 0.87) !important;
+  #chronolog .v-table > .v-table__wrapper > table > thead > tr > th.v-data-table__th--sorted {
+    color: rgb(var(--v-theme-on-surface)) !important;
   }
   .v-card-text {
     font-size: 1em !important;
@@ -195,10 +211,21 @@ export default {
   }},
 
   async mounted() {
+    this.syncReportTheme()
     if (!this.user.id) {
       await api.reloadSession()
       this.user = api.user
     }
+  },
+
+  watch: {
+    '$route.path'() {
+      this.syncReportTheme()
+    }
+  },
+
+  beforeUnmount() {
+    document.documentElement.classList.remove('reports-light-theme')
   },
 
   methods: {
@@ -207,6 +234,12 @@ export default {
     },
     isBlankPage() {
       return this.$route.path.startsWith('/reports') || this.$route.path.startsWith('/login')
+    },
+    isReportPage() {
+      return this.$route.path.startsWith('/reports')
+    },
+    syncReportTheme() {
+      document.documentElement.classList.toggle('reports-light-theme', this.isReportPage())
     }
   },
 
