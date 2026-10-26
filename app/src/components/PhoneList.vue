@@ -15,7 +15,14 @@
       <v-container style="padding:0">
         <v-row>
           <v-col cols="12" sm="12" md="4" class="form-col">
-            <v-select :label="$i18n('Type')" :items="types" v-model="item.type" :rules="requiredRule"></v-select>
+            <v-select
+              :label="$i18n('Type')"
+              :items="types"
+              item-title="text"
+              item-value="value"
+              v-model="item.type"
+              :rules="requiredRule"
+            ></v-select>
           </v-col>
           <v-col cols="12" sm="12" md="8" class="form-col">
             <v-text-field
@@ -28,9 +35,11 @@
                   <template v-slot:activator="{ props }">
                     <v-btn
                       icon
+                      density="compact"
+                      size="small"
                       v-bind="props"
                       @click="jumpTo(item)"
-                      style="margin-left: -0.5em; margin-top: -0.6em; margin-right: -0.3em"
+                      style="margin-left: -0.5em; margin-right: -0.3em"
                      variant="text">
                       <v-icon>mdi-arrow-right-circle-outline</v-icon>
                     </v-btn>
@@ -44,7 +53,7 @@
       </v-container>
         <v-tooltip location="bottom">
           <template v-slot:activator="{ props }">
-            <v-btn icon v-bind="props" @click="remove(item.id)" style="margin-left: auto; margin-top: 0.8em" variant="text">
+            <v-btn icon v-bind="props" @click="remove(item.id)" style="margin-left: auto; margin-top: 0.8em; transform: translateY(-10px)" variant="text">
               <v-icon>mdi-minus-circle-outline</v-icon>
             </v-btn>
           </template>
