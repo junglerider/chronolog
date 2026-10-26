@@ -6,7 +6,7 @@
   <v-app v-else id="chronolog">
 
     <v-app-bar
-      color="black"
+      color="#0a0a0f"
       style="color: white"
     >
       <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -155,7 +155,7 @@
     background-color: rgb(var(--v-theme-background));
   }
   #chronolog.v-theme--dark .v-navigation-drawer {
-    background-color: #000 !important;
+    background-color: #0a0a0f !important;
   }
   #chronolog .v-table > .v-table__wrapper > table > thead > tr > th {
     font-size: 1rem !important;

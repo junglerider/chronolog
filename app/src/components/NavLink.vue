@@ -45,7 +45,7 @@
     box-sizing: border-box;
     padding-left: 22px;
     opacity: 1;
-    background-color: black;
+    background-color: #0a0a0f;
     border-bottom: 1px solid #90bade;
   }
 </style>
