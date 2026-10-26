@@ -77,7 +77,7 @@
   }
   .v-calendar-weekly .v-calendar-weekly__weeknumber,
   .v-calendar-weekly .v-calendar-weekly__head-weeknumber {
-    background-color: rgb(var(--v-theme-background)) !important;
+    background-color: rgb(var(--v-theme-surface-light)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday {
     background-color: rgb(var(--v-theme-surface)) !important;

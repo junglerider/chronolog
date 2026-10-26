@@ -82,7 +82,7 @@
   }
   .v-calendar-weekly .v-calendar-weekly__weeknumber,
   .v-calendar-weekly .v-calendar-weekly__head-weeknumber {
-    background-color: rgb(var(--v-theme-background)) !important;
+    background-color: rgb(var(--v-theme-surface-light)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__head-weekday {
     background-color: rgb(var(--v-theme-surface)) !important;
@@ -95,7 +95,7 @@
     color: rgb(var(--v-theme-primary)) !important;
   }
   .v-calendar-weekly .v-calendar-weekly__day.v-outside {
-    background-color: rgb(var(--v-theme-background)) !important;
+    background-color: rgb(var(--v-theme-surface)) !important;
   }
   .v-calendar-weekly__day-label .v-btn {
     font-size: 1em !important;

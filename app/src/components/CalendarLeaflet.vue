@@ -49,6 +49,23 @@ td.month {
   text-transform: uppercase;
   font-weight: 500;
 }
+
+.v-theme--dark td.day,
+.v-theme--dark td.month {
+  background-color: #0a0a0f;
+}
+
+.v-theme--dark td.day:not(.weekend) {
+  color: white !important;
+}
+
+.v-theme--dark td.day.weekend {
+  color: rgb(var(--v-theme-error));
+}
+
+.v-theme--dark td.month {
+  color: rgba(var(--v-theme-on-surface), var(--v-disabled-opacity)) !important;
+}
 </style>
 
 <script>
