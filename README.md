@@ -1,6 +1,6 @@
-# chronolog Time Sheets
+# Chronolog time sheets
 
-Time sheet application with TypeScript/Node.js backend and Vue/JavaScript frontend.
+Time sheet web application with an embedded database. Runs in a single docker container.
 
 ![screenshot](screenshot.png "Chronolog Application")
 
@@ -12,56 +12,48 @@ Time sheet application with TypeScript/Node.js backend and Vue/JavaScript fronte
 - Todo lists
 - Invoicing
 - Printable reports
-- Address administration (organisations and contacts)
+- Address management (organisations and contacts)
 - Multi-user and multi-customer
 
-## Try out
+## Install and run application
 
-Pull the docker image from GitHub (or Docker Hub) and follow the `Deploy` and `Run` instructions below.
-
-```
-$ docker pull ghcr.io/junglerider/chronolog/chronolog:1.1.0
-  or
-$ docker pull junglerider/chronolog:1.1.0
-```
-
-## Install (development)
-
-Use Node.js 24 LTS and npm for installation. You also need sqlite3 for building a demo database. The API and web application are installed separately:
+Pull the docker image from GitHub, create a running container and test the app in the browser. There is an in-container sqlite3 database file with demo data. Log in as the admin user "enzo" without password.
 
 ```
-cd api
-npm install
+$ docker pull ghcr.io/junglerider/chronolog/chronolog:2.0.0
+$ docker run -d --name chronolog-test -p 5404:5404 chronolog:latest
+$ xdg-open http://localhost:5404
 
-cd ../app
-npm install
+```
+## Run in production
+
+Copy the db/empty.db file to /your/db/directory and mount it into a new container. The empty db only contains a single account. Log in as "admin" without password. Set a password.
+```
+$ docker pull ghcr.io/junglerider/chronolog/chronolog:2.0.0
+$ docker run -d --name chronolog -p 5404:5404 -v /your/db/directory:/home/db chronolog:latest
+$ xdg-open http://localhost:5404
+
 ```
 
-## Build (development)
+## Development
 
-The application runs in a single Docker container. It uses an SQLite database to persist information. To create a production build, run:
+The application is based on a TypeScript/Node.js backend and a Vue/JavaScript frontend. Use Node.js 24 LTS and npm for installation. You also need sqlite3 for building a demo database. The repository contains a build command. You can install and run the Chronolog application locally in two steps:
+
+```
+./build install
+./build all
+xdg-open http://localhost:5403
+```
+
+Note that Vite is configured to run on port 5403. The backend is configured with `api/src/config.json`.
+
+To regenerate the populated demo database in the repository, run `./build db --force` only when you intend to discard the existing `db/chronolog.db` and recreate it from the schema and fixtures. Without `--force`, `./build db` creates the database only when that path does not already exist.
+
+## Build and run docker image locally
 
 ```
 ./build docker
-```
-
-This creates a new Docker image called `chronolog` which exposes internal port 5404 (or as configured in `api/src/config.json`). The image includes the single-admin `db/empty.db` demo database; it does not include or regenerate `db/chronolog.db`.
-
-To regenerate the populated demo database in the repository, run `./build db --force` only when you intend to discard the existing `db/chronolog.db` and recreate it from the schema and fixtures. Without `--force`, `./build db` creates the database only when that path does not already exist. The Docker build does not run this command.
-
-## Deploy
-
-The database included in the image is for demos and testing; it will be destroyed along with the container. For production, place a backed-up `chronolog.db` database file in a directory of your choice and use a host mount, e.g.:
-
-```
-docker run -d --name chronolog -p 5404:5404 -v /your/db/directory:/home/db chronolog
-```
-
-This makes the application available at localhost:5404 and looks for the chronolog.db file in /your/db/directory. If you want to start with an empty database instead, copy `db/empty.db` into the mounted database directory and rename it to `chronolog.db`.
-
-## Run
-
-```
 http://localhost:5404
 ```
-The Chronolog web application at this URL should display a login dialogue. The image's `empty.db` database contains one user named `admin`. The password for this account is empty, so it can log in without a password; set a password immediately and do not expose a demo deployment publicly. The generated `db/chronolog.db` database contains four sample users (`enzo`, `james`, `gabriella`, and `mehmed`), also with empty passwords.
+
+The Chronolog web application at this URL should display a login dialogue. The generated `db/chronolog.db` database contains four sample users (`enzo`, `james`, `gabriella`, and `mehmed`), all with empty passwords. Do not use this in production.

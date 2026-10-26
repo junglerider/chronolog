@@ -6,12 +6,13 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 usage() {
-    echo "Usage: build.sh [-h|--help] [db [--force]|app|api|all|docker]"
-    echo "       db     - creates chronolog.db; use --force to replace an existing file"
+    echo "Usage: build.sh [-h|--help] [db [--force]|install|app|api|all|docker]"
+    echo "       install - installs dependencies for the frontend and backend"
     echo "       app    - creates the Vue frontend"
     echo "       api    - creates the Node.js backend"
-    echo "       all    - creates both frontend and backend"
-    echo "       docker - creates frontend, backend and Docker image"
+    echo "       db     - creates chronolog.db; use --force to replace an existing file"
+    echo "       all    - creates frontend, backend and database"
+    echo "       docker - creates frontend, backend, database and Docker image"
 }
 
 build_db() {
@@ -25,8 +26,8 @@ build_db() {
 
     local database=./db/chronolog.db
     if [[ -e "$database" && "$force" != true ]]; then
-        echo "Cannot replace existing $database; pass 'db --force' to overwrite it." >&2
-        return 1
+        echo "Keeping existing database: $database"
+        return 0
     fi
 
     local temporary_database
@@ -42,7 +43,7 @@ build_db() {
     if [[ "$force" == true ]]; then
         mv -f "$temporary_database" "$database"
     elif ! ln "$temporary_database" "$database"; then
-        echo "Refusing to replace $database; pass 'db --force' to overwrite it." >&2
+        echo "Cannot replace $database; pass 'db --force' to overwrite it." >&2
         rm -f "$temporary_database"
         return 1
     else
@@ -56,6 +57,11 @@ build_app() {
     npm run build --prefix ./app
 }
 
+install_dependencies() {
+    npm install --prefix ./app
+    npm install --prefix ./api
+}
+
 build_api() {
     echo "creating Node.js API"
     npm run clean --prefix ./api
@@ -65,6 +71,7 @@ build_api() {
 build_all() {
     build_api
     build_app
+    build_db
 }
 
 build_docker() {
@@ -85,6 +92,9 @@ while [ "$1" != "" ]; do
         db )            shift
                         build_db "$@"
                         exit $?
+                        ;;
+        install )       install_dependencies
+                        exit
                         ;;
         app )           build_app
                         exit
