@@ -42,6 +42,10 @@ jobs:
       # Exercise the frontend in a real browser.
       - run: npm run test:e2e --prefix ./app
 
+      # The runner image may not ship the sqlite3 CLI used by the build script.
+      - name: Install sqlite3
+        run: command -v sqlite3 || (sudo apt-get update && sudo apt-get install -y sqlite3)
+
       # Generate the demo database included in the production image.
       - name: Create demo database
         run: ./build db --force

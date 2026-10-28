@@ -1,0 +1,43 @@
+name: Chronolog CI
+env:
+  IMAGE_NAME: chronolog
+
+on:
+  # Run CI for pushes to every branch or tag.
+  push:
+  # Run CI for pull requests targeting every branch.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # Install the API's locked dependencies.
+      - run: npm ci --prefix ./api
+      # Verify API behavior before building the production bundle.
+      - run: npm test --prefix ./api
+      # Compile the API TypeScript sources for the container image.
+      - run: npm run build --prefix ./api
+      # Install the frontend's locked dependencies.
+      - run: npm ci --prefix ./app
+      # Enforce frontend lint rules.
+      - run: npm run lint --prefix ./app
+      # Run the frontend unit tests.
+      - run: npm run test:unit --prefix ./app
+      # Build the static frontend served by the API.
+      - run: npm run build --prefix ./app
+      # Install Chromium and operating-system dependencies for browser tests.
+      - run: npx playwright install --with-deps --no-shell chromium
+        working-directory: ./app
+      # Exercise the frontend in a real browser.
+      - run: npm run test:e2e --prefix ./app
