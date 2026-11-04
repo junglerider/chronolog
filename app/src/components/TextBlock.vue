@@ -1,9 +1,5 @@
 <template>
-  <div>
-    <template v-for="line in split(value)">
-      <template>{{ line }}<br :key="line"/></template>
-    </template>
-  </div>
+  <div class="text-block">{{ value }}</div>
 </template>
 
 <script>
@@ -17,11 +13,11 @@ export default {
       default: '',
     },
   },
-
-  methods: {
-    split(value) {
-      return String(value).split(/[\r|\n]/)
-    }
-  },
 }
 </script>
+
+<style scoped>
+.text-block {
+  white-space: pre-line;
+}
+</style>
