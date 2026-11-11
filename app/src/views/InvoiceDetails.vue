@@ -205,7 +205,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" md="12" class="form-col text-right">
-          <v-btn class="ml-2 mt-4" color="primary" :disabled="isSaving" @click="onSave">{{ $i18n('Save') }}</v-btn>
+          <v-btn class="ml-2 mt-4" color="primary" :disabled="isSaving || !isReady" @click="onSave">{{ $i18n('Save') }}</v-btn>
           <v-btn class="ml-2 mt-4" @click="$router.push('/invoices')">{{ $i18n('Cancel') }}</v-btn>
           <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onPrint">{{ $i18n('Print') }}</v-btn>
           <v-btn class="ml-2 mt-4" v-if="invoice.id !== 'new'" @click="onDuplicate">{{ $i18n('Duplicate') }}</v-btn>
@@ -253,6 +253,7 @@ export default {
       messageColor: 'success',
       messageText: '',
       isSaving: false,
+      isReady: false,
       requiredRule: [ (v) => Boolean(v) || this.$i18n('Required') ],
     }
   },
@@ -297,10 +298,12 @@ export default {
     },
     onDuplicate() {
       this.$router.push(`/invoices/new?duplicate=${this.invoice.id}`)
-      this.$router.go()
     },
     async onSave() {
       let isDataWritten = false
+      if (!this.isReady || this.isSaving) {
+        return
+      }
       if (!(await this.$refs.form.validate()).valid) {
         return
       }
@@ -309,7 +312,7 @@ export default {
         try {
           if (this.invoice.id === 'new') {
             this.invoice.created_at = DateCalc.isoDateTime()
-            const response = await api.post(`/invoice`, api.nullIt(this.invoice))
+            const response = await api.post(`/invoice`, api.nullIt(_.omit(this.invoice, 'id')))
             if (response.status === 201) {
               this.invoice.id = response.data.id
             }
@@ -348,7 +351,7 @@ export default {
       for (let item of this.items) {
         if (typeof item.id === 'string' && item.id.startsWith('new')) {
           item.invoice_id = invoice_id
-          const response = await api.post('/invoice-item', api.nullIt(item))
+          const response = await api.post('/invoice-item', api.nullIt(_.omit(item, 'id')))
           if (response.status === 201) {
             item.id = response.data.id
             recordsWritten++
@@ -411,8 +414,8 @@ export default {
   },
 
   async mounted() {
-    if (this.$route.params.id !== 'new') {
-      try {
+    try {
+      if (this.$route.params.id !== 'new') {
         const id = this.$route.params.id
         let response = await api.get(`/invoice/${id}`)
         this.invoice = response.data
@@ -420,33 +423,26 @@ export default {
         response = await api.get(`/invoice/${id}/items`)
         this.items = response.data
         this.previousItems = _.cloneDeep(this.items)
-      } catch(e) {
-        console.error(e)
-        this.showMessage('Record could not be loaded.', 'error')
-      }
-    } else if (this.$route.query.duplicate) {
-      try {
+      } else if (this.$route.query.duplicate) {
         const id = this.$route.query.duplicate
         let response = await api.get(`/invoice/${id}`)
-        this.invoice = response.data
-        this.invoice.id = 'new'
+        this.invoice = { ..._.omit(response.data, ['id', 'created_at', 'updated_at']), id: 'new' }
         response = await api.get(`/invoice/${id}/items`)
-        this.items = response.data.map(item => {
-          if (item) {
-            item.id = _.uniqueId('new'),
-            item.invoice_id = 'new'
-          }
-          return item
-        })
-      } catch(e) {
-        console.error(e)
-        this.showMessage('Record could not be loaded.', 'error')
+        this.items = response.data.map(item => ({
+          ...item,
+          id: _.uniqueId('new'),
+          invoice_id: 'new'
+        }))
       }
+      const response = await api.get(`/customer?order=name`)
+      this.customers = response.data.map(customer => { return {
+        id: customer.id, name: customer.name, organisation_id: customer.organisation_id
+      }})
+      this.isReady = true
+    } catch(e) {
+      console.error(e)
+      this.showMessage('Record could not be loaded.', 'error')
     }
-    const response = await api.get(`/customer?order=name`)
-    this.customers = response.data.map(customer => { return {
-      id: customer.id, name: customer.name, organisation_id: customer.organisation_id
-    }})
   },
 
 }

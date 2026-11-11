@@ -59,6 +59,7 @@ const reportComponents = import.meta.glob('../reports/*.vue')
     component: () => import('../views/InvoiceList.vue')
   }, {
     path: '/invoices/:id(new|\\d+)',
+    meta: { remountOnRouteChange: true },
     component: () => import('../views/InvoiceDetails.vue')
   }, {
     path: '/customers',

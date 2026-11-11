@@ -82,7 +82,7 @@
     <v-main>
       <v-container fluid>
         <!-- reload contents when language changes -->
-        <router-view :key="$getLanguage() + user.id"/>
+        <router-view :key="$getLanguage() + user.id + ($route.meta.remountOnRouteChange ? $route.fullPath : '')"/>
       </v-container>
     </v-main>
 
